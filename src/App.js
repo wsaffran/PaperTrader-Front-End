@@ -12,16 +12,35 @@ class App extends React.Component {
     currentUser: null
   }
 
+  componentDidMount() {
+    const userID = localStorage.getItem("user_id")
+
+    if (userID) {
+      fetch("http://localhost:3001/auto_login", {
+        headers: {
+          "Authorization": userID
+        }
+      })
+      .then(res => res.json())
+      .then((response) => {
+        this.setState({
+          currentUser: response
+        })
+      })
+    }
+  }
+
   setCurrentUser = (user) => {
-    console.log(this.props.history);
     this.setState({
       currentUser: user
     }, () => {
+      localStorage.setItem("user_id", this.state.currentUser.id)
       this.props.history.push(`/game`)
     })
   }
 
   render () {
+    console.log(this.state);
     return (
       <Switch>
         <Route path="/login" render={(routeProps) => <LoginForm {...routeProps} setCurrentUser={this.setCurrentUser}/>} />
