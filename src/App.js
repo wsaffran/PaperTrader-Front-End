@@ -13,12 +13,12 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    const userID = localStorage.getItem("user_id")
+    const token = localStorage.getItem("token")
 
-    if (userID) {
+    if (token) {
       fetch("http://localhost:3001/auto_login", {
         headers: {
-          "Authorization": userID
+          "Authorization": token
         }
       })
       .then(res => res.json())
@@ -30,17 +30,16 @@ class App extends React.Component {
     }
   }
 
-  setCurrentUser = (user) => {
+  setCurrentUser = (response) => {
     this.setState({
-      currentUser: user
+      currentUser: response.user
     }, () => {
-      localStorage.setItem("user_id", this.state.currentUser.id)
+      localStorage.setItem("token", response.token)
       this.props.history.push(`/game`)
     })
   }
 
   render () {
-    console.log(this.state);
     return (
       <Switch>
         <Route path="/login" render={(routeProps) => <LoginForm {...routeProps} setCurrentUser={this.setCurrentUser}/>} />
