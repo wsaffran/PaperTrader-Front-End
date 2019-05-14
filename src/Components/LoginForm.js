@@ -15,7 +15,6 @@ class LoginForm extends React.Component {
   }
 
   handleSubmit = (event) => {
-    console.log(event);
     event.preventDefault()
     fetch('http://localhost:3001/login', {
       method: "POST",

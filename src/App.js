@@ -1,5 +1,6 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
+import Nav from './Components/Nav'
 import LandingPage from './Components/LandingPage'
 import LoginForm from './Components/LoginForm';
 import SignupForm from './Components/SignupForm';
@@ -41,12 +42,15 @@ class App extends React.Component {
 
   render () {
     return (
-      <Switch>
-        <Route path="/login" render={(routeProps) => <LoginForm {...routeProps} setCurrentUser={this.setCurrentUser}/>} />
-        <Route path="/signup" render={(routeProps) => <SignupForm {...routeProps} setCurrentUser={this.setCurrentUser}/>} />
-        <Route path="/game" component={Game}/>
-        <Route path="/" render={(routeProps) => <LandingPage {...routeProps} />} />
-      </Switch>
+      <div>
+        <Nav />
+        <Switch>
+          <Route path="/login" render={(routeProps) => <LoginForm {...routeProps} setCurrentUser={this.setCurrentUser}/>} />
+          <Route path="/signup" render={(routeProps) => <SignupForm {...routeProps} setCurrentUser={this.setCurrentUser}/>} />
+          <Route path="/game" component={Game}/>
+          <Route path="/" render={(routeProps) => <LandingPage {...routeProps} />} />
+        </Switch>
+      </div>
     )
   }
 }
