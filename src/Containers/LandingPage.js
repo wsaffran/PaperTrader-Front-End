@@ -14,8 +14,14 @@ class LandingPage extends React.Component {
     return (
       <div>
         <h1>Paper Trader</h1>
-        <button name='login' onClick={this.handleClick}>Login</button>
-        <button name='signup' onClick={this.handleClick}>Sign Up</button>
+        {this.props.currentUser ?
+          <p>put some detailed infor about the website</p>
+          :
+          <div>
+            <button name='login' onClick={this.handleClick}>Login</button>
+            <button name='signup' onClick={this.handleClick}>Sign Up</button>
+          </div>
+        }
       </div>
     )
   }

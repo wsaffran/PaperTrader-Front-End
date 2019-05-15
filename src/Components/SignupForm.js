@@ -17,7 +17,6 @@ class SignupForm extends React.Component {
   }
 
   handleSubmit = (event) => {
-    console.log(event);
     event.preventDefault()
     fetch('http://localhost:3001/signup', {
       method: "POST",
@@ -39,25 +38,28 @@ class SignupForm extends React.Component {
 
   render () {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <label>
-          first name:
-          <input onChange={this.handleChange} type="text" name="firstName" value={this.state.firstName} />
-        </label>
-        <label>
-          last name:
-          <input onChange={this.handleChange} type="text" name="lastName" value={this.state.lastName} />
-        </label>
-        <label>
-          username:
-          <input onChange={this.handleChange} type="text" name="username" value={this.state.username} />
-        </label>
-        <label>
-          password:
-          <input onChange={this.handleChange} type="password" name="password" value={this.state.password} />
-        </label>
-        <button type="submit">Submit</button>
-      </form>
+      <div>
+        <h1>Sign Up</h1>
+        <form onSubmit={this.handleSubmit}>
+          <label>
+            first name:
+            <input onChange={this.handleChange} type="text" name="firstName" value={this.state.firstName} />
+          </label>
+          <label>
+            last name:
+            <input onChange={this.handleChange} type="text" name="lastName" value={this.state.lastName} />
+          </label>
+          <label>
+            username:
+            <input onChange={this.handleChange} type="text" name="username" value={this.state.username} />
+          </label>
+          <label>
+            password:
+            <input onChange={this.handleChange} type="password" name="password" value={this.state.password} />
+          </label>
+          <button type="submit">Submit</button>
+        </form>
+      </div>
     )
   }
 
