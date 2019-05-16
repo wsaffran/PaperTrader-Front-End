@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom';
 import CreateGameForm from '../Components/CreateGameForm'
 import { Tab, Table, Container } from 'semantic-ui-react'
 // import v4 from 'uuid'
@@ -8,7 +9,8 @@ class Game extends React.Component {
   state = {
     selected: 'yourGames',
     games: [],
-    yourGames: []
+    game_players: [],
+    users: []
   }
 
   componentDidMount() {
@@ -23,7 +25,14 @@ class Game extends React.Component {
     .then(res => res.json())
     .then(res => {
       this.setState({
-        yourGames: res
+        game_players: res
+      })
+    })
+    fetch('http://localhost:3001/users')
+    .then(res => res.json())
+    .then(res => {
+      this.setState({
+        users: res
       })
     })
   }
@@ -53,17 +62,28 @@ class Game extends React.Component {
   }
 
   getYourGameRows = () => {
-    return this.state.yourGames.map(game => {
-      return (
-        <Table.Row key={game.id}>
-          <Table.Cell>{this.state.games.find(gameObj => gameObj.id === game.id).name}</Table.Cell>
-          <Table.Cell>0.98%</Table.Cell>
-          <Table.Cell>$556.90</Table.Cell>
-          <Table.Cell>3</Table.Cell>
-          <Table.Cell>07/10/19</Table.Cell>
-          <Table.Cell>23</Table.Cell>
-        </Table.Row>
-      )
+    if (this.state.game_players) {
+
+      return this.props.currentUser.games.map(game => {
+        return (
+          <Link onClick={this.handleGameClick} className="item" to="/stage">
+            <Table.Row key={game.id}>
+              <Table.Cell>{game.name}</Table.Cell>
+              <Table.Cell>0.98%</Table.Cell>
+              <Table.Cell>$556.90</Table.Cell>
+              <Table.Cell>3</Table.Cell>
+              <Table.Cell>07/10/19</Table.Cell>
+              <Table.Cell>23</Table.Cell>
+            </Table.Row>
+          </Link>
+        )
+      })
+    }
+  }
+
+  handleGameClick = () => {
+    this.handleClick({
+      ...this.state.games, selected: true
     })
   }
 
@@ -118,7 +138,7 @@ class Game extends React.Component {
     })
     .then(res => res.json())
     .then(response => {
-      this.props.history.push('/game')
+      this.props.history.push('/stage')
     })
   }
 
@@ -144,10 +164,13 @@ class Game extends React.Component {
   }
 
   render () {
+    console.log(this.state);
     return (
-      <Tab menu={{ secondary: true, pointing: true}} panes={this.renderPanes()} />
+      <h1>Game Page</h1>
     )
   }
 }
 
 export default Game
+
+// <Tab menu={{ secondary: true, pointing: true}} panes={this.renderPanes()} />

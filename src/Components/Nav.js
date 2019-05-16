@@ -1,5 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
 
 class Nav extends React.Component {
 
@@ -20,4 +21,11 @@ class Nav extends React.Component {
   }
 }
 
-export default Nav
+function mapStateToProps(state) {
+  return {
+    currentUser: state.currentUser
+  }
+}
+
+
+export default connect(mapStateToProps)(Nav)

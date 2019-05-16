@@ -6,21 +6,16 @@ import LoginForm from './Components/LoginForm';
 import SignupForm from './Components/SignupForm';
 import UserProfile from './Containers/UserProfile'
 import Game from './Containers/Game';
+import Stage from './Containers/Stage'
 import './App.css';
+import { connect } from 'react-redux'
 
 class App extends React.Component {
 
-  state = {
-    currentUser: null
-  }
-
   logOut = () => {
     localStorage.removeItem("token")
-    this.setState({
-      currentUser: null
-    }, () => {
-      this.props.history.push('/login')
-    })
+    this.props.setCurrentUser({currentUser: null})
+    this.props.history.push('/login')
   }
 
   componentDidMount() {
@@ -34,39 +29,53 @@ class App extends React.Component {
       })
       .then(res => res.json())
       .then((response) => {
-        this.setState({
-          currentUser: response
-        })
+        this.props.setCurrentUser(response)
       })
     }
   }
 
-  setCurrentUser = (response) => {
-    this.setState({
-      currentUser: response.user
-    }, () => {
-      localStorage.setItem("token", response.token)
-      this.props.history.push(`/game`)
-    })
-  }
+  // setCurrentUser = (response) => {
+  //   this.setState({
+  //     currentUser: response.user
+  //   }, () => {
+  //     localStorage.setItem("token", response.token)
+  //     this.props.history.push(`/game`)
+  //   })
+  // }
 
   render () {
     return (
       <div>
-        <Nav currentUser={this.state.currentUser} logOut={this.logOut}/>
+        <Nav logOut={this.logOut}/>
         <Switch>
-          <Route path="/login" render={(routeProps) => <LoginForm {...routeProps} setCurrentUser={this.setCurrentUser}/>} />
-          <Route path="/signup" render={(routeProps) => <SignupForm {...routeProps} setCurrentUser={this.setCurrentUser}/>} />
-          <Route path="/user" render={(routeProps) => <UserProfile {...routeProps} currentUser={this.state.currentUser}/>} />
-          {this.state.currentUser ?
-            <Route path="/game" render={(routeProps) => <Game {...routeProps} currentUser={this.state.currentUser}/>}/>
-            :
-            <Route path="/" render={(routeProps) => <LandingPage {...routeProps} currentUser={this.state.currentUser}/>} />
+          <Route path="/login" component={ LoginForm } />
+          <Route path="/signup" component={ SignupForm } />
+          <Route path="/user" component={ UserProfile } />
+          <Route path="/stage" component={ Stage } />
+          <Route path="/game" component={ Game }/>
+          <Route path="/" component={ LandingPage } />
           }
         </Switch>
       </div>
     )
   }
+
+
 }
 
-export default App;
+function mapStateToProps(state) {
+  return {
+    currentUser: state.currentUser
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setCurrentUser: (user) => {
+      // dispatch is our new setState and it takes an object with a type and a payload
+      dispatch({type: "SET_CURRENT_USER", payload: user})
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
