@@ -8,7 +8,7 @@ import v4 from 'uuid'
 class Game extends React.Component {
 
   state = {
-    selected: 'yourGames',
+    // selected: 'yourGames',
   }
 
   componentDidMount() {
@@ -57,18 +57,18 @@ class Game extends React.Component {
   }
 
   getYourGameRows = () => {
-    if (this.props.currentUser) {
+    if (this.props.currentUser && this.props.currentUser.games) {
       return this.props.currentUser.games.map(game => {
         return (
           // <Link className="item" to="/stage">
-          <tr key={v4()} onClick={() => this.handleGameClick(game)}>
-            <th>{game.name}</th>
-            <th>0.98%</th>
-            <th>$556.90</th>
-            <th>3</th>
-            <th>07/10/19</th>
-            <th>23</th>
-          </tr>
+          <Table.Row key={v4()} onClick={() => this.handleGameClick(game)}>
+            <Table.Cell>{game.name}</Table.Cell>
+            <Table.Cell>0.98%</Table.Cell>
+            <Table.Cell>$556.90</Table.Cell>
+            <Table.Cell>3</Table.Cell>
+            <Table.Cell>07/10/19</Table.Cell>
+            <Table.Cell>23</Table.Cell>
+          </Table.Row>
           // </Link>
         )
       })
@@ -112,12 +112,12 @@ class Game extends React.Component {
           <Table.Cell>{game.starting_balance}</Table.Cell>
           <Table.Cell>{game.start_date}</Table.Cell>
           <Table.Cell>{game.end_date}</Table.Cell>
-          <Table.Cell>num of players</Table.Cell>
+          <Table.Cell>{game.game_players.length}</Table.Cell>
           {
-            this.props.currentUser.games.includes(game) ?
-            null
-            :
+            (this.props.currentUser.games && this.props.currentUser.games.includes(game)) ?
             <Table.Cell><button name='join' id={game.id} onClick={this.handleClick}>Join</button></Table.Cell>
+            :
+            <Table.Cell>Already Joined!</Table.Cell>
           }
         </Table.Row>
       )
@@ -160,7 +160,7 @@ class Game extends React.Component {
   renderPanes = () => {
     return (
       [
-        { menuItem: 'Your Games', render: () => <Tab.Pane attached={false} name="yourGames">{this.renderYourGamesContent()}</Tab.Pane> },
+        { menuItem: 'Your Games', render: () => <Tab.Pane attached={false} name="yourGames">{this.renderYourGamesContent()}</Tab.Pane> }, // HERE PUT HISTORY.PUSH to correct route?
         { menuItem: 'Find Game', render: () => <Tab.Pane attached={false} name="findGames">{this.renderFindGamesContent()}</Tab.Pane> },
         { menuItem: 'Create Game', render: () => <Tab.Pane attached={false} name="createGame">{this.renderCreateGameContent()}</Tab.Pane> },
       ]

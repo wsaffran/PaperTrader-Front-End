@@ -1,4 +1,7 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import history from '../history';
+
 
 class CreateGameForm extends React.Component {
 
@@ -27,7 +30,28 @@ class CreateGameForm extends React.Component {
       body: JSON.stringify(this.state)
     })
     .then(res => res.json())
-    .then(console.log)
+    .then(response => {
+      fetch('http://localhost:3001/join_game', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accepts": "application/json",
+        },
+        body: JSON.stringify({user_id: this.props.currentUser.id, game_id: response.id})
+      })
+      .then(res => res.json())
+      .then(response => {
+        console.log(history);
+        this.props.updateGamePlayers(response)
+      })
+    })
+    this.setState({
+      name: '',
+      startingBalance: "",
+      startDate: '',
+      endDate: '',
+      errors: null
+    })
   }
 
   render () {
@@ -60,4 +84,18 @@ class CreateGameForm extends React.Component {
 
 }
 
-export default CreateGameForm
+function mapDispatchToProps(dispatch) {
+  return {
+    updateGamePlayers: (gamePlayer) => {
+      dispatch({type: "UPDATE_GAME_PLAYERS", payload: gamePlayer})
+    }
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    currentUser: state.currentUser
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateGameForm)

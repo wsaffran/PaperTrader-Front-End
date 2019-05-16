@@ -18,6 +18,8 @@ function reducer(state = defaultState, action){
       return {...state, gamePlayers: action.payload}
     case "SET_USERS":
       return {...state, users: action.payload}
+    case "UPDATE_GAME_PLAYERS":
+      return {...state, gamePlayers: [...state.gamePlayers, action.payload]}
 
     default:
       return state

@@ -12,7 +12,7 @@ import { Provider } from 'react-redux'
 const store = createStore(reducer)
 
 ReactDOM.render(
-  <Router>
+  <Router >
     <Provider store={store}>
       <Route path="/" component={App} />
     </Provider>

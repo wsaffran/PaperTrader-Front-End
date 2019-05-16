@@ -1,5 +1,6 @@
 import React from 'react'
-// import CreateGameForm from '../Components/CreateGameForm'
+// import { Link } from 'react-router-dom';
+import { connect } from 'react-redux'
 // import v4 from 'uuid'
 
 class Stage extends React.Component {
@@ -11,4 +12,19 @@ class Stage extends React.Component {
   }
 }
 
-export default Stage
+function mapStateToProps(state) {
+  return {
+    currentUser: state.currentUser,
+    currentGame: state.currentGame,
+    games: state.games,
+    users: state.users,
+    gamePlayers: state.gamePlayers
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Stage)

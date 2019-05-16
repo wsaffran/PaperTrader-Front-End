@@ -1,21 +1,23 @@
 import React from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Route, Router } from 'react-router-dom';
 import Nav from './Components/Nav'
 import LandingPage from './Containers/LandingPage'
 import LoginForm from './Components/LoginForm';
 import SignupForm from './Components/SignupForm';
 import UserProfile from './Containers/UserProfile'
 import Game from './Containers/Game';
-import Stage from './Containers/Stage'
+import Stage from './Containers/Stage';
 import './App.css';
 import { connect } from 'react-redux'
+import history from './history';
+
 
 class App extends React.Component {
 
   logOut = () => {
     localStorage.removeItem("token")
     this.props.setCurrentUser({currentUser: null})
-    this.props.history.push('/login')
+    this.props.history.push('/')
   }
 
   componentDidMount() {
@@ -46,16 +48,15 @@ class App extends React.Component {
   render () {
     return (
       <div>
+        <Router history={history}>
         <Nav logOut={this.logOut}/>
-        <Switch>
           <Route path="/login" component={ LoginForm } />
           <Route path="/signup" component={ SignupForm } />
           <Route path="/user" component={ UserProfile } />
           <Route path="/stage" component={ Stage } />
           <Route path="/game" component={ Game }/>
-          <Route path="/" component={ LandingPage } />
-          }
-        </Switch>
+          <Route exact path="/" component={ LandingPage } />
+        </Router>
       </div>
     )
   }
