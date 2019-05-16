@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 class LoginForm extends React.Component {
 
@@ -30,6 +31,8 @@ class LoginForm extends React.Component {
         alert(response.errors)
       } else {
         this.props.setCurrentUser(response)
+        localStorage.setItem("token", response.token)
+        this.props.history.push(`/game`)
       }
     })
   }
@@ -55,4 +58,19 @@ class LoginForm extends React.Component {
 
 }
 
-export default LoginForm
+function mapDispatchToProps(dispatch) {
+  return {
+    setCurrentUser: (user) => {
+      // dispatch is our new setState and it takes an object with a type and a payload
+      dispatch({type: "SET_CURRENT_USER", payload: user})
+    }
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    currentUser: state.currentUser
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

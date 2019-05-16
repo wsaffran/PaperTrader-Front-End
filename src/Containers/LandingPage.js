@@ -1,4 +1,5 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 class LandingPage extends React.Component {
 
@@ -28,4 +29,11 @@ class LandingPage extends React.Component {
 
 }
 
-export default LandingPage
+function mapStateToProps(state) {
+  return {
+    currentUser: state.currentUser
+  }
+}
+
+
+export default connect(mapStateToProps)(LandingPage)

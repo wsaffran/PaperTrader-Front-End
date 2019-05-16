@@ -32,6 +32,7 @@ class SignupForm extends React.Component {
         alert(response.errors)
       } else {
         this.props.setCurrentUser(response)
+        localStorage.setItem("token", response.token)
       }
     })
   }
