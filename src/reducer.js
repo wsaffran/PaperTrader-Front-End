@@ -1,9 +1,11 @@
 const defaultState = {
   currentUser: null,
   currentGame: null,
+  currentGamePlayer: null,
   games: [],
   gamePlayers: [],
-  users: []
+  users: [],
+  selectedStockTicker: ''
 }
 
 function reducer(state = defaultState, action){
@@ -20,6 +22,10 @@ function reducer(state = defaultState, action){
       return {...state, users: action.payload}
     case "UPDATE_GAME_PLAYERS":
       return {...state, gamePlayers: [...state.gamePlayers, action.payload]}
+    case "SELECTED_STOCK_TICKER":
+      return {...state, selectedStockTicker: action.payload}
+    case "SET_CURRENT_GAME_PLAYER":
+      return {...state, currentGamePlayer: action.payload}
 
     default:
       return state
