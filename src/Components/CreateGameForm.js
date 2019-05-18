@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import history from '../history';
+// import history from '../history';
 
 
 class CreateGameForm extends React.Component {
@@ -20,7 +20,7 @@ class CreateGameForm extends React.Component {
   }
 
   handleSubmit = (event) => {
-    event.preventDefault()
+    // event.preventDefault()
     fetch('http://localhost:3001/new_game', {
       method: "POST",
       headers: {
@@ -37,20 +37,20 @@ class CreateGameForm extends React.Component {
           "Content-Type": "application/json",
           "Accepts": "application/json",
         },
-        body: JSON.stringify({user_id: this.props.currentUser.id, game_id: response.id})
+        body: JSON.stringify({user_id: this.props.currentUser.id, game_id: response.id, cash_balance: parseInt(this.state.startingBalance)})
       })
       .then(res => res.json())
       .then(response => {
-        console.log(history);
         this.props.updateGamePlayers(response)
       })
-    })
-    this.setState({
-      name: '',
-      startingBalance: "",
-      startDate: '',
-      endDate: '',
-      errors: null
+    }, () => {
+      this.setState({
+        name: '',
+        startingBalance: "",
+        startDate: '',
+        endDate: '',
+        errors: null
+      })
     })
   }
 

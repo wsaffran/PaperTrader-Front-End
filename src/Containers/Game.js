@@ -77,6 +77,8 @@ class Game extends React.Component {
 
   handleGameClick = (game) => {
     this.props.setCurrentGame(game)
+    this.props.setCurrentGamePlayer(this.props.currentUser.game_players.find(g => g.game.id === game.id))
+    // set Current Game_Player too?
     this.props.history.push('/stage')
   }
 
@@ -114,17 +116,17 @@ class Game extends React.Component {
           <Table.Cell>{game.end_date}</Table.Cell>
           <Table.Cell>{game.game_players.length}</Table.Cell>
           {
-            (this.props.currentUser.games && this.props.currentUser.games.includes(game)) ?
-            <Table.Cell><button name='join' id={game.id} onClick={this.handleClick}>Join</button></Table.Cell>
-            :
+            (this.props.currentUser.games && this.props.currentUser.games.find(userGame => userGame.id === game.id)) ?
             <Table.Cell>Already Joined!</Table.Cell>
+            :
+            <Table.Cell><button name='join' onClick={(event) => this.handleClick(event, game.id, game.starting_balance)}>Join</button></Table.Cell>
           }
         </Table.Row>
       )
     })
   }
 
-  handleClick = (event) => {
+  handleClick = (event, game_id, starting_balance) => {
 
     // this.props.currentUser.game_players.map(game_player => {
     //   if (game_player.includes(event))
@@ -138,7 +140,7 @@ class Game extends React.Component {
         "Content-Type": "application/json",
         "Accepts": "application/json",
       },
-      body: JSON.stringify({user_id: this.props.currentUser.id, game_id: parseInt(event.target.id)})
+      body: JSON.stringify({user_id: this.props.currentUser.id, game_id: parseInt(game_id), cash_balance: parseInt(starting_balance)})
     })
     .then(res => res.json())
     .then(response => {
@@ -168,7 +170,6 @@ class Game extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     return (
       <Tab menu={{ secondary: true, pointing: true}} panes={this.renderPanes()} />
     )
@@ -200,6 +201,9 @@ function mapDispatchToProps(dispatch) {
     setCurrentGame: (game) => {
       dispatch({type: "SET_CURRENT_GAME", payload: game})
     },
+    setCurrentGamePlayer: (gamePlayer) => {
+      dispatch({type: "SET_CURRENT_GAME_PLAYER", payload: gamePlayer})
+    }
 
   }
 }
