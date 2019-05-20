@@ -5,7 +5,10 @@ class YourProfile extends React.Component {
 
   render () {
     return (
-      <h3>YourProfile</h3>
+      <div>
+        <h3>YourProfile</h3>
+        <p>{this.props.currentUser.first_name}</p>
+      </div>
     )
   }
 }

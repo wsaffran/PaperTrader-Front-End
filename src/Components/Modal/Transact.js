@@ -4,22 +4,27 @@ import { connect } from 'react-redux'
 // import Autocomplete from "./Autocomplete.jsx";
 // import Research from './Research'
 // import Graph from './Graph'
-import { Modal } from 'semantic-ui-react'
+import history from '../../history';
+
+import { Button, Icon, Modal } from 'semantic-ui-react'
 
 class Transact extends React.Component {
 
   state = {
     buy: true,
     shares: 1,
-    price: null
+    price: null,
+    latestTime: ''
   }
 
   componentDidMount() {
+    let today = new Date()
     fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/book`)
     .then(res => res.json())
     .then(res => {
       this.setState({
-        price: res.quote.latestPrice
+        price: res.quote.latestPrice,
+        latestTime: today
       })
     })
   }
@@ -35,9 +40,26 @@ class Transact extends React.Component {
 
   }
 
+  handleClick = (event) => {
+    fetch('http://localhost:3001/transactions', {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accepts": "application/json",
+      },
+      body: JSON.stringify({game_player_id: this.props.currentGamePlayer.id, symbol: this.props.selectedStockTicker.symbol, price: this.state.price, shares: this.state.shares, transaction_date: this.state.latestTime})
+    })
+    .then(res => res.json())
+    .then(response => {
+      // CLOSE MODAL HERE
+      history.push('/stage')
+    })
+  }
+
   render() {
     return (
       <div id="InTransact">
+      <Modal.Content image scrolling>
         <Modal.Description>
           <h1>{this.props.selectedStockTicker.name}</h1>
           <form onSubmit={this.handleSubmit}>
@@ -53,6 +75,17 @@ class Transact extends React.Component {
           <p>Total Cash: ${this.props.currentGamePlayer.cash_balance}</p>
           <p>Remaing Cash: ${this.props.currentGamePlayer.cash_balance - (this.state.price * this.state.shares)}</p>
         </Modal.Description>
+      </Modal.Content>
+      <Modal.Actions>
+        <div>
+          <Button primary onClick={() => this.props.handleClick('research')}>
+            Back <Icon name='chevron right' />
+          </Button>
+          <Button primary onClick={this.handleClick}>
+            Buy <Icon name='chevron right' />
+          </Button>
+        </div>
+      </Modal.Actions>
       </div>
     )
   }

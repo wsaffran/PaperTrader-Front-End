@@ -5,33 +5,35 @@ import symbols from './symbols'
 import Autocomplete from "./Autocomplete.jsx";
 import Graph from './Graph'
 // import ModalDisplay from './ModalDisplay'
-import { Button, Icon, Header, Modal } from 'semantic-ui-react'
+import { Header, Modal, Button, Icon } from 'semantic-ui-react'
 
 class Research extends React.Component {
 
   render() {
     return (
       <div id="inResearch">
-        <Modal.Description>
-        <div style={{marginBottom: "50px"}}>
-          <Autocomplete
-            suggestions={
-              symbols.map(symbol => {
-                return `${symbol.symbol} - ${symbol.name}`
-              })
-            }
-          />
-        </div>
-
-        </Modal.Description>
-
-        {this.props.selectedStockTicker ? <Graph/> : null}
-
-        <Modal.Description>
+        <Modal.Content image scrolling>
+          <Modal.Description>
+          <div style={{marginBottom: "70px"}}>
+            <Autocomplete
+              suggestions={
+                symbols.map(symbol => {
+                  return `${symbol.symbol} - ${symbol.name}`
+                })
+              }
+            />
+          </div>
+          {this.props.selectedStockTicker ? <Graph/> : null}
           <Header>{this.props.selectedStockTicker.symbol}</Header>
           <p>{this.props.selectedStockTicker.name}</p>
 
-        </Modal.Description>
+          </Modal.Description>
+        </Modal.Content>
+        <Modal.Actions>
+          <Button primary onClick={() => this.props.handleClick('transact')}>
+          Transact <Icon name='chevron right' />
+          </Button>
+        </Modal.Actions>
       </div>
     )
   }
