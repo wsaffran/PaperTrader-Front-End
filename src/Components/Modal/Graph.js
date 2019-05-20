@@ -42,7 +42,7 @@ class Graph extends React.Component {
 
   render() {
     return (
-      <div style={{position: "relative", width: 600, height: 550 }}>
+      <div style={{position: "relative"}}>
         <button id="1d" onClick={this.handleClick}>1d</button>
         <Line data={
             {labels: this.state.labels,

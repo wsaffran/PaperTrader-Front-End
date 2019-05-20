@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 // import symbols from './symbols.js'
-import SearchModal from '../Modal/SearchModal';
+import SearchModal from '../Components/Modal/SearchModal';
 
 
 class Search extends React.Component {
