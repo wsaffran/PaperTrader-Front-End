@@ -1,20 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
-import 'semantic-ui-css/semantic.min.css';
+import { BrowserRouter as Router } from 'react-router-dom'
 import { createStore } from 'redux'
-import reducer from './reducer'
 import { Provider } from 'react-redux'
+
+import App from './App';
+import reducer from './reducer'
+
+import 'semantic-ui-css/semantic.min.css';
+import './index.css';
+
+import * as serviceWorker from './serviceWorker';
 
 const store = createStore(reducer)
 
 ReactDOM.render(
   <Router >
     <Provider store={store}>
-      <Route path="/" component={App} />
+      <App />
     </Provider>
   </Router>,
 document.getElementById('root'));

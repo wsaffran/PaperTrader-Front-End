@@ -19,7 +19,7 @@ class SignupForm extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault()
-    fetch('http://localhost:3001/signup', {
+    fetch('http://localhost:3001/users', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

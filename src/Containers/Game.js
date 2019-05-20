@@ -1,15 +1,11 @@
 import React from 'react'
-// import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import CreateGameForm from '../Components/CreateGameForm'
-import { Tab, Table, Container } from 'semantic-ui-react'
+import { Table, Container, Menu } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import v4 from 'uuid'
 
 class Game extends React.Component {
-
-  state = {
-    // selected: 'yourGames',
-  }
 
   componentDidMount() {
     fetch('http://localhost:3001/games')
@@ -45,11 +41,12 @@ class Game extends React.Component {
               <Table.HeaderCell>Rank</Table.HeaderCell>
               <Table.HeaderCell>End</Table.HeaderCell>
               <Table.HeaderCell>Number of Players</Table.HeaderCell>
+              <Table.HeaderCell>Enter Game</Table.HeaderCell>
             </Table.Row>
           </Table.Header>
 
           <Table.Body>
-            {this.getYourGameRows()}
+            {this.props.currentUser ? this.getYourGameRows() : null}
           </Table.Body>
         </Table>
       </Container>
@@ -57,7 +54,7 @@ class Game extends React.Component {
   }
 
   getYourGameRows = () => {
-    if (this.props.currentUser && this.props.currentUser.games) {
+    if (this.props.currentUser.games) {
       return this.props.currentUser.games.map(game => {
         return (
           // <Link className="item" to="/stage">
@@ -67,7 +64,14 @@ class Game extends React.Component {
             <Table.Cell>$556.90</Table.Cell>
             <Table.Cell>3</Table.Cell>
             <Table.Cell>07/10/19</Table.Cell>
-            <Table.Cell>23</Table.Cell>
+            <Table.Cell>3</Table.Cell>
+            <Table.Cell>
+              <Link to="/stage">
+                <button onClick={() => this.handleGameClick(game)}>
+                  View Game
+                </button>
+              </Link>
+            </Table.Cell>
           </Table.Row>
           // </Link>
         )
@@ -79,7 +83,7 @@ class Game extends React.Component {
     this.props.setCurrentGame(game)
     this.props.setCurrentGamePlayer(this.props.currentUser.game_players.find(g => g.game.id === game.id))
     // set Current Game_Player too?
-    this.props.history.push('/stage')
+    // this.props.history.push('/stage')
   }
 
   // FIND GAMES
@@ -108,6 +112,7 @@ class Game extends React.Component {
 
   getRows = () => {
     return this.props.games.map(game => {
+      console.log(game);
       return (
         <Table.Row key={game.id}>
           <Table.Cell>{game.name}</Table.Cell>
@@ -119,32 +124,36 @@ class Game extends React.Component {
             (this.props.currentUser.games && this.props.currentUser.games.find(userGame => userGame.id === game.id)) ?
             <Table.Cell>Already Joined!</Table.Cell>
             :
-            <Table.Cell><button name='join' onClick={(event) => this.handleClick(event, game.id, game.starting_balance)}>Join</button></Table.Cell>
+            <Table.Cell>
+              <Link to="/game">
+                <button onClick={() => this.handleClick(game)}>
+                  Join Game {game.name}
+                </button>
+              </Link>
+            </Table.Cell>
           }
         </Table.Row>
       )
     })
   }
 
-  handleClick = (event, game_id, starting_balance) => {
-
-    // this.props.currentUser.game_players.map(game_player => {
-    //   if (game_player.includes(event))
-    // })
-    //
-    // if (this.props.currentUser.game_players.includes(event.target.id))
-    //
+  handleClick = (game) => {
+    console.log(game); // GAME IS NOT COMING THROUGH
     fetch('http://localhost:3001/join_game', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Accepts": "application/json",
       },
-      body: JSON.stringify({user_id: this.props.currentUser.id, game_id: parseInt(game_id), cash_balance: parseInt(starting_balance)})
+      body: JSON.stringify({user_id: this.props.currentUser.id, game_id: game.id, cash_balance: game.starting_balance})
     })
     .then(res => res.json())
     .then(response => {
-      this.props.history.push('/stage')
+      this.props.updateGamePlayers(response)
+      // this.props.history.push('/game')
+      // }
+      // this.props.history.push('/game')
+      // this.props.setCurrentGamePlayer(this.props.currentUser.game_players.find(g => g.game.id === game.id))
     })
   }
 
@@ -158,20 +167,58 @@ class Game extends React.Component {
     )
   }
 
+  // <Link to="/game">
+  //   <button onClick={() => this.handleClick(game)}>
+  //     Join Game {game.name}
+  //   </button>
+  // </Link>
+
   // Tabs
   renderPanes = () => {
     return (
-      [
+      {/*[
+
         { menuItem: 'Your Games', render: () => <Tab.Pane attached={false} name="yourGames">{this.renderYourGamesContent()}</Tab.Pane> }, // HERE PUT HISTORY.PUSH to correct route?
-        { menuItem: 'Find Game', render: () => <Tab.Pane attached={false} name="findGames">{this.renderFindGamesContent()}</Tab.Pane> },
+        { menuItem: 'Find Game', render: () =>
+            <Tab.Pane attached={false} name="findGames">
+              <FindGameComponent />
+            </Tab.Pane>},
         { menuItem: 'Create Game', render: () => <Tab.Pane attached={false} name="createGame">{this.renderCreateGameContent()}</Tab.Pane> },
-      ]
+      ]*/}
     )
   }
 
+  handleItemClick = (e, { name }) => this.props.updateActiveItem(name) //this.setState({ activeItem: name })
+
   render() {
+    const { activeItem } = this.props
     return (
-      <Tab menu={{ secondary: true, pointing: true}} panes={this.renderPanes()} />
+      <>
+      {/*<Tab menu={{ secondary: true, pointing: true}} panes={this.renderPanes()} />*/}
+
+      <div>
+        <Menu secondary pointing>
+          <Link to="/game/your">
+            <Menu.Item name="yourGames" active={activeItem === 'yourGames'} onClick={this.handleItemClick}>
+              Your Games
+            </Menu.Item>
+          </Link>
+
+          <Link to="/game/find">
+            <Menu.Item name="findGame" active={activeItem === 'findGame'} onClick={this.handleItemClick}>
+              Find Game
+            </Menu.Item>
+          </Link>
+
+          <Link to="/game/create">
+            <Menu.Item name="createGame" active={activeItem === 'createGame'} onClick={this.handleItemClick}>
+              Create Game
+            </Menu.Item>
+          </Link>
+        </Menu>
+      </div>
+      </>
+
     )
   }
 
@@ -183,7 +230,8 @@ function mapStateToProps(state) {
     currentGame: state.currentGame,
     games: state.games,
     users: state.users,
-    gamePlayers: state.gamePlayers
+    gamePlayers: state.gamePlayers,
+    activeItem: state.activeItem
   }
 }
 
@@ -203,6 +251,15 @@ function mapDispatchToProps(dispatch) {
     },
     setCurrentGamePlayer: (gamePlayer) => {
       dispatch({type: "SET_CURRENT_GAME_PLAYER", payload: gamePlayer})
+    },
+    setCurrentUser: (user) => {
+      dispatch({type: "SET_CURRENT_USER", payload: user})
+    },
+    updateGamePlayers: (gamePlayer) => {
+      dispatch({type: "UPDATE_GAME_PLAYERS", payload: gamePlayer})
+    },
+    updateActiveItem: (activeItem) => {
+      dispatch({type: "UPDATE_ACTIVE_ITEM", payload: activeItem})
     }
 
   }
