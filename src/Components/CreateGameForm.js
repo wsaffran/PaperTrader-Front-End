@@ -20,7 +20,7 @@ class CreateGameForm extends React.Component {
   }
 
   handleSubmit = (event) => {
-    // event.preventDefault()
+    event.preventDefault()
     fetch('http://localhost:3001/new_game', {
       method: "POST",
       headers: {
@@ -31,6 +31,7 @@ class CreateGameForm extends React.Component {
     })
     .then(res => res.json())
     .then(response => {
+      this.props.updateGames(response)
       fetch('http://localhost:3001/join_game', {
         method: "POST",
         headers: {
@@ -42,6 +43,22 @@ class CreateGameForm extends React.Component {
       .then(res => res.json())
       .then(response => {
         this.props.updateGamePlayers(response)
+        const token = localStorage.getItem("token")   // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
+
+        if (token) {                                  // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
+          fetch("http://localhost:3001/auto_login", { // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
+            headers: {
+              "Authorization": token                  // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
+            }                                         // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
+          })
+          .then(res => res.json())                    // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
+          .then((response) => {                       // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
+            this.props.setCurrentUser(response)       // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
+          })                                          // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
+        }
+        this.props.updateActiveItem('yourGames')
+        this.props.history.push('/game/your')
+
       })
     }, () => {
       this.setState({
@@ -88,13 +105,26 @@ function mapDispatchToProps(dispatch) {
   return {
     updateGamePlayers: (gamePlayer) => {
       dispatch({type: "UPDATE_GAME_PLAYERS", payload: gamePlayer})
+    },
+    updateGames: (games) => {
+      dispatch({type: "SET_GAMES", payload: games})
+    },
+    setCurrentUser: (user) => {
+      dispatch({type: "SET_CURRENT_USER", payload: user})
+    },
+    updateActiveItem: (activeItem) => {
+      dispatch({type: "UPDATE_ACTIVE_ITEM", payload: activeItem})
     }
   }
 }
 
 function mapStateToProps(state) {
   return {
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
+    currentGame: state.currentGame,
+    games: state.games,
+    users: state.users,
+    gamePlayers: state.gamePlayers
   }
 }
 

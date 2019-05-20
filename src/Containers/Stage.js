@@ -10,15 +10,41 @@ import YourTransactions from '../Components/YourTransactions'
 
 class Stage extends React.Component {
 
-  render () {
+
+  componentDidMount() {
+    const token = localStorage.getItem("token")
+
+    if (token) {
+      fetch("http://localhost:3001/auto_login", {
+        headers: {
+          "Authorization": token
+        }
+      })
+      .then(res => res.json())
+      .then((response) => {
+        this.props.setCurrentUser(response)
+        console.log(this.props.currentUser.games.find(game => game.id === parseInt(this.props.match.params.currentGameId)));
+        this.props.setCurrentGameId(this.props.match.params.currentGameId)
+        this.props.setCurrentGame(this.props.currentUser.games.find(game => game.id === parseInt(this.props.match.params.currentGameId)))
+        this.props.setCurrentGamePlayer(this.props.currentUser.game_players.find(gameplayer => gameplayer.game.id === parseInt(this.props.match.params.currentGameId)))
+      })
+    }
+
+  }
+
+  render() {
     return (
       <div>
-        <h1>Stage</h1>
-        <Search />
-        <YourProfile />
-        <YourPortfolio />
-        <PortfolioPerformance />
-        <YourTransactions />
+        {this.props.currentUser ?
+          <div>
+            <h1>Stage</h1>
+            <Search />
+            <YourProfile />
+            <YourPortfolio />
+            <PortfolioPerformance />
+            <YourTransactions />
+          </div>
+         : null }
       </div>
     )
   }
@@ -30,12 +56,25 @@ function mapStateToProps(state) {
     currentGame: state.currentGame,
     games: state.games,
     users: state.users,
-    gamePlayers: state.gamePlayers
+    gamePlayers: state.gamePlayers,
+    currentGameId: state.currentGameId
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    setCurrentGameId: (gameId) => {
+      dispatch({type: "SET_CURRENT_GAME_ID", payload: gameId})
+    },
+    setCurrentGame: (game) => {
+      dispatch({type: "SET_CURRENT_GAME", payload: game})
+    },
+    setCurrentGamePlayer: (game_player) => {
+      dispatch({type: "SET_CURRENT_GAME_PLAYER", payload: game_player})
+    },
+    setCurrentUser: (user) => {
+      dispatch({type: "SET_CURRENT_USER", payload: user})
+    }
   }
 }
 
