@@ -6,28 +6,6 @@ import v4 from 'uuid'
 
 class YourGameComponent extends React.Component {
 
-  componentDidMount() {
-    fetch('http://localhost:3001/games')
-    .then(res => res.json())
-    .then(response => {
-      this.props.setGames(response)
-    }, () => {
-      fetch('http://localhost:3001/game_players')
-      .then(res => res.json())
-      .then(response => {
-        this.props.setGamePlayers(response)
-      }, () => {
-
-        fetch('http://localhost:3001/users')
-        .then(res => res.json())
-        .then(response => {
-          this.props.setUsers(response)
-        })
-      })
-    })
-  }
-
-
   getYourGameRows = () => {
     if (this.props.currentUser.games) {
       return this.props.currentUser.games.map(game => {
@@ -91,44 +69,44 @@ class YourGameComponent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    currentUser: state.currentUser,
-    currentGame: state.currentGame,
-    games: state.games,
-    users: state.users,
-    gamePlayers: state.gamePlayers,
-    currentGameId: state.currentGameId
+    currentUser: state.currentUser
+    // currentGame: state.currentGame,
+    // games: state.games,
+    // users: state.users,
+    // gamePlayers: state.gamePlayers,
+    // currentGameId: state.currentGameId
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    setGames: (games) => {
-      dispatch({type: "SET_GAMES", payload: games})
-    },
-    setGamePlayers: (gamePlayers) => {
-      dispatch({type: "SET_GAME_PLAYERS", payload: gamePlayers})
-    },
-    setUsers: (users) => {
-      dispatch({type: "SET_USERS", payload: users})
-    },
     setCurrentGame: (game) => {
       dispatch({type: "SET_CURRENT_GAME", payload: game})
     },
     setCurrentGamePlayer: (gamePlayer) => {
       dispatch({type: "SET_CURRENT_GAME_PLAYER", payload: gamePlayer})
     },
-    setCurrentUser: (user) => {
-      dispatch({type: "SET_CURRENT_USER", payload: user})
-    },
-    updateGamePlayers: (gamePlayer) => {
-      dispatch({type: "UPDATE_GAME_PLAYERS", payload: gamePlayer})
-    },
-    updateActiveItem: (activeItem) => {
-      dispatch({type: "UPDATE_ACTIVE_ITEM", payload: activeItem})
-    },
     setCurrentGameId: (gameId) => {
       dispatch({type: "SET_CURRENT_GAME_ID", payload: gameId})
     }
+    // setGames: (games) => {
+    //   dispatch({type: "SET_GAMES", payload: games})
+    // },
+    // setGamePlayers: (gamePlayers) => {
+    //   dispatch({type: "SET_GAME_PLAYERS", payload: gamePlayers})
+    // },
+    // setUsers: (users) => {
+    //   dispatch({type: "SET_USERS", payload: users})
+    // },
+    // setCurrentUser: (user) => {
+    //   dispatch({type: "SET_CURRENT_USER", payload: user})
+    // },
+    // updateGamePlayers: (gamePlayer) => {
+    //   dispatch({type: "UPDATE_GAME_PLAYERS", payload: gamePlayer})
+    // },
+    // updateActiveItem: (activeItem) => {
+    //   dispatch({type: "UPDATE_ACTIVE_ITEM", payload: activeItem})
+    // },
 
   }
 }

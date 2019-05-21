@@ -1,13 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import symbols from './symbols'
-// import './Modal.css';
 import Autocomplete from "./Autocomplete.jsx";
 import Graph from './Graph'
-// import ModalDisplay from './ModalDisplay'
 import { Header, Modal, Button, Icon } from 'semantic-ui-react'
+// import './Modal.css';
+// import ModalDisplay from './ModalDisplay'
 
 class Research extends React.Component {
+
+  handleClick = () => {
+    this.props.closeModal()
+  }
 
   render() {
     return (
@@ -30,9 +34,14 @@ class Research extends React.Component {
           </Modal.Description>
         </Modal.Content>
         <Modal.Actions>
-          <Button primary onClick={() => this.props.handleClick('transact')}>
-          Transact <Icon name='chevron right' />
+          <div>
+            <Button primary onClick={() => this.handleClick()}>
+              Back <Icon name='chevron right' />
+            </Button>
+            <Button primary onClick={() => this.props.handleClick('transact')}>
+              Transact <Icon name='chevron right' />
           </Button>
+          </div>
         </Modal.Actions>
       </div>
     )
@@ -42,8 +51,8 @@ class Research extends React.Component {
 
 function mapStateToProps(state) {
     return {
-      currentUser: state.currentUser,
-      currentGame: state.currentGame,
+      // currentUser: state.currentUser,
+      // currentGame: state.currentGame,
       selectedStockTicker: state.selectedStockTicker
     }
   }

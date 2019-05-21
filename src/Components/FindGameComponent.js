@@ -6,28 +6,6 @@ import { connect } from 'react-redux'
 
 class FindGameComponent extends React.Component {
 
-  componentDidMount() {
-    fetch('http://localhost:3001/games')
-    .then(res => res.json())
-    .then(response => {
-      this.props.setGames(response)
-    }, () => {
-      fetch('http://localhost:3001/game_players')
-      .then(res => res.json())
-      .then(response => {
-        this.props.setGamePlayers(response)
-      }, () => {
-
-        fetch('http://localhost:3001/users')
-        .then(res => res.json())
-        .then(response => {
-          this.props.setUsers(response)
-        })
-      })
-    })
-  }
-
-
   getRows = () => {
     return this.props.games.map(game => {
       return (
@@ -115,30 +93,30 @@ class FindGameComponent extends React.Component {
 function mapStateToProps(state) {
   return {
     currentUser: state.currentUser,
-    currentGame: state.currentGame,
-    games: state.games,
-    users: state.users,
-    gamePlayers: state.gamePlayers
+    games: state.games
+    // currentGame: state.currentGame,
+    // users: state.users,
+    // gamePlayers: state.gamePlayers
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    setGames: (games) => {
-      dispatch({type: "SET_GAMES", payload: games})
-    },
-    setGamePlayers: (gamePlayers) => {
-      dispatch({type: "SET_GAME_PLAYERS", payload: gamePlayers})
-    },
-    setUsers: (users) => {
-      dispatch({type: "SET_USERS", payload: users})
-    },
-    setCurrentGame: (game) => {
-      dispatch({type: "SET_CURRENT_GAME", payload: game})
-    },
-    setCurrentGamePlayer: (gamePlayer) => {
-      dispatch({type: "SET_CURRENT_GAME_PLAYER", payload: gamePlayer})
-    },
+    // setGames: (games) => {
+    //   dispatch({type: "SET_GAMES", payload: games})
+    // },
+    // setGamePlayers: (gamePlayers) => {
+    //   dispatch({type: "SET_GAME_PLAYERS", payload: gamePlayers})
+    // },
+    // setUsers: (users) => {
+    //   dispatch({type: "SET_USERS", payload: users})
+    // },
+    // setCurrentGame: (game) => {
+    //   dispatch({type: "SET_CURRENT_GAME", payload: game})
+    // },
+    // setCurrentGamePlayer: (gamePlayer) => {
+    //   dispatch({type: "SET_CURRENT_GAME_PLAYER", payload: gamePlayer})
+    // },
     setCurrentUser: (user) => {
       dispatch({type: "SET_CURRENT_USER", payload: user})
     },

@@ -1,10 +1,10 @@
 import React from 'react';
 import { connect } from 'react-redux'
+import history from '../../history';
 // import './Modal.css';
 // import Autocomplete from "./Autocomplete.jsx";
 // import Research from './Research'
 // import Graph from './Graph'
-import history from '../../history';
 
 import { Button, Icon, Modal } from 'semantic-ui-react'
 
@@ -37,7 +37,6 @@ class Transact extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault()
-
   }
 
   handleClick = (event) => {
@@ -51,8 +50,9 @@ class Transact extends React.Component {
     })
     .then(res => res.json())
     .then(response => {
-      // CLOSE MODAL HERE
-      history.push('/stage')
+      this.props.closeModal()
+      this.props.handleClick('research')
+      history.push(`/stage/${this.props.currentGameId}`)
     })
   }
 
@@ -94,10 +94,11 @@ class Transact extends React.Component {
 
 function mapStateToProps(state) {
     return {
-      currentUser: state.currentUser,
-      currentGame: state.currentGame,
+      // currentUser: state.currentUser,
+      // currentGame: state.currentGame,
       currentGamePlayer: state.currentGamePlayer,
-      selectedStockTicker: state.selectedStockTicker
+      selectedStockTicker: state.selectedStockTicker,
+      currentGameId: state.currentGameId
     }
   }
 
