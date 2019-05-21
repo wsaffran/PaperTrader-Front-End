@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import Search from '../Components/Search'
 import YourProfile from '../Components/YourProfile'
 import YourPortfolio from '../Components/YourPortfolio'
-import PortfolioPerformance from '../Components/PortfolioPerformance'
+import Rankings from '../Components/Rankings'
 import YourTransactions from '../Components/YourTransactions'
 
 class Stage extends React.Component {
@@ -38,7 +38,7 @@ class Stage extends React.Component {
             <Search />
             <YourProfile />
             <YourPortfolio />
-            <PortfolioPerformance />
+            <Rankings />
             <YourTransactions />
           </div>
          : null }
