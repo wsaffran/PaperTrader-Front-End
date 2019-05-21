@@ -7,7 +7,10 @@ class YourProfile extends React.Component {
     return (
       <div>
         <h3>YourProfile</h3>
-        <p>{this.props.currentUser.first_name}</p>
+        <p>{this.props.currentUser.first_name} {this.props.currentUser.last_name}</p>
+        <p>Ranking: </p>
+        <p>% Gain: </p>
+        <p>$ Gain: </p>
       </div>
     )
   }

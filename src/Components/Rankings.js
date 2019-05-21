@@ -1,11 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-class PortfolioPerformance extends React.Component {
+class Rankings extends React.Component {
 
   render () {
     return (
-      <h3>PortfolioPerformance</h3>
+      <h3>Rankings</h3>
     )
   }
 }
@@ -16,4 +16,4 @@ function mapStateToProps(state) {
   }
 }
 
-export default connect(mapStateToProps)(PortfolioPerformance)
+export default connect(mapStateToProps)(Rankings)
