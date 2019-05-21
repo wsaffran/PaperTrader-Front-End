@@ -121,10 +121,10 @@ function mapDispatchToProps(dispatch) {
 function mapStateToProps(state) {
   return {
     currentUser: state.currentUser,
-    currentGame: state.currentGame,
-    games: state.games,
-    users: state.users,
-    gamePlayers: state.gamePlayers
+    // currentGame: state.currentGame,
+    // games: state.games,
+    // users: state.users,
+    // gamePlayers: state.gamePlayers
   }
 }
 

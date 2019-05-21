@@ -1,105 +1,58 @@
-import React from 'react'
+import React from 'react';
 import { connect } from 'react-redux'
-// import symbols from './symbols.js'
-import SearchModal from '../Components/Modal/SearchModal';
-
+// import './Modal.css';
+// import Autocomplete from "./Autocomplete.jsx";
+import Research from './Modal/Research'
+import Transact from './Modal/Transact'
+// import Graph from './Graph'
+import { Button, Modal } from 'semantic-ui-react'
 
 class Search extends React.Component {
 
   state = {
-    isShowing: false
+    status: 'research',
+    showModal: false
   }
 
-  openModalHandler = () => {
+  handleClick = (action) => {
     this.setState({
-      isShowing: true
-    });
+      status: action
+    })
   }
 
-  closeModalHandler = () => {
-
-    this.setState({
-      isShowing: false
-    });
+  closeModal = () => {
+    this.setState({showModal: false})
   }
 
-  render () {
+
+  render() {
     return (
-      <div>
-        <SearchModal
-          className="modal"
-          show={this.state.isShowing}
-          close={this.closeModalHandler}>
-        </SearchModal>
-
-      </div>
-    );
+      <>
+      <h3>Search</h3>
+      <Modal className='modal' onClose={this.closeModal} open={this.state.showModal} trigger={<Button onClick={() => this.setState({showModal: true})}>Search</Button>}>
+        <Modal.Header>Search</Modal.Header>
+        <Modal.Content>
+          {
+            this.state.status === 'research' ?
+            <Research closeModal={this.closeModal} handleClick={this.handleClick}/>
+            :
+            <Transact closeModal={this.closeModal} handleClick={this.handleClick}/>
+          }
+        </Modal.Content>
+      </Modal>
+      </>
+    )
   }
 
 }
 
-function mapStateToProps(state) {
-    return {
-      currentUser: state.currentUser
-    }
-  }
+// function mapStateToProps(state) {
+//     return {
+//       currentUser: state.currentUser,
+//       currentGame: state.currentGame,
+//       currentGamePlayer: state.currentGamePlayer,
+//       selectedStockTicker: state.selectedStockTicker
+//     }
+//   }
 
-  function mapDispatchToProps(dispatch) {
-    return {
-      setSelectedStock: (stockTicker) => {
-        // dispatch is our new setState and it takes an object with a type and a payload
-        dispatch({type: "SELECTED_STOCK_TICKER", payload: stockTicker})
-      }
-    }
-  }
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(Search)
-
-// OLD SEARCH MODAL
-
-
-
-
-// state = {
-//   query: ''
-// }
-//
-// openModalHandler = () => {
-//     this.setState({
-//         isShowing: true
-//     });
-// }
-//
-// closeModalHandler = () => {
-//     this.setState({
-//         isShowing: false
-//     });
-// }
-//
-//
-// // createDataList = () => {
-// //   return symbols.map(symbol => {
-// //     return <option value={symbol.symbol}>
-// //   })
-// // }
-//
-// handleChange = (event) => {
-//   this.setState({
-//     query: event.target.value
-//   })
-// }
-//
-// handleSubmit = (event) => {
-//   event.preventDefault()
-// }
-//
-// render () {
-//   return (
-//     <form>
-//       <input onChange={this.handleChange} type="text" name="query" value={this.state.query}/>
-//     </form>
-//   )
-// }
-// }
-//
+export default connect()(Search);

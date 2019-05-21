@@ -1,7 +1,6 @@
 import React from 'react'
-// import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'
-// import v4 from 'uuid'
+// import Search from '../Components/Search'
 import Search from '../Components/Search'
 import YourProfile from '../Components/YourProfile'
 import YourPortfolio from '../Components/YourPortfolio'
@@ -9,7 +8,6 @@ import PortfolioPerformance from '../Components/PortfolioPerformance'
 import YourTransactions from '../Components/YourTransactions'
 
 class Stage extends React.Component {
-
 
   componentDidMount() {
     const token = localStorage.getItem("token")
@@ -23,7 +21,6 @@ class Stage extends React.Component {
       .then(res => res.json())
       .then((response) => {
         this.props.setCurrentUser(response)
-        console.log(this.props.currentUser.games.find(game => game.id === parseInt(this.props.match.params.currentGameId)));
         this.props.setCurrentGameId(this.props.match.params.currentGameId)
         this.props.setCurrentGame(this.props.currentUser.games.find(game => game.id === parseInt(this.props.match.params.currentGameId)))
         this.props.setCurrentGamePlayer(this.props.currentUser.game_players.find(gameplayer => gameplayer.game.id === parseInt(this.props.match.params.currentGameId)))
@@ -35,7 +32,7 @@ class Stage extends React.Component {
   render() {
     return (
       <div>
-        {this.props.currentUser ?
+        {(this.props.currentUser && this.props.currentGamePlayer) ?
           <div>
             <h1>Stage</h1>
             <Search />
@@ -53,11 +50,12 @@ class Stage extends React.Component {
 function mapStateToProps(state) {
   return {
     currentUser: state.currentUser,
-    currentGame: state.currentGame,
-    games: state.games,
-    users: state.users,
-    gamePlayers: state.gamePlayers,
-    currentGameId: state.currentGameId
+    currentGameId: state.currentGameId,
+    currentGamePlayer: state.currentGamePlayer
+    // currentGame: state.currentGame,
+    // games: state.games,
+    // users: state.users,
+    // gamePlayers: state.gamePlayers,
   }
 }
 

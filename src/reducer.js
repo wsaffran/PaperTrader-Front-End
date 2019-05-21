@@ -7,7 +7,9 @@ const defaultState = {
   users: [],
   selectedStockTicker: '',
   activeItem: 'yourGames',
-  currentGameId: null
+  currentGameId: null,
+  isModalShowing: false,
+  portfolio: null
 }
 
 function reducer(state = defaultState, action){
@@ -34,7 +36,12 @@ function reducer(state = defaultState, action){
       return {...state, activeItem: action.payload}
     case "SET_CURRENT_GAME_ID":
       return {...state, currentGameId: action.payload}
-
+    case "SET_MODAL_DISPLAY":
+      return {...state, isModalShowing: action.payload}
+    case "SET_PORTFOLIO":
+      return {...state, portfolio: action.payload}
+    case "UPDATE_PORTFOLIO":
+      return {...state, portfolio: [...state.portfolio, action.payload]}
 
     default:
       return state
