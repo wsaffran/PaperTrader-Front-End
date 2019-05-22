@@ -9,7 +9,8 @@ const defaultState = {
   activeItem: 'yourGames',
   currentGameId: null,
   isModalShowing: false,
-  portfolio: null
+  portfolio: null,
+  rankings: []
 }
 
 function reducer(state = defaultState, action){
@@ -42,6 +43,8 @@ function reducer(state = defaultState, action){
       return {...state, portfolio: action.payload}
     case "UPDATE_PORTFOLIO":
       return {...state, portfolio: [...state.portfolio, action.payload]}
+    case "UPDATE_RANKINGS":
+      return {...state, rankings: [...state.rankings, action.payload]}
 
     default:
       return state

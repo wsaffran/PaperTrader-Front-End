@@ -69,7 +69,6 @@ class Transact extends React.Component {
         let sold_stock_symbol = response.symbol
         let sold_stock_price = response.price
         let sold_stock_shares = -(response.original_shares)
-        console.log(sold_stock_shares);
 
         const transactions = this.props.currentGamePlayer.transactions
         let relevant_transactions = []
