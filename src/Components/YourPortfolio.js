@@ -38,23 +38,29 @@ class YourPortfolio extends React.Component {
         let total_shares = 0
         orderedTransactions.map(transaction => {
           if (transaction.symbol === distinctTickers[i]) {
-            total_shares += Number.parseFloat(transaction.shares)
-            total_cost += Number.parseFloat(transaction.price * transaction.shares)
+            total_shares += Number.parseFloat(transaction.current_shares)
+            total_cost += Number.parseFloat(transaction.price * transaction.current_shares)
             return null
           } else {
             return null
           }
         })
 
-        new_array.push({
-          ticker: distinctTickers[i],
-          total_cost: total_cost,
-          total_shares: total_shares,
-          cost_basis: total_cost / total_shares,
-          current_stock_price: res[distinctTickers[i]].quote.latestPrice,
-          value_gain: Number.parseFloat(res[distinctTickers[i]].quote.latestPrice * total_shares - total_cost),
-          current_value: total_shares * res[distinctTickers[i]].quote.latestPrice
-        })
+        if(total_shares === 0) {
+          // Removes Items That Dont Exist
+        } else {
+
+          new_array.push({
+            ticker: distinctTickers[i],
+            total_cost: total_cost,
+            total_shares: total_shares,
+            cost_basis: total_cost / total_shares,
+            current_stock_price: res[distinctTickers[i]].quote.latestPrice,
+            value_gain: Number.parseFloat(res[distinctTickers[i]].quote.latestPrice * total_shares - total_cost),
+            current_value: total_shares * res[distinctTickers[i]].quote.latestPrice
+          })
+        }
+
       }
 
       this.props.setPortfolio(new_array)
@@ -68,7 +74,7 @@ class YourPortfolio extends React.Component {
 
     let total_cost = 0
     transactions.map(transaction => {
-      return total_cost += transaction.price * transaction.shares
+      return total_cost += transaction.price * transaction.current_shares
     })
 
     let total_value = 0.00
@@ -77,19 +83,20 @@ class YourPortfolio extends React.Component {
       total_value += holding.current_value
       return null
     })
-
+    // Issue here with calculating cash_balance... should I update cash balance every transaction instead???
+    // Wait! is this actually and issue???
     const current_cash_value = starting_cash - total_cost
     return (
       <Table.Row key={v4()}>
         <Table.Cell>CASH</Table.Cell>
         <Table.Cell>{this.numberWithCommas(current_cash_value)}</Table.Cell>
         <Table.Cell>$1.00</Table.Cell>
-        <Table.Cell>-</Table.Cell>
-        <Table.Cell>-</Table.Cell>
+        <Table.Cell></Table.Cell>
+        <Table.Cell></Table.Cell>
         <Table.Cell></Table.Cell>
         <Table.Cell>$1.00</Table.Cell>
         <Table.Cell>${this.numberWithCommas(current_cash_value)}</Table.Cell>
-        <Table.Cell>${this.numberWithCommas(current_cash_value)}</Table.Cell>
+        <Table.Cell>{/*${this.numberWithCommas(current_cash_value)}*/}</Table.Cell>
         <Table.Cell>{this.numberWithCommas(current_cash_value / (total_value + current_cash_value) * 100)}%</Table.Cell>
       </Table.Row>
     )
@@ -101,7 +108,7 @@ class YourPortfolio extends React.Component {
 
     let total_cost = 0
     transactions.map(transaction => {
-      return total_cost += transaction.price * transaction.shares
+      return total_cost += transaction.price * transaction.current_shares
     })
 
     const current_cash_value = starting_cash - total_cost
@@ -158,7 +165,7 @@ class YourPortfolio extends React.Component {
         <Table.Cell>{ this.numberWithCommas(( (total_value + this.printCurrentCashValue()) - (total_cost + this.printCurrentCashValue()) ) / (total_cost + this.printCurrentCashValue()) * 100) }%</Table.Cell>
         <Table.Cell></Table.Cell>
         <Table.Cell>${this.numberWithCommas(total_value + this.printCurrentCashValue())}</Table.Cell>
-        <Table.Cell>${this.numberWithCommas(total_cost + this.printCurrentCashValue())}</Table.Cell>
+        <Table.Cell>{/*${this.numberWithCommas(total_cost + this.printCurrentCashValue())}*/}</Table.Cell>
         <Table.Cell>100%</Table.Cell>
       </Table.Row>
     )

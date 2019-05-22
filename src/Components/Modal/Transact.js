@@ -11,7 +11,7 @@ import { Button, Icon, Modal } from 'semantic-ui-react'
 class Transact extends React.Component {
 
   state = {
-    buy: true,
+    action: 'buy',
     shares: 1,
     price: null,
     latestTime: ''
@@ -37,19 +37,136 @@ class Transact extends React.Component {
 
   handleSubmit = (event) => {
     event.preventDefault()
+
   }
 
   handleClick = (event) => {
+    let shares = 0
+    let current_shares = 0
+
+    if (this.state.action === "sell") {
+      shares = -(this.state.shares)
+      current_shares = 0
+    }
+    if (this.state.action === 'buy') {
+      shares = this.state.shares
+      current_shares = this.state.shares
+    }
+
     fetch('http://localhost:3001/transactions', {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         "Accepts": "application/json",
       },
-      body: JSON.stringify({game_player_id: this.props.currentGamePlayer.id, symbol: this.props.selectedStockTicker.symbol, price: this.state.price, shares: this.state.shares, transaction_date: this.state.latestTime})
+      body: JSON.stringify({game_player_id: this.props.currentGamePlayer.id, symbol: this.props.selectedStockTicker.symbol, price: this.state.price, original_shares: shares, current_shares: current_shares, transaction_date: this.state.latestTime})
     })
     .then(res => res.json())
     .then(response => {
+
+      if (this.state.action === 'sell') {
+
+        let sold_stock_symbol = response.symbol
+        let sold_stock_price = response.price
+        let sold_stock_shares = -(response.original_shares)
+        console.log(sold_stock_shares);
+
+        const transactions = this.props.currentGamePlayer.transactions
+        let relevant_transactions = []
+        transactions.forEach(item => {
+          if (item.symbol === sold_stock_symbol && item.original_shares > 0) {
+            relevant_transactions.push(item)
+          }
+        })
+
+        // Order relevant_transaction by transaction_date or id!
+        relevant_transactions.sort((a, b) => a.id - b.id)
+        console.log(relevant_transactions);
+
+        let shares_to_be_sold = sold_stock_shares
+        let cash_to_add = 0
+
+        for (let i = 0; i < relevant_transactions.length; i++) {
+          if (shares_to_be_sold >= 1) {
+            if (relevant_transactions[i].current_shares >= shares_to_be_sold) {
+              let shares = relevant_transactions[i].current_shares - shares_to_be_sold
+
+              cash_to_add += (shares_to_be_sold * sold_stock_price) - (shares_to_be_sold * relevant_transactions[i].price)
+
+              shares_to_be_sold = 0
+
+              fetch(`http://localhost:3001/transactions/${relevant_transactions[i].id}`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Accepts": "application/json",
+                },
+                body: JSON.stringify({
+                  current_shares: shares
+                })
+              })
+
+              // fetch to relevant_transactions[i].id
+              // fetch to game_player to update cash_balance ***********************************
+
+            } else if (relevant_transactions[i].current_shares < shares_to_be_sold) {
+              shares_to_be_sold -= relevant_transactions[i].current_shares
+              let shares = 0 // relevant_transactions[i].current_shares =
+
+              cash_to_add += (relevant_transactions[i].current_shares * sold_stock_price) - (relevant_transactions[i].current_shares * relevant_transactions[i].price)
+
+              fetch(`http://localhost:3001/transactions/${relevant_transactions[i].id}`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Accepts": "application/json",
+                },
+                body: JSON.stringify({
+                  current_shares: shares
+                })
+              })
+              // fetch to relevant_transactions[i].id
+              // fetch to game_player to update cash_balance ***********************************
+            }
+          }
+          fetch(`http://localhost:3001/game_players/${this.props.currentGamePlayer.id}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "Accepts": "application/json",
+            },
+            body: JSON.stringify({
+              cash_to_add: cash_to_add
+            })
+          })
+        }
+
+
+        //
+        // for (let i = 0; i < relavent_transactions.length; i++) {
+        //   if (relavant_transactions[i].current_shares >= sold_stock_shares) {
+        //     relavant_transactions[i].shares -= sold_stock_shares // Make this patch request here
+        //     shares_to_be_sold -= sold_stock_shares
+        //   } else if (relavant_transactions[i] < sold_stock_shares) {
+        //     relavant_transactions[i] = 0 // Make patch request
+        //     if (relavant_transactions[i+1] < sold_stock_shares - relavant_transactions[i].current_shares)
+        //   }
+        // }
+
+
+      }
+
+      // if (this.state.action === "sell") {
+      //   fetch(`http://localhost:3001/transactions/${response.id}`, {
+      //     method: "PATCH",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //       "Accepts": "application/json",
+      //     },
+      //     body: JSON.stringify({game_player_id: this.props.currentGamePlayer.id, symbol: this.props.selectedStockTicker.symbol, price: this.state.price, original_shares: shares, current_shares: current_shares, transaction_date: this.state.latestTime})
+      //   })
+      // }
+
       this.props.closeModal()
       this.props.handleClick('research')
       history.push(`/stage/${this.props.currentGameId}`)
@@ -57,6 +174,7 @@ class Transact extends React.Component {
   }
 
   render() {
+    console.log(this.props.currentGamePlayer.transactions);
     return (
       <div id="InTransact">
       <Modal.Content image scrolling>
@@ -67,6 +185,11 @@ class Transact extends React.Component {
               How many shares?
               <input onChange={this.handleChange} type="number" name="shares" placeholder="shares" value={this.state.shares} />
             </label>
+            <select name="action" value={this.state.action} onChange={this.handleChange}>
+              <option value="buy">buy</option>
+              <option value="sell">sell</option>
+            </select>
+
             <button type="submit">Submit</button>
           </form>
           <p>Price per share: ${this.state.price}</p>
