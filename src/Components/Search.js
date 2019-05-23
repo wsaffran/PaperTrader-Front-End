@@ -11,7 +11,10 @@ class Search extends React.Component {
 
   state = {
     status: 'research',
-    showModal: false
+    showModal: false,
+    labels: [],
+    data: [],
+    label: ''
   }
 
   handleClick = (action) => {
@@ -21,7 +24,14 @@ class Search extends React.Component {
   }
 
   closeModal = () => {
-    this.setState({showModal: false})
+    this.props.setSelectedStock('')
+    this.setState({
+      showModal: false,
+      status: 'research',
+      labels: [],
+      data: [],
+      label: ''
+    })
   }
 
 
@@ -34,7 +44,7 @@ class Search extends React.Component {
         <Modal.Content>
           {
             this.state.status === 'research' ?
-            <Research closeModal={this.closeModal} handleClick={this.handleClick}/>
+            <Research closeModal={this.closeModal} handleClick={this.handleClick} labels={this.state.labels} data={this.state.data} label={this.state.label}/>
             :
             <Transact closeModal={this.closeModal} handleClick={this.handleClick}/>
           }
@@ -46,6 +56,15 @@ class Search extends React.Component {
 
 }
 
+function mapDispatchToProps(dispatch) {
+  return {
+    setSelectedStock: (stockTicker) => {
+      // dispatch is our new setState and it takes an object with a type and a payload
+      dispatch({type: "SELECTED_STOCK_TICKER", payload: stockTicker})
+    }
+  }
+}
+
 // function mapStateToProps(state) {
 //     return {
 //       currentUser: state.currentUser,
@@ -55,4 +74,4 @@ class Search extends React.Component {
 //     }
 //   }
 
-export default connect()(Search);
+export default connect(null, mapDispatchToProps)(Search);

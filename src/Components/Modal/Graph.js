@@ -11,7 +11,7 @@ class Graph extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/chart/1y`)
+    fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/chart/1d`)
     .then(res => res.json())
     .then(res => {
       this.setState({
@@ -37,6 +37,20 @@ class Graph extends React.Component {
   handleClick = (event) => {
     if (event.target.id === "1d") {
       this.fetchNewGraph("1d")
+    } else if (event.target.id === "1m") {
+      this.fetchNewGraph("1m")
+    } else if (event.target.id === "3m") {
+      this.fetchNewGraph("3m")
+    } else if (event.target.id === "6m") {
+      this.fetchNewGraph("6m")
+    } else if (event.target.id === "ytd") {
+      this.fetchNewGraph("ytd")
+    } else if (event.target.id === "1y") {
+      this.fetchNewGraph("1y")
+    } else if (event.target.id === "2y") {
+      this.fetchNewGraph("2y")
+    } else if (event.target.id === "5y") {
+      this.fetchNewGraph("5y")
     }
   }
 
@@ -44,6 +58,13 @@ class Graph extends React.Component {
     return (
       <div style={{position: "relative"}}>
         <button id="1d" onClick={this.handleClick}>1d</button>
+        <button id="1m" onClick={this.handleClick}>1m</button>
+        <button id="3m" onClick={this.handleClick}>3m</button>
+        <button id="6m" onClick={this.handleClick}>6m</button>
+        <button id="ytd" onClick={this.handleClick}>ytd</button>
+        <button id="1y" onClick={this.handleClick}>1y</button>
+        <button id="2y" onClick={this.handleClick}>2y</button>
+        <button id="5y" onClick={this.handleClick}>5y</button>
         <Line data={
             {labels: this.state.labels,
             datasets: [{
