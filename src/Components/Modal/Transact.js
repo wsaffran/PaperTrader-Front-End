@@ -78,7 +78,7 @@ class Transact extends React.Component {
           }
         })
 
-        // Order relevant_transaction by transaction_date or id!
+        // Order relevant_transaction by transaction_date!
         relevant_transactions.sort((a, b) => a.id - b.id)
         console.log(relevant_transactions);
 
