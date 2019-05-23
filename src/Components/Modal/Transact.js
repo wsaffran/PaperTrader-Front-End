@@ -80,7 +80,6 @@ class Transact extends React.Component {
 
         // Order relevant_transaction by transaction_date!
         relevant_transactions.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date))
-        console.log(relevant_transactions);
 
         let shares_to_be_sold = sold_stock_shares
         let cash_to_add = 0
@@ -105,9 +104,6 @@ class Transact extends React.Component {
                 })
               })
 
-              // fetch to relevant_transactions[i].id
-              // fetch to game_player to update cash_balance ***********************************
-
             } else if (relevant_transactions[i].current_shares < shares_to_be_sold) {
               shares_to_be_sold -= relevant_transactions[i].current_shares
               let shares = 0 // relevant_transactions[i].current_shares =
@@ -124,8 +120,6 @@ class Transact extends React.Component {
                   current_shares: shares
                 })
               })
-              // fetch to relevant_transactions[i].id
-              // fetch to game_player to update cash_balance ***********************************
             }
           }
           fetch(`http://localhost:3001/game_players/${this.props.currentGamePlayer.id}`, {
