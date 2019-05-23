@@ -79,7 +79,7 @@ class Transact extends React.Component {
         })
 
         // Order relevant_transaction by transaction_date!
-        relevant_transactions.sort((a, b) => a.id - b.id)
+        relevant_transactions.sort((a, b) => new Date(a.transaction_date) - new Date(b.transaction_date))
         console.log(relevant_transactions);
 
         let shares_to_be_sold = sold_stock_shares
