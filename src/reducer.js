@@ -45,6 +45,9 @@ function reducer(state = defaultState, action){
       return {...state, portfolio: [...state.portfolio, action.payload]}
     case "UPDATE_RANKINGS":
       return {...state, rankings: [...state.rankings, action.payload]}
+    case "SET_RANKINGS":
+      return {...state, rankings: action.payload}
+
 
     default:
       return state
