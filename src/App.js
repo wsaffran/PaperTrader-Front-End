@@ -12,6 +12,8 @@ import Stage from './Containers/Stage';
 import FindGameComponent from './Components/FindGameComponent'
 import CreateGameForm from './Components/CreateGameForm'
 import YourGameComponent from './Components/YourGameComponent'
+import OtherGamePlayerStage from './Containers/OtherGamePlayerStage'
+import Loading from './Components/Loading'
 
 
 
@@ -56,7 +58,11 @@ class App extends React.Component {
               return <Stage {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
             }
           }/>
-
+          <Route path='/game_player/:game_player_id' render={ (routeProps) => {
+              return <OtherGamePlayerStage {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
+            }
+          } />
+        <Route path ='/loading' component={ Loading } />
 
 
           <Route exact path="/" component={ LandingPage } />

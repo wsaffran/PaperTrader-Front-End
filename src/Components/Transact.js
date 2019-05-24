@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
-import history from '../../history';
+// import history from '../history';
 // import './Modal.css';
 // import Autocomplete from "./Autocomplete.jsx";
 // import Research from './Research'
@@ -133,41 +133,37 @@ class Transact extends React.Component {
             })
           })
         }
-
-
-        //
-        // for (let i = 0; i < relavent_transactions.length; i++) {
-        //   if (relavant_transactions[i].current_shares >= sold_stock_shares) {
-        //     relavant_transactions[i].shares -= sold_stock_shares // Make this patch request here
-        //     shares_to_be_sold -= sold_stock_shares
-        //   } else if (relavant_transactions[i] < sold_stock_shares) {
-        //     relavant_transactions[i] = 0 // Make patch request
-        //     if (relavant_transactions[i+1] < sold_stock_shares - relavant_transactions[i].current_shares)
-        //   }
-        // }
-
-
       }
-
-      // if (this.state.action === "sell") {
-      //   fetch(`http://localhost:3001/transactions/${response.id}`, {
-      //     method: "PATCH",
-      //     headers: {
-      //       "Content-Type": "application/json",
-      //       "Accepts": "application/json",
-      //     },
-      //     body: JSON.stringify({game_player_id: this.props.currentGamePlayer.id, symbol: this.props.selectedStockTicker.symbol, price: this.state.price, original_shares: shares, current_shares: current_shares, transaction_date: this.state.latestTime})
-      //   })
-      // }
 
       this.props.closeModal()
       this.props.handleClick('research')
-      history.push(`/stage/${this.props.currentGameId}`)
+      this.props.history.push('/loading') // This does not work...
     })
   }
 
+  // handleClick = (event) => {
+  //   console.log(this.state.action);
+  //   fetch(`http://localhost:3001/transactions`, {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //       "Accepts": "application/json",
+  //     },
+  //     body: JSON.stringify({game_player_id: this.props.currentGamePlayer.id, symbol: this.props.selectedStockTicker.symbol, price: this.state.price, shares: this.state.shares, transaction_date: this.state.latestTime, type_of_transaction: this.state.action})
+  //   })
+  //   .then(res => res.json())
+  //   .then(res => {
+  //     fetch(`http://localhost:3001/portfolio/${this.props.currentGamePlayer.id}`)
+  //     .then(res => res.json())
+  //     .then(res => {
+  //       // this.props.setPortfolio(res)
+  //       this.props.closeModal()
+  //       this.props.handleClick('research')
+  //     })
+  //   })
+  // }
+
   render() {
-    console.log(this.props.currentGamePlayer.transactions);
     return (
       <div id="InTransact">
       <Modal.Content image scrolling>
@@ -209,13 +205,22 @@ class Transact extends React.Component {
 }
 
 function mapStateToProps(state) {
-    return {
-      // currentUser: state.currentUser,
-      // currentGame: state.currentGame,
-      currentGamePlayer: state.currentGamePlayer,
-      selectedStockTicker: state.selectedStockTicker,
-      currentGameId: state.currentGameId
+  return {
+    // currentUser: state.currentUser,
+    // currentGame: state.currentGame,
+    currentGamePlayer: state.currentGamePlayer,
+    selectedStockTicker: state.selectedStockTicker,
+    currentGameId: state.currentGameId
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setPortfolio: (portfolio) => {
+      dispatch({type: "SET_PORTFOLIO", payload: portfolio})
     }
   }
+}
 
-export default connect(mapStateToProps)(Transact);
+
+export default connect(mapStateToProps, mapDispatchToProps)(Transact);
