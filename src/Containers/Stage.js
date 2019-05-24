@@ -35,10 +35,10 @@ class Stage extends React.Component {
         {(this.props.currentUser && this.props.currentGamePlayer) ?
           <div>
             <h1>Stage</h1>
-            <Search />
+            <Search history={this.props.history} />
             <YourProfile />
             <YourPortfolio />
-            <Rankings />
+            <Rankings history={this.props.history}/>
             <YourTransactions />
           </div>
          : null }

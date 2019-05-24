@@ -20,15 +20,18 @@ class Rankings extends React.Component {
     fetch(`http://localhost:3001/games/${this.props.game.id}/rankings`)
     .then(res => res.json())
     .then(res => {
-      console.log(res);
       this.setState({rankings: res})
     })
+  }
+
+  handleClick = (id) => {
+    this.props.history.push(`/game_player/${id}`)
   }
 
   renderRankings = () => {
     return this.state.rankings.map(ranking => {
       return (
-        <Table.Row key={v4()}>
+        <Table.Row key={v4()} value={ranking.game_player_id} onClick={() => this.handleClick(ranking.game_player_id)}>
           <Table.Cell>#{ranking.ranking}</Table.Cell>
           <Table.Cell>{ranking.username}</Table.Cell>
           <Table.Cell>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>

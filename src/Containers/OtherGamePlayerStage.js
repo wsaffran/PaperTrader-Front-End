@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Table, Container } from 'semantic-ui-react'
 import v4 from 'uuid'
 
-class YourPortfolio extends React.Component {
+class OtherGamePlayerStage extends React.Component {
 
   numberWithCommas = (x) => {
     const floatNum = parseFloat(x).toFixed(2)
@@ -11,74 +11,30 @@ class YourPortfolio extends React.Component {
     return num
   }
 
-  // componentDidMount = () => {
-  //
-  //   const transactions = this.props.currentGamePlayer.transactions
-  //   const distinctTickers = [...new Set(transactions.map(x => x.symbol))]
-  //
-  //   // Make ordered array of all transactions
-  //   let orderedTransactions = []
-  //   for (let i = 0; i < distinctTickers.length; i++) {
-  //     transactions.map(transaction => {
-  //       if (transaction.symbol === distinctTickers[i]) {
-  //         return orderedTransactions.push(transaction)
-  //       } else {
-  //         return null
-  //       }
-  //     })
-  //   }
-  //
-  //   fetch(`https://api.iextrading.com/1.0/stock/market/batch?symbols=${distinctTickers.join(',')}&types=quote`)
-  //   .then(res => res.json())
-  //   .then(res => {
-  //
-  //     let new_array = []
-  //     for (let i = 0; i < distinctTickers.length; i++) {
-  //       let total_cost = 0
-  //       let total_shares = 0
-  //       orderedTransactions.map(transaction => {
-  //         if (transaction.symbol === distinctTickers[i]) {
-  //           total_shares += Number.parseFloat(transaction.current_shares)
-  //           total_cost += Number.parseFloat(transaction.price * transaction.current_shares)
-  //           return null
-  //         } else {
-  //           return null
-  //         }
-  //       })
-  //
-  //       if(total_shares === 0) {
-  //         // Removes Items That Dont Exist
-  //       } else {
-  //
-  //         new_array.push({
-  //           ticker: distinctTickers[i],
-  //           total_cost: total_cost,
-  //           total_shares: total_shares,
-  //           cost_basis: total_cost / total_shares,
-  //           current_stock_price: res[distinctTickers[i]].quote.latestPrice,
-  //           value_gain: Number.parseFloat(res[distinctTickers[i]].quote.latestPrice * total_shares - total_cost),
-  //           current_value: total_shares * res[distinctTickers[i]].quote.latestPrice
-  //         })
-  //       }
-  //
-  //     }
-  //
-  //     this.props.setPortfolio(new_array)
-  //   })
-  //
-  // }
+  state = {
+    currentGamePlayer: null,
+    portfolio: []
+  }
 
   componentDidMount = () => {
-    fetch(`http://localhost:3001/portfolio/${this.props.currentGamePlayer.id}`)
+    fetch(`http://localhost:3001/game_players/${this.props.match.params.game_player_id}`)
     .then(res => res.json())
     .then(res => {
-      this.props.setPortfolio(res)
+      const game_player = res
+      fetch(`http://localhost:3001/portfolio/${this.props.match.params.game_player_id}`)
+      .then(res => res.json())
+      .then(res => {
+        this.setState({
+          gamePlayer: game_player,
+          portfolio: res
+        })
+      })
     })
   }
 
   getCurrentCashValue = () => {
-    const starting_cash = this.props.currentGamePlayer.cash_balance
-    const transactions = this.props.currentGamePlayer.transactions
+    const starting_cash = this.state.gamePlayer.cash_balance
+    const transactions = this.state.gamePlayer.transactions
 
     let total_cost = 0
     transactions.map(transaction => {
@@ -87,7 +43,7 @@ class YourPortfolio extends React.Component {
 
     let total_value = 0.00
 
-    this.props.portfolio.map(holding => {
+    this.state.portfolio.map(holding => {
       total_value += holding.current_value
       return null
     })
@@ -111,8 +67,8 @@ class YourPortfolio extends React.Component {
   }
 
   printCurrentCashValue = () => {
-    const starting_cash = this.props.currentGamePlayer.cash_balance
-    const transactions = this.props.currentGamePlayer.transactions
+    const starting_cash = this.state.gamePlayer.cash_balance
+    const transactions = this.state.gamePlayer.transactions
 
     let total_cost = 0
     transactions.map(transaction => {
@@ -124,7 +80,7 @@ class YourPortfolio extends React.Component {
   }
 
   orderedPortfolio = () => {
-    return this.props.portfolio.sort(function(a, b) {
+    return this.state.portfolio.sort(function(a, b) {
       let textA = a.ticker.toUpperCase();
       let textB = b.ticker.toUpperCase();
       return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
@@ -140,7 +96,7 @@ class YourPortfolio extends React.Component {
 
     total_value += this.printCurrentCashValue()
 
-    return this.props.portfolio.map(holding => {
+    return this.state.portfolio.map(holding => {
       return (
         <Table.Row key={v4()}>
           <Table.Cell>{holding.ticker}</Table.Cell>
@@ -164,7 +120,7 @@ class YourPortfolio extends React.Component {
     let total_gain = 0.00
     let total_value = 0.00
 
-    this.props.portfolio.map(holding => {
+    this.state.portfolio.map(holding => {
       total_cost += holding.total_cost
       total_gain += holding.value_gain
       total_value += holding.current_value
@@ -190,32 +146,34 @@ class YourPortfolio extends React.Component {
   render () {
     return (
       <div>
-        <h1>Your Portfolio</h1>
-        {this.props.portfolio ?
-          <Container>
-            <Table>
-              <Table.Header>
-                <Table.Row>
-                  <Table.HeaderCell>Symbol</Table.HeaderCell>
-                  <Table.HeaderCell>Shares</Table.HeaderCell>
-                  <Table.HeaderCell>Current Price</Table.HeaderCell>
-                  <Table.HeaderCell>Today's Gain/Loss</Table.HeaderCell>
-                  <Table.HeaderCell>Total Gain/Loss</Table.HeaderCell>
-                  <Table.HeaderCell>Percent Gain/Loss</Table.HeaderCell>
-                  <Table.HeaderCell>Cost Basis</Table.HeaderCell>
-                  <Table.HeaderCell>Current Value</Table.HeaderCell>
-                  <Table.HeaderCell>Total Cost</Table.HeaderCell>
-                  <Table.HeaderCell>% of Portfolio</Table.HeaderCell>
-                </Table.Row>
-              </Table.Header>
+      {this.state.portfolio && this.state.gamePlayer ?
+          <div>
+            <h1>{this.state.gamePlayer.user.username.charAt(0).toUpperCase() + this.state.gamePlayer.user.username.slice(1)}'s Portfolio</h1>
+            <Container>
+              <Table>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell>Symbol</Table.HeaderCell>
+                    <Table.HeaderCell>Shares</Table.HeaderCell>
+                    <Table.HeaderCell>Current Price</Table.HeaderCell>
+                    <Table.HeaderCell>Today's Gain/Loss</Table.HeaderCell>
+                    <Table.HeaderCell>Total Gain/Loss</Table.HeaderCell>
+                    <Table.HeaderCell>Percent Gain/Loss</Table.HeaderCell>
+                    <Table.HeaderCell>Cost Basis</Table.HeaderCell>
+                    <Table.HeaderCell>Current Value</Table.HeaderCell>
+                    <Table.HeaderCell>Total Cost</Table.HeaderCell>
+                    <Table.HeaderCell>% of Portfolio</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
 
-              <Table.Body>
-                {this.props.currentGamePlayer ? this.getPortfolio() : null}
-                {this.props.currentGamePlayer ? this.getCurrentCashValue() : null}
-                {this.props.currentGamePlayer ? this.getTotals() : null}
-              </Table.Body>
-            </Table>
-          </Container>
+                <Table.Body>
+                  {this.state.gamePlayer ? this.getPortfolio() : null}
+                  {this.state.gamePlayer ? this.getCurrentCashValue() : null}
+                  {this.state.gamePlayer ? this.getTotals() : null}
+                </Table.Body>
+              </Table>
+            </Container>
+          </div>
         :
           null
         }
@@ -244,4 +202,4 @@ function mapDispatchToProps(dispatch) {
 }
 
 
-export default connect(mapStateToProps, mapDispatchToProps)(YourPortfolio)
+export default connect(mapStateToProps, mapDispatchToProps)(OtherGamePlayerStage)

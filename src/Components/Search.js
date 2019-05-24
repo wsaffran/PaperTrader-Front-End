@@ -2,8 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux'
 // import './Modal.css';
 // import Autocomplete from "./Autocomplete.jsx";
-import Research from './Modal/Research'
-import Transact from './Modal/Transact'
+import Research from './Research'
+import Transact from './Transact'
 // import Graph from './Graph'
 import { Button, Modal } from 'semantic-ui-react'
 
@@ -46,7 +46,7 @@ class Search extends React.Component {
             this.state.status === 'research' ?
             <Research closeModal={this.closeModal} handleClick={this.handleClick} labels={this.state.labels} data={this.state.data} label={this.state.label}/>
             :
-            <Transact closeModal={this.closeModal} handleClick={this.handleClick}/>
+            <Transact closeModal={this.closeModal} handleClick={this.handleClick} history={this.props.history}/>
           }
         </Modal.Content>
       </Modal>
