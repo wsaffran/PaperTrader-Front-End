@@ -6,6 +6,22 @@ import v4 from 'uuid'
 
 class YourGameComponent extends React.Component {
 
+  componentDidMount() {
+    const token = localStorage.getItem("token")
+
+    if (token) {
+      fetch("http://localhost:3001/auto_login", {
+        headers: {
+          "Authorization": token
+        }
+      })
+      .then(res => res.json())
+      .then((response) => {
+        this.props.setCurrentUser(response)
+      })
+    }
+  }
+
   getYourGameRows = () => {
     if (this.props.currentUser.games) {
       return this.props.currentUser.games.map(game => {
@@ -42,6 +58,7 @@ class YourGameComponent extends React.Component {
 
 
   render() {
+    console.log(this.props);
     return (
       <Container>
         <Table>
@@ -88,7 +105,7 @@ function mapDispatchToProps(dispatch) {
     },
     setCurrentGameId: (gameId) => {
       dispatch({type: "SET_CURRENT_GAME_ID", payload: gameId})
-    }
+    },
     // setGames: (games) => {
     //   dispatch({type: "SET_GAMES", payload: games})
     // },
@@ -98,9 +115,9 @@ function mapDispatchToProps(dispatch) {
     // setUsers: (users) => {
     //   dispatch({type: "SET_USERS", payload: users})
     // },
-    // setCurrentUser: (user) => {
-    //   dispatch({type: "SET_CURRENT_USER", payload: user})
-    // },
+    setCurrentUser: (user) => {
+      dispatch({type: "SET_CURRENT_USER", payload: user})
+    }
     // updateGamePlayers: (gamePlayer) => {
     //   dispatch({type: "UPDATE_GAME_PLAYERS", payload: gamePlayer})
     // },

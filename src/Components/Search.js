@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import Research from './Research'
 import Transact from './Transact'
 // import Graph from './Graph'
-import { Button, Modal } from 'semantic-ui-react'
+import { Button, Modal, Container } from 'semantic-ui-react'
 
 class Search extends React.Component {
 
@@ -37,20 +37,20 @@ class Search extends React.Component {
 
   render() {
     return (
-      <>
-      <h3>Search</h3>
-      <Modal className='modal' onClose={this.closeModal} open={this.state.showModal} trigger={<Button onClick={() => this.setState({showModal: true})}>Search</Button>}>
-        <Modal.Header>Search</Modal.Header>
-        <Modal.Content>
-          {
-            this.state.status === 'research' ?
-            <Research closeModal={this.closeModal} handleClick={this.handleClick} labels={this.state.labels} data={this.state.data} label={this.state.label}/>
-            :
-            <Transact closeModal={this.closeModal} handleClick={this.handleClick} history={this.props.history}/>
-          }
-        </Modal.Content>
-      </Modal>
-      </>
+      <Container >
+        <h1>Research</h1>
+        <Modal className='modal' onClose={this.closeModal} open={this.state.showModal} trigger={<Button onClick={() => this.setState({showModal: true})}>Search</Button>}>
+          <Modal.Header>Search</Modal.Header>
+          <Modal.Content>
+            {
+              this.state.status === 'research' ?
+              <Research closeModal={this.closeModal} handleClick={this.handleClick} labels={this.state.labels} data={this.state.data} label={this.state.label}/>
+              :
+              <Transact closeModal={this.closeModal} handleClick={this.handleClick} history={this.props.history}/>
+            }
+          </Modal.Content>
+        </Modal>
+    </Container>
     )
   }
 

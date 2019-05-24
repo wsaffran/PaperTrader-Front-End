@@ -143,6 +143,8 @@ class OtherGamePlayerStage extends React.Component {
     )
   }
 
+  handleClick
+
   render () {
     return (
       <div>
@@ -153,16 +155,16 @@ class OtherGamePlayerStage extends React.Component {
               <Table>
                 <Table.Header>
                   <Table.Row>
-                    <Table.HeaderCell>Symbol</Table.HeaderCell>
-                    <Table.HeaderCell>Shares</Table.HeaderCell>
-                    <Table.HeaderCell>Current Price</Table.HeaderCell>
-                    <Table.HeaderCell>Today's Gain/Loss</Table.HeaderCell>
-                    <Table.HeaderCell>Total Gain/Loss</Table.HeaderCell>
-                    <Table.HeaderCell>Percent Gain/Loss</Table.HeaderCell>
-                    <Table.HeaderCell>Cost Basis</Table.HeaderCell>
-                    <Table.HeaderCell>Current Value</Table.HeaderCell>
-                    <Table.HeaderCell>Total Cost</Table.HeaderCell>
-                    <Table.HeaderCell>% of Portfolio</Table.HeaderCell>
+                    <Table.HeaderCell value='symbol' onClick={this.handleClick}>Symbol</Table.HeaderCell>
+                    <Table.HeaderCell value='shares' onClick={this.handleClick}>Shares</Table.HeaderCell>
+                    <Table.HeaderCell value='currentPrice' onClick={this.handleClick}>Current Price</Table.HeaderCell>
+                    <Table.HeaderCell value='todayGainLoss' onClick={this.handleClick}>Today's Gain/Loss</Table.HeaderCell>
+                    <Table.HeaderCell value='totalGainLoss' onClick={this.handleClick}>Total Gain/Loss</Table.HeaderCell>
+                    <Table.HeaderCell value='percentGainLoss' onClick={this.handleClick}>Percent Gain/Loss</Table.HeaderCell>
+                    <Table.HeaderCell value='costBasis' onClick={this.handleClick}>Cost Basis</Table.HeaderCell>
+                    <Table.HeaderCell value='currentValue' onClick={this.handleClick}>Current Value</Table.HeaderCell>
+                    <Table.HeaderCell value='totalCost' onClick={this.handleClick}>Total Cost</Table.HeaderCell>
+                    <Table.HeaderCell value='allocation' onClick={this.handleClick}>Allocation</Table.HeaderCell>
                   </Table.Row>
                 </Table.Header>
 

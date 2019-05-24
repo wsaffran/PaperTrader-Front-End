@@ -1,5 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Container, Grid } from 'semantic-ui-react'
+
 
 class YourProfile extends React.Component {
 
@@ -25,15 +27,35 @@ class YourProfile extends React.Component {
     if (this.state.rankings.length > 0 && this.props.currentGamePlayer) {
       let ranking = this.state.rankings.find(ranking => ranking.game_player_id === this.props.currentGamePlayer.id)
       return (
-        <div>
-          <p>{this.props.currentUser.username}</p>
-          <p>ranking: {this.numberWithCommas(ranking.ranking)}</p>
-          <p>Net Worth: ${this.numberWithCommas(ranking.current_value)}</p>
-          <p>Overall Gains: ${this.numberWithCommas(ranking.returns)}</p>
-          <p>Overall Returns: {this.numberWithCommas(ranking.percent_gain)}%</p>
-          <p>Cash Remaining: </p>
-          <p>Buying Power: </p>
-        </div>
+        <Grid>
+          <Grid.Row columns={1}>
+            <Grid.Column>
+              <h3>{this.props.currentUser.username}</h3>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row columns={3}>
+            <Grid.Column>
+              <p>ranking: {this.numberWithCommas(ranking.ranking)}</p>
+            </Grid.Column>
+            <Grid.Column>
+              <p>Net Worth: ${this.numberWithCommas(ranking.current_value)}</p>
+            </Grid.Column>
+            <Grid.Column>
+              <p>Overall Gains: ${this.numberWithCommas(ranking.returns)}</p>
+            </Grid.Column>
+          </Grid.Row>
+          <Grid.Row columns={3}>
+            <Grid.Column>
+              <p>Overall Returns: {this.numberWithCommas(ranking.percent_gain)}%</p>
+            </Grid.Column>
+            <Grid.Column>
+              <p>Cash Remaining: </p>
+            </Grid.Column>
+            <Grid.Column>
+              <p>Buying Power: </p>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
       )
     } else {
       return null
@@ -42,10 +64,16 @@ class YourProfile extends React.Component {
 
   render () {
     return (
-      <div>
-        <h3>YourProfile</h3>
-        {this.getRanking()}
-      </div>
+      <Container>
+        {this.props.portfolio && this.props.currentGamePlayer ?
+          <div>
+            <h1>YourProfile</h1>
+            {this.getRanking()}
+          </div>
+        :
+          null
+        }
+      </Container>
     )
   }
 }

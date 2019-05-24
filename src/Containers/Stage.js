@@ -31,15 +31,24 @@ class Stage extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='container'>
         {(this.props.currentUser && this.props.currentGamePlayer) ?
           <div>
-            <h1>Stage</h1>
-            <Search history={this.props.history} />
-            <YourProfile />
-            <YourPortfolio />
-            <Rankings history={this.props.history}/>
-            <YourTransactions />
+            <div className='row' style={{height: "auto", textAlign: "center"}}>
+              <YourProfile />
+            </div>
+            <div className='row' style={{height: "auto", textAlign: "center"}}>
+              <Search history={this.props.history} />
+            </div>
+            <div className='row' style={{height: "auto", textAlign: "center"}}>
+              <YourPortfolio />
+            </div>
+            <div className='row' style={{height: "auto", textAlign: "center"}}>
+              <Rankings history={this.props.history}/>
+            </div>
+            <div className='row' style={{height: "auto", textAlign: "center"}}>
+              <YourTransactions />
+            </div>
           </div>
          : null }
       </div>

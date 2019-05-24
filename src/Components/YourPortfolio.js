@@ -68,6 +68,10 @@ class YourPortfolio extends React.Component {
   //
   // }
 
+  state = {
+    order: 'symbol'
+  }
+
   componentDidMount = () => {
     fetch(`http://localhost:3001/portfolio/${this.props.currentGamePlayer.id}`)
     .then(res => res.json())
@@ -123,17 +127,57 @@ class YourPortfolio extends React.Component {
     return current_cash_value
   }
 
-  orderedPortfolio = () => {
-    return this.props.portfolio.sort(function(a, b) {
-      let textA = a.ticker.toUpperCase();
-      let textB = b.ticker.toUpperCase();
-      return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-    });
+  filteredPortfolio = () => {
+    let order = this.state.order
+    let cash = this.printCurrentCashValue()
+
+    let portfolio = this.props.portfolio
+    if (order === 'symbol') {
+      return portfolio.sort(function(a, b) {
+        return (a.ticker.toUpperCase() < b.ticker.toUpperCase()) ? -1 : (a.ticker.toUpperCase() > b.ticker.toUpperCase()) ? 1 : 0
+      })
+    } else if (order === 'shares') {
+      return portfolio.sort(function(a, b) {
+        return (a.total_shares < b.total_shares) ? -1 : (a.total_shares > b.total_shares) ? 1 : 0
+      })
+    } else if (order === 'currentPrice') {
+      return portfolio.sort(function(a, b) {
+        return (a.current_stock_price < b.current_stock_price) ? -1 : (a.current_stock_price > b.current_stock_price) ? 1 : 0
+      })
+    } else if (order === 'totalGainLoss') {
+      return portfolio.sort(function(a, b) {
+        return (a.value_gain < b.value_gain) ? -1 : (a.value_gain > b.value_gain) ? 1 : 0
+      })
+    } else if (order === 'percentGainLoss') {
+      return portfolio.sort(function(a, b) {
+        return (a.percent_gain < b.percent_gain) ? -1 : (a.percent_gain > b.percent_gain) ? 1 : 0
+      })
+    } else if (order === 'costBasis') {
+      return portfolio.sort(function(a, b) {
+        return (a.cost_basis < b.cost_basis) ? -1 : (a.cost_basis > b.cost_basis) ? 1 : 0
+      })
+    } else if (order === 'currentValue') {
+      return portfolio.sort(function(a, b) {
+        return (a.current_value < b.current_value) ? -1 : (a.current_value > b.current_value) ? 1 : 0
+      })
+    } else if (order === 'totalCost') {
+      return portfolio.sort(function(a, b) {
+        return (a.total_cost < b.total_cost) ? -1 : (a.total_cost > b.total_cost) ? 1 : 0
+      })
+    } else if (order === 'allocation') {
+      return portfolio.sort(function(a, b) {
+        return ((a.current_value / (a.current_value + cash) * 100) < (b.current_value / (b.current_value + cash) * 100)) ? -1 : ((a.current_value / (a.current_value + cash) * 100) > (b.current_value / (b.current_value + cash) * 100)) ? 1 : 0
+      })
+    } else {
+      return portfolio.sort(function(a, b) {
+        return (a.ticker.toUpperCase() < b.ticker.toUpperCase()) ? -1 : (a.ticker.toUpperCase() > b.ticker.toUpperCase()) ? 1 : 0
+      })
+    }
   }
 
   getPortfolio = () => {
     let total_value = 0
-    this.orderedPortfolio().map(holding => {
+    this.filteredPortfolio().map(holding => {
       total_value += holding.current_value
       return null
     })
@@ -142,17 +186,17 @@ class YourPortfolio extends React.Component {
 
     return this.props.portfolio.map(holding => {
       return (
-        <Table.Row key={v4()}>
-          <Table.Cell>{holding.ticker}</Table.Cell>
-          <Table.Cell>{holding.total_shares}</Table.Cell>
-          <Table.Cell>${this.numberWithCommas(holding.current_stock_price)}</Table.Cell>
-          <Table.Cell>TBD</Table.Cell>
-          <Table.Cell>${this.numberWithCommas(holding.value_gain)}</Table.Cell>
-          <Table.Cell>{this.numberWithCommas((holding.current_value - holding.total_cost) / holding.total_cost * 100)}%</Table.Cell>
-          <Table.Cell>${this.numberWithCommas(holding.cost_basis)}</Table.Cell>
-          <Table.Cell>${this.numberWithCommas(holding.current_value)}</Table.Cell>
-          <Table.Cell>${this.numberWithCommas(holding.total_cost)}</Table.Cell>
-          <Table.Cell>{this.numberWithCommas(holding.current_value / total_value * 100)}%</Table.Cell>
+        <Table.Row key={v4()} textAlign='right'>
+          <Table.Cell textAlign='center'>{holding.ticker}</Table.Cell>
+          <Table.Cell textAlign='center'>{holding.total_shares}</Table.Cell>
+          <Table.Cell textAlign='left'>${this.numberWithCommas(holding.current_stock_price)}</Table.Cell>
+          <Table.Cell textAlign='right'>TBD</Table.Cell>
+          <Table.Cell textAlign='right'>${this.numberWithCommas(holding.value_gain)}</Table.Cell>
+          <Table.Cell textAlign='center'>{this.numberWithCommas((holding.current_value - holding.total_cost) / holding.total_cost * 100)}%</Table.Cell>
+          <Table.Cell textAlign='right'>${this.numberWithCommas(holding.cost_basis)}</Table.Cell>
+          <Table.Cell textAlign='right'>${this.numberWithCommas(holding.current_value)}</Table.Cell>
+          <Table.Cell textAlign='right'>${this.numberWithCommas(holding.total_cost)}</Table.Cell>
+          <Table.Cell textAlign='right'>{this.numberWithCommas(holding.current_value / total_value * 100)}%</Table.Cell>
         </Table.Row>
       )
     })
@@ -187,6 +231,12 @@ class YourPortfolio extends React.Component {
     )
   }
 
+  handleClick = (filter) => {
+    this.setState({
+      order: filter
+    })
+  }
+
   render () {
     return (
       <div>
@@ -196,16 +246,16 @@ class YourPortfolio extends React.Component {
             <Table>
               <Table.Header>
                 <Table.Row>
-                  <Table.HeaderCell>Symbol</Table.HeaderCell>
-                  <Table.HeaderCell>Shares</Table.HeaderCell>
-                  <Table.HeaderCell>Current Price</Table.HeaderCell>
-                  <Table.HeaderCell>Today's Gain/Loss</Table.HeaderCell>
-                  <Table.HeaderCell>Total Gain/Loss</Table.HeaderCell>
-                  <Table.HeaderCell>Percent Gain/Loss</Table.HeaderCell>
-                  <Table.HeaderCell>Cost Basis</Table.HeaderCell>
-                  <Table.HeaderCell>Current Value</Table.HeaderCell>
-                  <Table.HeaderCell>Total Cost</Table.HeaderCell>
-                  <Table.HeaderCell>% of Portfolio</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('symbol')}>Symbol</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('shares')}>Shares</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('currentPrice')}>Current Price</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('todayGainLoss')}>Today's Gain/Loss</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('totalGainLoss')}>Total Gain/Loss</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('percentGainLoss')}>Percent Gain/Loss</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('costBasis')}>Cost Basis</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('currentValue')}>Current Value</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('totalCost')}>Total Cost</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('allocation')}>Allocation</Table.HeaderCell>
                 </Table.Row>
               </Table.Header>
 

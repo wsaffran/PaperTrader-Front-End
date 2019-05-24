@@ -40,21 +40,22 @@ class Game extends React.Component {
   }
 
   render() {
+    console.log(this.props);
     const { activeItem } = this.props
     return (
       <div>
         <Menu secondary pointing>
-            <Menu.Item name="yourGames" active={activeItem === 'yourGames'} onClick={this.handleItemClick}>
-              Your Games
-            </Menu.Item>
+          <Menu.Item name="yourGames" active={activeItem === 'yourGames'} onClick={this.handleItemClick}>
+            Your Games
+          </Menu.Item>
 
-            <Menu.Item name="findGame" active={activeItem === 'findGame'} onClick={this.handleItemClick}>
-              Find Game
-            </Menu.Item>
+          <Menu.Item name="findGame" active={activeItem === 'findGame'} onClick={this.handleItemClick}>
+            Find Game
+          </Menu.Item>
 
-            <Menu.Item name="createGame" active={activeItem === 'createGame'} onClick={this.handleItemClick}>
-              Create Game
-            </Menu.Item>
+          <Menu.Item name="createGame" active={activeItem === 'createGame'} onClick={this.handleItemClick}>
+            Create Game
+          </Menu.Item>
         </Menu>
       </div>
     )
@@ -64,7 +65,7 @@ class Game extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    // currentUser: state.currentUser,
+    currentUser: state.currentUser,
     // currentGame: state.currentGame,
     // games: state.games,
     // users: state.users,
