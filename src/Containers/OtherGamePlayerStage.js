@@ -102,7 +102,7 @@ class OtherGamePlayerStage extends React.Component {
           <Table.Cell>{holding.ticker}</Table.Cell>
           <Table.Cell>{holding.total_shares}</Table.Cell>
           <Table.Cell>${this.numberWithCommas(holding.current_stock_price)}</Table.Cell>
-          <Table.Cell>TBD</Table.Cell>
+          <Table.Cell>{this.numberWithCommas(holding.day_change_percent)}%</Table.Cell>
           <Table.Cell>${this.numberWithCommas(holding.value_gain)}</Table.Cell>
           <Table.Cell>{this.numberWithCommas((holding.current_value - holding.total_cost) / holding.total_cost * 100)}%</Table.Cell>
           <Table.Cell>${this.numberWithCommas(holding.cost_basis)}</Table.Cell>

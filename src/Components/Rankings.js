@@ -20,7 +20,6 @@ class Rankings extends React.Component {
     fetch(`http://localhost:3001/games/${this.props.game.id}/rankings`)
     .then(res => res.json())
     .then(res => {
-      console.log(res);
       this.setState({rankings: res})
     })
   }
@@ -35,8 +34,9 @@ class Rankings extends React.Component {
         <Table.Row key={v4()} value={ranking.game_player_id} onClick={() => this.handleClick(ranking.game_player_id)}>
           <Table.Cell>#{ranking.ranking}</Table.Cell>
           <Table.Cell>{ranking.username}</Table.Cell>
-          <Table.Cell>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>
           <Table.Cell>${this.numberWithCommas(ranking.current_value)}</Table.Cell>
+          <Table.Cell>last</Table.Cell>
+          <Table.Cell>{ranking.trades}</Table.Cell>
           <Table.Cell>${this.numberWithCommas(ranking.returns)}</Table.Cell>
           <Table.Cell>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
         </Table.Row>
@@ -54,8 +54,9 @@ class Rankings extends React.Component {
               <Table.Row>
                 <Table.HeaderCell>Rank</Table.HeaderCell>
                 <Table.HeaderCell>Username</Table.HeaderCell>
-                <Table.HeaderCell>Starting Balance</Table.HeaderCell>
-                <Table.HeaderCell>Current Value</Table.HeaderCell>
+                <Table.HeaderCell>Net Worth</Table.HeaderCell>
+                <Table.HeaderCell>Last</Table.HeaderCell>
+                <Table.HeaderCell>Trades</Table.HeaderCell>
                 <Table.HeaderCell>Total Return</Table.HeaderCell>
                 <Table.HeaderCell>Percent Gain</Table.HeaderCell>
               </Table.Row>

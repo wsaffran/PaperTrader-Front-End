@@ -16,7 +16,7 @@ class Research extends React.Component {
   render() {
     return (
       <div id="inResearch">
-        <Modal.Content image scrolling>
+        <Modal.Content image scrolling style={{textAlign: "center"}}>
           <Modal.Description>
           <div style={{marginBottom: "70px"}}>
             <Autocomplete
@@ -35,10 +35,10 @@ class Research extends React.Component {
         </Modal.Content>
         <Modal.Actions>
           <div>
-            <Button primary onClick={() => this.handleClick()}>
+            <Button primary onClick={() => this.handleClick()} style={{height: "auto", textAlign: "left"}}>
               Back <Icon name='chevron right' />
             </Button>
-            <Button primary onClick={() => this.props.handleClick('transact')}>
+            <Button primary onClick={() => this.props.handleClick('transact')} style={{height: "auto", textAlign: "right"}}>
               Transact <Icon name='chevron right' />
           </Button>
           </div>

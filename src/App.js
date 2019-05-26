@@ -53,7 +53,7 @@ class App extends React.Component {
         <Switch>
           <Route path="/login" component={ LoginForm } />
           <Route path="/signup" component={ SignupForm } />
-          <Route path="/user" component={ UserProfile } />
+          <Route path="/profile" component={ UserProfile } />
           <Route path="/stage/:currentGameId" render={ (routeProps) => {
               return <Stage {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
             }

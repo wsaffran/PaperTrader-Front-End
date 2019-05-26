@@ -190,7 +190,7 @@ class YourPortfolio extends React.Component {
           <Table.Cell textAlign='center'>{holding.ticker}</Table.Cell>
           <Table.Cell textAlign='center'>{holding.total_shares}</Table.Cell>
           <Table.Cell textAlign='left'>${this.numberWithCommas(holding.current_stock_price)}</Table.Cell>
-          <Table.Cell textAlign='right'>TBD</Table.Cell>
+          <Table.Cell textAlign='right'></Table.Cell>
           <Table.Cell textAlign='right'>${this.numberWithCommas(holding.value_gain)}</Table.Cell>
           <Table.Cell textAlign='center'>{this.numberWithCommas((holding.current_value - holding.total_cost) / holding.total_cost * 100)}%</Table.Cell>
           <Table.Cell textAlign='right'>${this.numberWithCommas(holding.cost_basis)}</Table.Cell>

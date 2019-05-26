@@ -11,7 +11,7 @@ class Nav extends React.Component {
         {this.props.currentUser ?
           <div>
             <Link className="logOut" onClick={this.props.logOut} to='/'>Log out </Link>
-            <Link className="userProfile" to="/user">{this.props.currentUser.username}</Link>
+            <Link className="userProfile" to="/profile">{this.props.currentUser.username}</Link>
           </div>
           :
           <Link className="user" to="/">Login</Link>

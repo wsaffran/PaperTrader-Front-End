@@ -1,5 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Button, Container } from 'semantic-ui-react'
+import form from './css/signupForm.css'
 
 class SignupForm extends React.Component {
 
@@ -42,25 +44,30 @@ class SignupForm extends React.Component {
   render () {
     return (
       <div>
-        <h1>Sign Up</h1>
         <form onSubmit={this.handleSubmit}>
-          <label>
-            first name:
-            <input onChange={this.handleChange} type="text" name="firstName" value={this.state.firstName} />
-          </label>
-          <label>
-            last name:
-            <input onChange={this.handleChange} type="text" name="lastName" value={this.state.lastName} />
-          </label>
-          <label>
-            username:
-            <input onChange={this.handleChange} type="text" name="username" value={this.state.username} />
-          </label>
-          <label>
-            password:
-            <input onChange={this.handleChange} type="password" name="password" value={this.state.password} />
-          </label>
-          <button type="submit">Submit</button>
+          <div className='field-first-name'>
+            <i className="fas fa-user"></i>
+            <input onChange={this.handleChange} type="text" name="firstName" placeholder="First Name" value={this.state.firstName} required/>
+            <i className="fas fa-arrow-down"></i>
+          </div>
+          <div className='field-last-name'>
+            <i className="fas fa-user"></i>
+            <input onChange={this.handleChange} type="text" name="lastName" placeholder="Last Name" value={this.state.lastName} required/>
+            <i className="fas fa-arrow-down"></i>
+          </div>
+          <div className='field-username'>
+            <i className="fas fa-user"></i>
+            <input onChange={this.handleChange} type="text" name="username" placeholder="Username" value={this.state.username} required/>
+            <i className="fas fa-arrow-down"></i>
+          </div>
+          <div className='field-password'>
+            <i className="fas fa-key"></i>
+            <input onChange={this.handleChange} type="password" name="password" placeholder="Password" value={this.state.password} required/>
+            <i className="fas fa-arrow-down"></i>
+          </div>
+          <div className='submit'>
+            <Button primary type='submit'>Submit</Button>
+          </div>
         </form>
       </div>
     )
