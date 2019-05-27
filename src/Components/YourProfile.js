@@ -57,7 +57,7 @@ class YourProfile extends React.Component {
 
     const selectedPlayer = this.state.rankings.find(ranking => ranking.game_player_id === this.props.currentGamePlayer.id)
     labels.push('cash')
-    data.push(selectedPlayer.current_value)
+    data.push(selectedPlayer.cash_value)
     backgroundColor.push(this.getRandomColor())
 
     const dataPie = {
@@ -161,7 +161,6 @@ class YourProfile extends React.Component {
             </Grid.Column>
           </Grid.Row>
           <Grid.Row>
-            PORTFOLIO ALLOCATION
             {this.state.portfolio ?
               <Pie data={this.getPieData()} options={{ responsive: true }} />
               :
