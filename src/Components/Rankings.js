@@ -17,10 +17,9 @@ class Rankings extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://localhost:3001/games/${this.props.game.id}/rankings`)
+    fetch(`http://localhost:3001/games/${this.props.currentGamePlayer.game.id}/rankings`)
     .then(res => res.json())
     .then(res => {
-      console.log(res);
       this.setState({rankings: res})
     })
   }

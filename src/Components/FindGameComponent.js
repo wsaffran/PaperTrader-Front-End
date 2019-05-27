@@ -58,7 +58,7 @@ class FindGameComponent extends React.Component {
         })
       }
       this.props.updateActiveItem('yourGames')
-      this.props.history.push('/game/your')
+      this.props.history.push('/game')
       // }
       // this.props.history.push('/game')
       // this.props.setCurrentGamePlayer(this.props.currentUser.game_players.find(g => g.game.id === game.id))

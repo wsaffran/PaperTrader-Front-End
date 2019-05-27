@@ -74,26 +74,16 @@ class CreateGameForm extends React.Component {
   render () {
     return (
       <form onSubmit={this.handleSubmit}>
-        <label>
-          name:
-          <input onChange={this.handleChange} type="text" name="name" placeholder="my awesome game" value={this.state.name} />
-        </label>
-        <label>
-          Starting Balance:
-          <input onChange={this.handleChange} type="number" name="startingBalance" placeholder="100000" value={this.state.startingBalance} />
-        </label>
-        <label>
-          Start Date:
-          <input onChange={this.handleChange} type="date" name="startDate"
-             value={this.state.startDate}
-             min="2018-01-01" max="2020-12-31"/>
-        </label>
-        <label>
-          End Date:
-          <input onChange={this.handleChange} type="date" name="endDate"
-             value={this.state.endDate}
-             min="2018-01-01" max="2020-12-31"/>
-        </label>
+        <input onChange={this.handleChange} type="text" name="name" placeholder="name" value={this.state.name} />
+        <input onChange={this.handleChange} type="number" name="startingBalance" placeholder="player starting balance" value={this.state.startingBalance} />
+        <input onChange={this.handleChange} type="date" name="startDate" placeholder="start date"
+           value={this.state.startDate}
+           min="2018-01-01" max="2020-12-31"/>
+         <p>Start Date</p>
+         <input onChange={this.handleChange} type="date" name="endDate" placeholder="end date"
+           value={this.state.endDate}
+           min="2018-01-01" max="2020-12-31"/>
+         <p>End Date</p>
         <button type="submit">Submit</button>
       </form>
     )

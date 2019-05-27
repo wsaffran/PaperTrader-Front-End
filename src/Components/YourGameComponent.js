@@ -35,7 +35,7 @@ class YourGameComponent extends React.Component {
             <Table.Cell>07/10/19</Table.Cell>
             <Table.Cell>3</Table.Cell>
             <Table.Cell>
-              <Link to={`/stage/${game.id}`}>
+              <Link to={`/stage/${game.id}/overview`}>
                 <button onClick={() => this.handleGameClick(game)}>
                   View Game
                 </button>
@@ -52,13 +52,13 @@ class YourGameComponent extends React.Component {
     this.props.setCurrentGameId(game.id)
     this.props.setCurrentGame(game)
     this.props.setCurrentGamePlayer(this.props.currentUser.game_players.find(g => g.game.id === game.id))
+    localStorage.setItem("currentGamePlayer", `${this.props.currentUser.game_players.find(g => g.game.id === game.id).id}`)
     // set Current Game_Player too?
     // this.props.history.push('/stage')
   }
 
 
   render() {
-    console.log(this.props);
     return (
       <Container>
         <Table>
@@ -86,7 +86,8 @@ class YourGameComponent extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
+    currentGamePlayer: state.currentGamePlayer
     // currentGame: state.currentGame,
     // games: state.games,
     // users: state.users,
