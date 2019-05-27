@@ -1,13 +1,16 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Container, Menu } from 'semantic-ui-react'
 // import Search from '../Components/Search'
-import Search from '../Components/Search'
-import YourProfile from '../Components/YourProfile'
-import YourPortfolio from '../Components/YourPortfolio'
-import Rankings from '../Components/Rankings'
-import YourTransactions from '../Components/YourTransactions'
+// import Search from '../Components/Search'
+// import YourProfile from '../Components/YourProfile'
+// import YourPortfolio from '../Components/YourPortfolio'
+// import Rankings from '../Components/Rankings'
+// import YourTransactions from '../Components/YourTransactions'
 
 class Stage extends React.Component {
+
+  state = { activeItem: `${this.props.history.location.pathname.split('/').slice(-1).join()}`}
 
   componentDidMount() {
     const token = localStorage.getItem("token")
@@ -22,36 +25,66 @@ class Stage extends React.Component {
       .then((response) => {
         this.props.setCurrentUser(response)
         this.props.setCurrentGameId(this.props.match.params.currentGameId)
-        this.props.setCurrentGame(this.props.currentUser.games.find(game => game.id === parseInt(this.props.match.params.currentGameId)))
-        this.props.setCurrentGamePlayer(this.props.currentUser.game_players.find(gameplayer => gameplayer.game.id === parseInt(this.props.match.params.currentGameId)))
+        // console.log(this.props.match.params.currentGameId);
+        // console.log(response.game_players.find(gp => gp.game.id));
+        // this.props.setCurrentGamePlayer(response.game_players.find(game_player => game_player.game.id === this.props.currentGameId))
+        // this.props.setCurrentGame(this.props.currentUser.games.find(game => game.id === parseInt(this.props.match.params.currentGameId)))
       })
     }
+  }
 
+  handleItemClick = (e, { name }) => {
+    this.setState({ activeItem: name }, () => {
+      const { activeItem } = this.state
+      if (activeItem === 'overview') {
+        this.props.history.push(`/stage/${this.props.currentGameId}/overview`)
+      } else if (activeItem === 'portfolio') {
+        this.props.history.push(`/stage/${this.props.currentGameId}/portfolio`)
+      } else if (activeItem === 'rankings') {
+        this.props.history.push(`/stage/${this.props.currentGameId}/rankings`)
+      } else if (activeItem === 'gameInfo') {
+        this.props.history.push(`/stage/${this.props.currentGameId}/game-info`)
+      }
+    })
   }
 
   render() {
+    console.log(this.props.history.location.pathname.split('/').slice(-1).join());
+    const { activeItem } = this.state
     return (
-      <div className='container'>
+      <Container>
         {(this.props.currentUser && this.props.currentGamePlayer) ?
-          <div>
-            <div className='row' style={{height: "auto", textAlign: "center"}}>
-              <YourProfile />
-            </div>
-            <div className='row' style={{height: "auto", textAlign: "center"}}>
-              <Search history={this.props.history} />
-            </div>
-            <div className='row' style={{height: "auto", textAlign: "center"}}>
-              <YourPortfolio />
-            </div>
-            <div className='row' style={{height: "auto", textAlign: "center"}}>
-              <Rankings history={this.props.history}/>
-            </div>
-            <div className='row' style={{height: "auto", textAlign: "center"}}>
-              <YourTransactions />
-            </div>
-          </div>
+          <Menu widths={4}>
+            <Menu.Item
+              name='overview'
+              active={activeItem === 'overview'}
+              onClick={this.handleItemClick}
+            >
+              Overview
+            </Menu.Item>
+
+            <Menu.Item
+              name='portfolio'
+              active={activeItem === 'portfolio'}
+              onClick={this.handleItemClick}
+            >
+              Portfolio
+            </Menu.Item>
+
+            <Menu.Item
+              name='rankings'
+              active={activeItem === 'rankings'}
+              onClick={this.handleItemClick}
+            >
+              Rankings
+            </Menu.Item>
+
+            <Menu.Item name='gameInfo' active={activeItem === 'gameInfo'} onClick={this.handleItemClick}>
+              Game Info
+            </Menu.Item>
+          </Menu>
          : null }
-      </div>
+      </Container>
     )
   }
 }
@@ -81,8 +114,31 @@ function mapDispatchToProps(dispatch) {
     },
     setCurrentUser: (user) => {
       dispatch({type: "SET_CURRENT_USER", payload: user})
+    },
+    setPortfolio: (portfolio) => {
+      dispatch({type: "SET_PORTFOLIO", payload: portfolio})
     }
   }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Stage)
+
+
+
+// <div>
+//   <div className='row' style={{height: "auto", textAlign: "center"}}>
+//     <YourProfile />
+//   </div>
+//   <div className='row' style={{height: "auto", textAlign: "center"}}>
+//     <Search history={this.props.history} />
+//   </div>
+//   <div className='row' style={{height: "auto", textAlign: "center"}}>
+//     <YourPortfolio />
+//   </div>
+//   <div className='row' style={{height: "auto", textAlign: "center"}}>
+//     <Rankings history={this.props.history}/>
+//   </div>
+//   <div className='row' style={{height: "auto", textAlign: "center"}}>
+//     <YourTransactions />
+//   </div>
+// </div>

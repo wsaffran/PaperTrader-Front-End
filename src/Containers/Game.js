@@ -1,6 +1,9 @@
 import React from 'react'
-import { Menu } from 'semantic-ui-react'
+import { Grid, Container } from 'semantic-ui-react'
 import { connect } from 'react-redux'
+import YourGameComponent from '../Components/YourGameComponent'
+import FindGameComponent from '../Components/FindGameComponent'
+import CreateGameForm from '../Components/CreateGameForm'
 // import { Link } from 'react-router-dom';
 // import CreateGameForm from '../Components/CreateGameForm'
 // import v4 from 'uuid'
@@ -40,23 +43,29 @@ class Game extends React.Component {
   }
 
   render() {
-    const { activeItem } = this.props
+    // const { activeItem } = this.props
     return (
-      <div>
-        <Menu secondary pointing>
-          <Menu.Item name="yourGames" active={activeItem === 'yourGames'} onClick={this.handleItemClick}>
-            Your Games
-          </Menu.Item>
+      <Container>
+        <Grid>
+          <Grid.Row columns={2}>
+            <Grid.Column width={10}>
+              <Grid.Row>
+                <h1>Your Games</h1>
+                <YourGameComponent history={this.props.history}/>
+              </Grid.Row>
+              <Grid.Row>
+                <h1>Find A Game</h1>
+                <FindGameComponent history={this.props.history}/>
+              </Grid.Row>
+            </Grid.Column>
+            <Grid.Column width={6}>
+              <h1>Create A Game</h1>
+              <CreateGameForm history={this.props.history}/>
+            </Grid.Column>
+          </Grid.Row>
 
-          <Menu.Item name="findGame" active={activeItem === 'findGame'} onClick={this.handleItemClick}>
-            Find Game
-          </Menu.Item>
-
-          <Menu.Item name="createGame" active={activeItem === 'createGame'} onClick={this.handleItemClick}>
-            Create Game
-          </Menu.Item>
-        </Menu>
-      </div>
+        </Grid>
+      </Container>
     )
   }
 

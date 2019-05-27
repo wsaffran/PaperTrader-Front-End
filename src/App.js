@@ -9,10 +9,15 @@ import SignupForm from './Components/SignupForm';
 import UserProfile from './Containers/UserProfile'
 import Game from './Containers/Game';
 import Stage from './Containers/Stage';
-import FindGameComponent from './Components/FindGameComponent'
-import CreateGameForm from './Components/CreateGameForm'
-import YourGameComponent from './Components/YourGameComponent'
+// import FindGameComponent from './Components/FindGameComponent'
+// import CreateGameForm from './Components/CreateGameForm'
+// import YourGameComponent from './Components/YourGameComponent'
 import OtherGamePlayerStage from './Containers/OtherGamePlayerStage'
+import Overview from './Components/Overview'
+import YourProfile from './Components/YourProfile'
+import Rankings from './Components/Rankings'
+import YourPortfolio from './Components/YourPortfolio'
+
 import Loading from './Components/Loading'
 
 
@@ -54,23 +59,35 @@ class App extends React.Component {
           <Route path="/login" component={ LoginForm } />
           <Route path="/signup" component={ SignupForm } />
           <Route path="/user" component={ UserProfile } />
-          <Route path="/stage/:currentGameId" render={ (routeProps) => {
-              return <Stage {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
-            }
-          }/>
-          <Route path='/game_player/:game_player_id' render={ (routeProps) => {
-              return <OtherGamePlayerStage {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
-            }
-          } />
-        <Route path ='/loading' component={ Loading } />
+
+          <Route exact path='/game_player/:game_player_id' render={ (routeProps) => {
+                return <OtherGamePlayerStage {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
+              }
+            } />
+
+          <Route path ='/loading' component={ Loading } />
+          <Route exact path="/game" component={ Game }/>
 
 
           <Route exact path="/" component={ LandingPage } />
         </Switch>
-        <Route path="/game" component={ Game }/>
-        <Route path="/game/your" component={ YourGameComponent }/>
-        <Route path="/game/find" component={ FindGameComponent }/>
-        <Route path="/game/create" component={ CreateGameForm }/>
+        <Route path="/stage/:currentGameId/" render={ (routeProps) => {
+            return <Stage {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
+          }
+        }/>
+        <Route path="/stage/:currentGameId/overview" render={ (routeProps) => {
+            return <Overview {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
+          }
+        }/>
+        <Route path="/stage/:currentGameId/portfolio" render={ (routeProps) => {
+            return <YourPortfolio {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
+          }
+        }/>
+        <Route path="/stage/:currentGameId/rankings" render={ (routeProps) => {
+            return <Rankings {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
+          }
+        }/>
+        <Route path="/stage/:currentGameId/game-info" component={ YourProfile } />
         {/*</Router>*/}
       </div>
     )

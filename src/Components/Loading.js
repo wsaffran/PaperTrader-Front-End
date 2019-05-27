@@ -8,7 +8,7 @@ class Loading extends React.Component {
     .then(res => res.json())
     .then(res => {
       this.props.setPortfolio(res)
-      this.props.history.push(`/stage/${this.props.currentGameId}`)
+      this.props.history.push(`/stage/${this.props.currentGameId}/overview`)
     })
   }
 

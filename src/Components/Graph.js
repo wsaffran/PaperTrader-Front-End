@@ -11,6 +11,7 @@ class Graph extends React.Component {
   }
 
   componentDidMount() {
+    console.log("in graph", this.props.selectedStockTicker);
     fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/chart/1d`)
     .then(res => res.json())
     .then(res => {

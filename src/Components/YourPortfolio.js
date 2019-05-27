@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Table, Container } from 'semantic-ui-react'
 import v4 from 'uuid'
+import Search from './Search'
 
 class YourPortfolio extends React.Component {
 
@@ -70,14 +71,21 @@ class YourPortfolio extends React.Component {
 
   state = {
     order: 'symbol',
-    value: 'value'
+    value: 'value',
+    portfolio: []
   }
 
   componentDidMount = () => {
-    fetch(`http://localhost:3001/portfolio/${this.props.currentGamePlayer.id}`)
+    fetch(`http://localhost:3001/game_players/${localStorage.getItem('currentGamePlayer')}`)
+    .then(res => res.json())
+    .then(res => {
+      this.props.setCurrentGamePlayer(res)
+    })
+    fetch(`http://localhost:3001/portfolio/${localStorage.getItem('currentGamePlayer')}`)
     .then(res => res.json())
     .then(res => {
       this.props.setPortfolio(res)
+      this.setState({portfolio: res})
     })
   }
 
@@ -92,7 +100,7 @@ class YourPortfolio extends React.Component {
 
     let total_value = 0.00
 
-    this.props.portfolio.map(holding => {
+    this.state.portfolio.map(holding => {
       total_value += holding.current_value
       return null
     })
@@ -132,7 +140,7 @@ class YourPortfolio extends React.Component {
     let order = this.state.order
     let cash = this.printCurrentCashValue()
 
-    let portfolio = this.props.portfolio
+    let portfolio = this.state.portfolio
     if (order === 'symbol') {
       return portfolio.sort(function(a, b) {
         return (a.ticker.toUpperCase() < b.ticker.toUpperCase()) ? -1 : (a.ticker.toUpperCase() > b.ticker.toUpperCase()) ? 1 : 0
@@ -185,7 +193,7 @@ class YourPortfolio extends React.Component {
 
     total_value += this.printCurrentCashValue()
 
-    return this.props.portfolio.map(holding => {
+    return this.state.portfolio.map(holding => {
       return (
         <Table.Row key={v4()} textAlign='right'>
           <Table.Cell textAlign='right'>{holding.ticker}</Table.Cell>
@@ -209,7 +217,7 @@ class YourPortfolio extends React.Component {
     let total_gain = 0.00
     let total_value = 0.00
 
-    this.props.portfolio.map(holding => {
+    this.state.portfolio.map(holding => {
       total_cost += holding.total_cost
       total_gain += holding.value_gain
       total_value += holding.current_value
@@ -240,11 +248,15 @@ class YourPortfolio extends React.Component {
   }
 
   render () {
+    console.log('portfolio', this.state.portfolio);
+    console.log('game player', this.props.currentGamePlayer);
     return (
       <div>
-        <h1>Your Portfolio</h1>
-        {this.props.portfolio ?
-          <Container>
+        <Container style={{padding: '20px'}}>
+          <Search history={this.props.history}/>
+        </Container>
+        {this.state.portfolio && this.props.currentGamePlayer ?
+          <Container >
             <Table>
               <Table.Header>
                 <Table.Row>
@@ -280,7 +292,8 @@ class YourPortfolio extends React.Component {
 function mapStateToProps(state) {
   return {
     currentGamePlayer: state.currentGamePlayer,
-    portfolio: state.portfolio
+    portfolio: state.portfolio,
+    currentUser: state.currentUser
   }
 }
 
@@ -291,6 +304,9 @@ function mapDispatchToProps(dispatch) {
     },
     updatePortfolio: (portfolio) => {
       dispatch({type: "UPDATE_PORTFOLIO", payload: portfolio})
+    },
+    setCurrentGamePlayer: (game_player) => {
+      dispatch({type: "SET_CURRENT_GAME_PLAYER", payload: game_player})
     }
   }
 }
