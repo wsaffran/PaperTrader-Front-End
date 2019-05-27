@@ -49,7 +49,6 @@ class Stage extends React.Component {
   }
 
   render() {
-    console.log(this.props.history.location.pathname.split('/').slice(-1).join());
     const { activeItem } = this.state
     return (
       <Container>

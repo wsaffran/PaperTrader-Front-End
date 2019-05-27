@@ -1,0 +1,17 @@
+.noBorder  {
+  padding-top: 0 !important;
+  border-top: 0 !important;
+}
+
+.noPaddingCell {
+  padding-bottom: 0 !important;
+  border-bottom: 0 !important;
+}
+
+.noPaddingColor {
+  padding: 0 !important;
+}
+
+.noPaddingSymbol {
+  padding-left: 0 !important;
+}
