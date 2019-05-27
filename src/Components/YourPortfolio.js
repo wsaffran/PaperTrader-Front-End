@@ -69,7 +69,8 @@ class YourPortfolio extends React.Component {
   // }
 
   state = {
-    order: 'symbol'
+    order: 'symbol',
+    value: 'value'
   }
 
   componentDidMount = () => {
@@ -100,16 +101,16 @@ class YourPortfolio extends React.Component {
     const current_cash_value = starting_cash - total_cost
     return (
       <Table.Row key={v4()}>
-        <Table.Cell>CASH</Table.Cell>
-        <Table.Cell>{this.numberWithCommas(current_cash_value)}</Table.Cell>
-        <Table.Cell>$1.00</Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell>$1.00</Table.Cell>
-        <Table.Cell>${this.numberWithCommas(current_cash_value)}</Table.Cell>
-        <Table.Cell>{/*${this.numberWithCommas(current_cash_value)}*/}</Table.Cell>
-        <Table.Cell>{this.numberWithCommas(current_cash_value / (total_value + current_cash_value) * 100)}%</Table.Cell>
+        <Table.Cell textAlign='right'>CASH</Table.Cell>
+        <Table.Cell textAlign='right'>{this.numberWithCommas(current_cash_value)}</Table.Cell>
+        <Table.Cell textAlign='right'>$1.00</Table.Cell>
+        <Table.Cell textAlign='right'></Table.Cell>
+        <Table.Cell textAlign='right'></Table.Cell>
+        <Table.Cell textAlign='right'></Table.Cell>
+        <Table.Cell textAlign='right'>$1.00</Table.Cell>
+        <Table.Cell textAlign='right'>${this.numberWithCommas(current_cash_value)}</Table.Cell>
+        <Table.Cell textAlign='right'>{/*${this.numberWithCommas(current_cash_value)}*/}</Table.Cell>
+        <Table.Cell textAlign='right'>{this.numberWithCommas(current_cash_value / (total_value + current_cash_value) * 100)}%</Table.Cell>
       </Table.Row>
     )
   }
@@ -187,12 +188,12 @@ class YourPortfolio extends React.Component {
     return this.props.portfolio.map(holding => {
       return (
         <Table.Row key={v4()} textAlign='right'>
-          <Table.Cell textAlign='center'>{holding.ticker}</Table.Cell>
-          <Table.Cell textAlign='center'>{holding.total_shares}</Table.Cell>
-          <Table.Cell textAlign='left'>${this.numberWithCommas(holding.current_stock_price)}</Table.Cell>
-          <Table.Cell textAlign='right'>TBD</Table.Cell>
+          <Table.Cell textAlign='right'>{holding.ticker}</Table.Cell>
+          <Table.Cell textAlign='right'>{holding.total_shares}</Table.Cell>
+          <Table.Cell textAlign='right'>${this.numberWithCommas(holding.current_stock_price)}</Table.Cell>
+          <Table.Cell textAlign='right'>${this.numberWithCommas(holding.day_change)}</Table.Cell>
           <Table.Cell textAlign='right'>${this.numberWithCommas(holding.value_gain)}</Table.Cell>
-          <Table.Cell textAlign='center'>{this.numberWithCommas((holding.current_value - holding.total_cost) / holding.total_cost * 100)}%</Table.Cell>
+          <Table.Cell textAlign='right'>{this.numberWithCommas((holding.current_value - holding.total_cost) / holding.total_cost * 100)}%</Table.Cell>
           <Table.Cell textAlign='right'>${this.numberWithCommas(holding.cost_basis)}</Table.Cell>
           <Table.Cell textAlign='right'>${this.numberWithCommas(holding.current_value)}</Table.Cell>
           <Table.Cell textAlign='right'>${this.numberWithCommas(holding.total_cost)}</Table.Cell>
@@ -217,23 +218,24 @@ class YourPortfolio extends React.Component {
 
     return (
       <Table.Row key={v4()}>
-        <Table.Cell>Total</Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell>TBD</Table.Cell>
-        <Table.Cell>${this.numberWithCommas(total_gain)}</Table.Cell>
-        <Table.Cell>{ this.numberWithCommas(( (total_value + this.printCurrentCashValue()) - (total_cost + this.printCurrentCashValue()) ) / (total_cost + this.printCurrentCashValue()) * 100) }%</Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell>${this.numberWithCommas(total_value + this.printCurrentCashValue())}</Table.Cell>
-        <Table.Cell>{/*${this.numberWithCommas(total_cost + this.printCurrentCashValue())}*/}</Table.Cell>
-        <Table.Cell>100%</Table.Cell>
+        <Table.Cell textAlign='right'>Total</Table.Cell>
+        <Table.Cell textAlign='right'></Table.Cell>
+        <Table.Cell textAlign='right'></Table.Cell>
+        <Table.Cell textAlign='right'>TBD</Table.Cell>
+        <Table.Cell textAlign='right'>${this.numberWithCommas(total_gain)}</Table.Cell>
+        <Table.Cell textAlign='right'>{ this.numberWithCommas(( (total_value + this.printCurrentCashValue()) - (total_cost + this.printCurrentCashValue()) ) / (total_cost + this.printCurrentCashValue()) * 100) }%</Table.Cell>
+        <Table.Cell textAlign='right'></Table.Cell>
+        <Table.Cell textAlign='right'>${this.numberWithCommas(total_value + this.printCurrentCashValue())}</Table.Cell>
+        <Table.Cell textAlign='right'>{/*${this.numberWithCommas(total_cost + this.printCurrentCashValue())}*/}</Table.Cell>
+        <Table.Cell textAlign='right'>100%</Table.Cell>
       </Table.Row>
     )
   }
 
   handleClick = (filter) => {
     this.setState({
-      order: filter
+      order: filter,
+      value: !this.state.value
     })
   }
 
@@ -249,7 +251,7 @@ class YourPortfolio extends React.Component {
                   <Table.HeaderCell onClick={() => this.handleClick('symbol')}>Symbol</Table.HeaderCell>
                   <Table.HeaderCell onClick={() => this.handleClick('shares')}>Shares</Table.HeaderCell>
                   <Table.HeaderCell onClick={() => this.handleClick('currentPrice')}>Current Price</Table.HeaderCell>
-                  <Table.HeaderCell onClick={() => this.handleClick('todayGainLoss')}>Today's Gain/Loss</Table.HeaderCell>
+                  <Table.HeaderCell onClick={() => this.handleClick('todayGainLoss')}>Day Change $</Table.HeaderCell>
                   <Table.HeaderCell onClick={() => this.handleClick('totalGainLoss')}>Total Gain/Loss</Table.HeaderCell>
                   <Table.HeaderCell onClick={() => this.handleClick('percentGainLoss')}>Percent Gain/Loss</Table.HeaderCell>
                   <Table.HeaderCell onClick={() => this.handleClick('costBasis')}>Cost Basis</Table.HeaderCell>
