@@ -40,7 +40,6 @@ class Game extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     const { activeItem } = this.props
     return (
       <div>
