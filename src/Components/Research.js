@@ -9,6 +9,12 @@ import { Header, Modal, Button, Icon } from 'semantic-ui-react'
 
 class Research extends React.Component {
 
+  handleStockChange = (stock) => {
+    this.setState({
+      ticker: stock.symbol
+    })
+  }
+
   handleClick = () => {
     this.props.closeModal()
   }
@@ -27,9 +33,15 @@ class Research extends React.Component {
               }
             />
           </div>
-          {this.props.selectedStockTicker ? <Graph/> : null}
-          <Header>{this.props.selectedStockTicker.symbol}</Header>
-          <p>{this.props.selectedStockTicker.name}</p>
+          {this.props.selectedStockTicker ?
+            <div>
+              <Header>{this.props.selectedStockTicker.symbol}</Header>
+              <p>{this.props.selectedStockTicker.name}</p>
+              <Graph />
+            </div>
+          :
+            null
+          }
 
           </Modal.Description>
         </Modal.Content>

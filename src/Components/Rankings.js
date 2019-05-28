@@ -17,7 +17,12 @@ class Rankings extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://localhost:3001/games/${this.props.currentGamePlayer.game.id}/rankings`)
+    fetch(`http://localhost:3001/game_players/${localStorage.getItem('currentGamePlayer')}`)
+    .then(res => res.json())
+    .then(res => {
+      this.props.setCurrentGamePlayer(res)
+    })
+    fetch(`http://localhost:3001/games/${this.props.match.params.currentGameId}/rankings`)
     .then(res => res.json())
     .then(res => {
       this.setState({rankings: res})
@@ -87,6 +92,9 @@ function mapDispatchToProps(dispatch) {
     },
     updatePortfolio: (portfolio) => {
       dispatch({type: "UPDATE_PORTFOLIO", payload: portfolio})
+    },
+    setCurrentGamePlayer: (game_player) => {
+      dispatch({type: "SET_CURRENT_GAME_PLAYER", payload: game_player})
     }
   }
 }

@@ -15,3 +15,9 @@
 .noPaddingSymbol {
   padding-left: 0 !important;
 }
+
+.noPadding2 {
+  padding-top: 5px;
+  margin-top: 20px;
+  border-top: 20px;
+}

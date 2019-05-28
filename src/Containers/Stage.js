@@ -30,6 +30,11 @@ class Stage extends React.Component {
         // this.props.setCurrentGamePlayer(response.game_players.find(game_player => game_player.game.id === this.props.currentGameId))
         // this.props.setCurrentGame(this.props.currentUser.games.find(game => game.id === parseInt(this.props.match.params.currentGameId)))
       })
+      fetch(`http://localhost:3001/games/${this.props.match.params.currentGameId}/rankings`)
+      .then(res => res.json())
+      .then(res => {
+        this.props.setRankings(res)
+      })
     }
   }
 
@@ -116,6 +121,9 @@ function mapDispatchToProps(dispatch) {
     },
     setPortfolio: (portfolio) => {
       dispatch({type: "SET_PORTFOLIO", payload: portfolio})
+    },
+    setRankings: (rankings) => {
+      dispatch({type: "SET_RANKINGS", payload: rankings})
     }
   }
 }

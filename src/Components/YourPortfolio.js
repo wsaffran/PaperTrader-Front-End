@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table, Container, Card, List, Grid, Image, Item, Dropdown } from 'semantic-ui-react'
+// import { Link } from 'react-router'
+import { Table, Container, Grid, Card, Image, Dropdown } from 'semantic-ui-react'
 import v4 from 'uuid'
 import Search from './Search'
 import './Table.css'
@@ -88,7 +89,6 @@ class YourPortfolio extends React.Component {
     fetch(`http://localhost:3001/portfolio/${localStorage.getItem('currentGamePlayer')}`)
     .then(res => res.json())
     .then(res => {
-      this.props.setPortfolio(res)
       this.setState({portfolio: res})
     })
   }
@@ -167,43 +167,41 @@ class YourPortfolio extends React.Component {
   //   })
   // }
 
-  getTotals = () => {
-
-    let total_cost = 0.00
-    let total_gain = 0.00
-    let total_value = 0.00
-
-    this.state.portfolio.map(holding => {
-      total_cost += holding.total_cost
-      total_gain += holding.value_gain
-      total_value += holding.current_value
-      return null
-    })
-
-    return (
-      <Table.Row key={v4()}>
-        <Table.Cell textAlign='right'>Total</Table.Cell>
-        <Table.Cell textAlign='right'></Table.Cell>
-        <Table.Cell textAlign='right'></Table.Cell>
-        <Table.Cell textAlign='right'>TBD</Table.Cell>
-        <Table.Cell textAlign='right'>${this.numberWithCommas(total_gain)}</Table.Cell>
-        <Table.Cell textAlign='right'>{ this.numberWithCommas(( (total_value + this.printCurrentCashValue()) - (total_cost + this.printCurrentCashValue()) ) / (total_cost + this.printCurrentCashValue()) * 100) }%</Table.Cell>
-        <Table.Cell textAlign='right'></Table.Cell>
-        <Table.Cell textAlign='right'>${this.numberWithCommas(total_value + this.printCurrentCashValue())}</Table.Cell>
-        <Table.Cell textAlign='right'>{/*${this.numberWithCommas(total_cost + this.printCurrentCashValue())}*/}</Table.Cell>
-        <Table.Cell textAlign='right'>100%</Table.Cell>
-      </Table.Row>
-    )
-  }
+  // getTotals = () => {
+  //
+  //   let total_cost = 0.00
+  //   let total_gain = 0.00
+  //   let total_value = 0.00
+  //
+  //   this.state.portfolio.map(holding => {
+  //     total_cost += holding.total_cost
+  //     total_gain += holding.value_gain
+  //     total_value += holding.current_value
+  //     return null
+  //   })
+  //
+  //   return (
+  //     <Table.Row key={v4()}>
+  //       <Table.Cell textAlign='right'>Total</Table.Cell>
+  //       <Table.Cell textAlign='right'></Table.Cell>
+  //       <Table.Cell textAlign='right'></Table.Cell>
+  //       <Table.Cell textAlign='right'>TBD</Table.Cell>
+  //       <Table.Cell textAlign='right'>${this.numberWithCommas(total_gain)}</Table.Cell>
+  //       <Table.Cell textAlign='right'>{ this.numberWithCommas(( (total_value + this.printCurrentCashValue()) - (total_cost + this.printCurrentCashValue()) ) / (total_cost + this.printCurrentCashValue()) * 100) }%</Table.Cell>
+  //       <Table.Cell textAlign='right'></Table.Cell>
+  //       <Table.Cell textAlign='right'>${this.numberWithCommas(total_value + this.printCurrentCashValue())}</Table.Cell>
+  //       <Table.Cell textAlign='right'>{/*${this.numberWithCommas(total_cost + this.printCurrentCashValue())}*/}</Table.Cell>
+  //       <Table.Cell textAlign='right'>100%</Table.Cell>
+  //     </Table.Row>
+  //   )
+  // }
 
 
   handleClick = (a, b) => {
-    console.log(b.value);
     this.setState({
       order: b.value,
     })
   }
-
 
   filteredPortfolio = () => {
     let order = this.state.order
@@ -223,16 +221,15 @@ class YourPortfolio extends React.Component {
       })
     } else if (order === 'mostValue') {
       return portfolio.sort(function(a, b) {
-        console.log(a);
         return (b.current_value < a.current_value) ? -1 : (b.current_value > a.current_value) ? 1 : 0
       })
     } else if (order === 'topPerformers') {
       return portfolio.sort(function(a, b) {
-        return (a.percent_gain < b.percent_gain) ? -1 : (a.percent_gain > b.percent_gain) ? 1 : 0
+        return (b.percent_gain < a.percent_gain) ? -1 : (b.percent_gain > a.percent_gain) ? 1 : 0
       })
     } else if (order === 'bottomPerformers') {
       return portfolio.sort(function(a, b) {
-        return (b.percent_gain < a.percent_gain) ? -1 : (b.percent_gain > a.percent_gain) ? 1 : 0
+        return (a.percent_gain < b.percent_gain) ? -1 : (a.percent_gain > b.percent_gain) ? 1 : 0
       })
     } else {
       return portfolio.sort(function(a, b) {
@@ -243,7 +240,70 @@ class YourPortfolio extends React.Component {
 
   renderPortfolioTotals = () => {
 
+    let netWorth = this.props.currentGamePlayer.cash_balance
+    let day_change = 0
+    let day_change_before = this.props.currentGamePlayer.cash_balance
+    let day_change_after = this.props.currentGamePlayer.cash_balance
+    this.state.portfolio.forEach(holding => {
+      netWorth += holding.current_value
+      day_change += holding.day_change
+      day_change_before += holding.current_value - holding.day_change
+      day_change_after += holding.current_value
+    })
+    let day_change_percent = (day_change_after - day_change_before) / day_change_before * 100
+
+    let total_change = netWorth - this.props.currentGamePlayer.game.starting_balance
+    let total_change_percent = total_change / this.props.currentGamePlayer.game.starting_balance * 100
+
+    let foundRanking = null
+
+    this.props.rankings.forEach(ranking => {
+      if (ranking.game_player_id === this.props.currentGamePlayer.id) {
+        foundRanking = ranking.ranking
+      }
+    })
+
+    return (
+      <Table.Row textAlign='center'>
+        <Table.Cell className='noPaddingColor'>
+          {day_change >= 0 ? <Image src={green}/> : <Image src={red}/>}
+        </Table.Cell>
+        <Table.Cell className='noPaddingSymbol' verticalAlign='top'>
+          <span style={{color: 'black'}}>TOTAL</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span style={{color: 'black'}}>100%</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>BUY</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>---</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>---</span> <br />
+          {day_change >= 0 ?
+            <span style={{color: 'gray', fontSize:'12px', color: "green"}}>${this.numberWithCommas(day_change)} / {this.numberWithCommas(day_change_percent)}%</span>
+          :
+            <span style={{color: 'gray', fontSize:'12px', color: "red"}}>${this.numberWithCommas(day_change)} / {this.numberWithCommas(day_change_percent)}%</span>
+          }
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>${this.numberWithCommas(netWorth)}</span> <br />
+          {total_change >= 0 ?
+            <span style={{color: 'gray', fontSize:'12px', color: 'green'}}>${this.numberWithCommas(total_change)} / {this.numberWithCommas(total_change_percent)}%</span>
+          :
+            <span style={{color: 'gray', fontSize:'12px', color: 'red'}}>${this.numberWithCommas(total_change)} / {this.numberWithCommas(total_change_percent)}%</span>
+          }
+        </Table.Cell>
+        <Table.Cell>
+          <span>{foundRanking}</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>RANKING</span> <br />
+        </Table.Cell>
+      </Table.Row>
+    )
   }
+
 
   renderPortfolioItems = () => {
     return this.filteredPortfolio().map(holding => {
@@ -262,18 +322,77 @@ class YourPortfolio extends React.Component {
           </Table.Cell>
           <Table.Cell verticalAlign='top'>
             <span>${this.numberWithCommas(holding.current_stock_price)}</span> <br />
-            <span style={{color: 'gray', fontSize:'12px'}}>${this.numberWithCommas(holding.day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+            {holding.stock_day_change >= 0 ?
+              <span style={{color: 'gray', fontSize:'12px', color: "green"}}>${this.numberWithCommas(holding.stock_day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+            :
+              <span style={{color: 'gray', fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.stock_day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+            }
+          </Table.Cell>
+          <Table.Cell verticalAlign='top'>
+            <span>${this.numberWithCommas(holding.current_stock_price)}</span> <br />
+            {holding.day_change >= 0 ?
+              <span style={{color: 'gray', fontSize:'12px', color: 'green'}}>${this.numberWithCommas(holding.day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+              :
+              <span style={{color: 'gray', fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+            }
           </Table.Cell>
           <Table.Cell verticalAlign='top'>
             <span>${this.numberWithCommas(holding.current_value)}</span> <br />
-            <span style={{color: 'gray', fontSize:'12px'}}>${this.numberWithCommas(holding.value_gain)} / {this.numberWithCommas(holding.percent_gain)}%</span>
+            {holding.value_gain >= 0 ?
+              <span style={{color: 'gray', fontSize:'12px', color: "green"}}>${this.numberWithCommas(holding.value_gain)} / {this.numberWithCommas(holding.percent_gain)}%</span>
+              :
+              <span style={{color: 'gray', fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.value_gain)} / {this.numberWithCommas(holding.percent_gain)}%</span>
+            }
           </Table.Cell>
           <Table.Cell>
-            <span># Players Holding</span> <br />
+            <span>{holding.players_holding}</span> <br />
+            <span style={{color: 'gray', fontSize:'12px'}}>PLAYERS</span>
           </Table.Cell>
         </Table.Row>
       )
     })
+  }
+
+  renderCashItems = () => {
+    let cash = this.props.currentGamePlayer.cash_balance
+    let netWorth = 0
+    this.props.rankings.forEach(ranking => {
+      if (ranking.game_player_id === this.props.currentGamePlayer.id) {
+        netWorth = ranking.current_value
+      }
+    })
+
+    return (
+      <Table.Row textAlign='center' key={v4()}>
+        <Table.Cell className='noPaddingColor'>
+          {cash >= 0 ? <Image src={green}/> : <Image src={red}/>}
+        </Table.Cell>
+        <Table.Cell className='noPaddingSymbol' verticalAlign='top'>
+          <span style={{color: 'black'}}>CASH</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>{this.numberWithCommas(cash)} SHARES</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span style={{color: 'black'}}>{this.numberWithCommas(cash / netWorth)}%</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>BUY</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>$1.00</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>$1.00</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>${this.numberWithCommas(cash)}</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell>
+          <span>{this.props.rankings.length}</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>PLAYERS</span>
+        </Table.Cell>
+      </Table.Row>
+    )
   }
 
   getOptions = () => {
@@ -290,7 +409,16 @@ class YourPortfolio extends React.Component {
   }
 
   renderDrowdown = () => {
-    return <Dropdown onChange={(a, b) => this.handleClick(a, b)} placeholder='Sort By' search selection options={this.getOptions()} />
+    return (
+      <Grid>
+        <Grid.Column className='Left floated left aligned column' width={4}>
+          <Dropdown onChange={(a, b) => this.handleClick(a, b)} placeholder='Sort By' search selection options={this.getOptions()} />
+        </Grid.Column>
+        <Grid.Column className='Left floated left aligned column'>
+          <Search history={this.props.history}/>
+        </Grid.Column>
+      </Grid>
+    )
   }
 
   renderTable = () => {
@@ -309,6 +437,10 @@ class YourPortfolio extends React.Component {
               <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>TYPE</span>
             </Table.Cell>
             <Table.Cell verticalAlign='top' className="noPaddingCell">
+              <span style={{color: 'black', fontSize:'12px', letterSpacing: '.5px'}}>DAY</span> <br />
+              <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>CHG/CHG%</span>
+            </Table.Cell>
+            <Table.Cell verticalAlign='top' className="noPaddingCell">
               <span style={{color: 'black', fontSize:'12px', letterSpacing: '.5px'}}>PRICE</span> <br />
               <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>CHG/CHG%</span>
             </Table.Cell>
@@ -322,6 +454,7 @@ class YourPortfolio extends React.Component {
             </Table.Cell>
           </Table.Row>
           {this.renderPortfolioItems()}
+          {this.renderCashItems()}
           {this.renderPortfolioTotals()}
         </Table.Body>
       </Table>
@@ -331,61 +464,27 @@ class YourPortfolio extends React.Component {
   render () {
     return (
       <Container >
-        <Search history={this.props.history}/>
-        <Card fluid>
-          <Card.Content header='YOUR PORTFOLIO' style={{backgroundColor: 'lightgray'}}/>
-          <Card.Content description={this.renderDrowdown()} />
-          <Card.Content className="noBorder" description={this.renderTable()} />
-        </Card>
+        {this.props.currentGamePlayer && this.props.rankings ?
+          <Card fluid>
+            <Card.Content header='YOUR PORTFOLIO' style={{backgroundColor: 'lightgray'}}/>
+            <Card.Content description={this.renderDrowdown()} />
+            <Card.Content className="noBorder" description={this.renderTable()} />
+          </Card>
+        :
+          null
+        }
       </Container >
     )
   }
 
-  // render () {
-  //   return (
-  //     <div>
-  //       <Container style={{padding: '20px'}}>
-  //         <Search history={this.props.history}/>
-  //       </Container>
-  //       {this.state.portfolio && this.props.currentGamePlayer ?
-  //         <Container >
-  //           <Table>
-  //             <Table.Header>
-  //               <Table.Row>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('symbol')}>Symbol</Table.HeaderCell>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('shares')}>Shares</Table.HeaderCell>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('currentPrice')}>Current Price</Table.HeaderCell>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('todayGainLoss')}>Day Change $</Table.HeaderCell>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('totalGainLoss')}>Total Gain/Loss</Table.HeaderCell>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('percentGainLoss')}>Percent Gain/Loss</Table.HeaderCell>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('costBasis')}>Cost Basis</Table.HeaderCell>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('currentValue')}>Current Value</Table.HeaderCell>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('totalCost')}>Total Cost</Table.HeaderCell>
-  //                 <Table.HeaderCell onClick={() => this.handleClick('allocation')}>Allocation</Table.HeaderCell>
-  //               </Table.Row>
-  //             </Table.Header>
-  //
-  //             <Table.Body>
-  //               {this.props.currentGamePlayer ? this.getPortfolio() : null}
-  //               {this.props.currentGamePlayer ? this.getCurrentCashValue() : null}
-  //               {this.props.currentGamePlayer ? this.getTotals() : null}
-  //             </Table.Body>
-  //           </Table>
-  //         </Container>
-  //       :
-  //         null
-  //       }
-  //
-  //     </div>
-  //   )
-  // }
 }
 
 function mapStateToProps(state) {
   return {
     currentGamePlayer: state.currentGamePlayer,
     portfolio: state.portfolio,
-    currentUser: state.currentUser
+    currentUser: state.currentUser,
+    rankings: state.rankings
   }
 }
 

@@ -30,7 +30,7 @@ class Overview extends React.Component {
         {this.props.currentUser && this.props.currentGamePlayer ?
           <Container>
             <YourProfile history={this.props.history}/>
-            <Rankings history={this.props.history}/>
+            <Rankings history={this.props.history} match={this.props.match}/>
           </Container>
         :
           null

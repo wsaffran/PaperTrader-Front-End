@@ -29,7 +29,6 @@ class YourProfile extends React.Component {
     fetch(`http://localhost:3001/portfolio/${this.props.currentGamePlayer.id}`)
     .then(res => res.json())
     .then(res => {
-      console.log("response");
       this.setState({portfolio: res})
     })
   }
