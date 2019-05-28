@@ -32,7 +32,7 @@ class LoginForm extends React.Component {
       } else {
         this.props.setCurrentUser(response)
         localStorage.setItem("token", response.token)
-        this.props.history.push(`/game/your`)
+        this.props.history.push(`/game`)
       }
     })
   }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux'
+import { Input, Grid } from 'semantic-ui-react'
 // import history from '../history';
 // import './Modal.css';
 // import Autocomplete from "./Autocomplete.jsx";
@@ -29,10 +30,18 @@ class Transact extends React.Component {
     })
   }
 
-  handleChange = (event) => {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
+  handleChange = (event, foundHolding) => {
+    if (event.target.name === 'shares' && event.target.value <= 0) {
+      this.setState({shares: 1})
+    } else if (event.target.name === 'shares' &&  (this.props.currentGamePlayer.cash_balance - (this.state.price * this.state.shares)) < this.state.price  && this.state.action === 'buy') {
+      this.setState({shares: Math.floor(this.props.currentGamePlayer.cash_balance / this.state.price) - 1})
+    } else if (event.target.name === 'shares' &&  this.state.shares >= foundHolding.total_shares  && this.state.action === 'sell') {
+      this.setState({shares: foundHolding.total_shares - 1})
+    } else {
+      this.setState({
+        [event.target.name]: event.target.value
+      })
+    }
   }
 
   handleSubmit = (event) => {
@@ -167,39 +176,101 @@ class Transact extends React.Component {
     this.props.history.push('/loading')
   }
 
+  numberWithCommas = (x, y) => {
+    const floatNum = parseFloat(x).toFixed(y)
+    const num = floatNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num
+  }
+
   render() {
+    let foundHolding = this.props.portfolio.find(item => item.ticker === this.props.selectedStockTicker.symbol)
     return (
       <div id="InTransact">
       <Modal.Content image scrolling>
         <Modal.Description>
           <h1>{this.props.selectedStockTicker.name}</h1>
           <form onSubmit={this.handleSubmit}>
-            <label>
-              How many shares?
-              <input onChange={this.handleChange} type="number" name="shares" placeholder="shares" value={this.state.shares} />
-            </label>
-            <select name="action" value={this.state.action} onChange={this.handleChange}>
-              <option value="buy">buy</option>
-              <option value="sell">sell</option>
-            </select>
+            <Input focus onChange={(e) => this.handleChange(e, foundHolding)} type="number" name="shares" value={this.state.shares}/>
+            {foundHolding ?
+              <Button.Group style={{padding: '15px'}}>
 
-            <button type="submit">Submit</button>
+                {this.state.action === 'buy' ?
+                  <div>
+                    <Button active onClick={this.handleChange} name="action" value={'buy'}>Buy</Button>
+                    <Button onClick={this.handleChange} name="action" value={'sell'}>Sell</Button>
+                  </div>
+                  :
+                  <div>
+                    <Button onClick={this.handleChange} name="action" value={'buy'}>Buy</Button>
+                    <Button active onClick={this.handleChange} name="action" value={'sell'}>Sell</Button>
+                  </div>
+                }
+              </Button.Group>
+            :
+              <Button.Group style={{padding: '15px'}}>
+                  <Button active onClick={this.handleChange} name="action" value={'buy'}>Buy</Button>
+              </Button.Group>
+            }
           </form>
-          <p>Price per share: ${this.state.price}</p>
-          <p>Shares: {this.state.shares}</p>
-          <p>Total: ${this.state.price * this.state.shares}</p>
-          <p>Total Cash: ${this.props.currentGamePlayer.cash_balance}</p>
-          <p>Remaing Cash: ${this.props.currentGamePlayer.cash_balance - (this.state.price * this.state.shares)}</p>
+          <Grid celled>
+            <Grid.Row>
+              <Grid.Column width={3}>
+                <span>${this.numberWithCommas(this.state.price, 2)}</span> <br />
+                <span style={{color: 'gray'}}>Price per share</span>
+              </Grid.Column>
+              <Grid.Column width={3}>
+                <span>{this.numberWithCommas(this.state.shares, 0)}</span> <br />
+                <span style={{color: 'gray'}}>Shares</span>
+              </Grid.Column>
+              <Grid.Column width={3}>
+                {foundHolding ?
+                  <div>
+                    <span>{this.numberWithCommas(foundHolding.total_shares, 0)}</span> <br />
+                    <span style={{color: 'gray'}}>Your shares</span>
+                  </div>
+                  :
+                  <span>You own no shares</span>
+                }
+              </Grid.Column>
+            </Grid.Row>
+
+            <Grid.Row>
+              <Grid.Column width={3}>
+                <span>${this.numberWithCommas(this.state.price * this.state.shares, 2)}</span> <br />
+                <span style={{color: 'gray'}}>Total cost</span>
+              </Grid.Column>
+              <Grid.Column width={3}>
+                <span>${this.numberWithCommas(this.props.currentGamePlayer.cash_balance - (this.state.price * this.state.shares), 2)}</span> <br />
+                <span style={{color: 'gray'}}>Cash avaliable</span>
+              </Grid.Column>
+              <Grid.Column width={3}>
+                {foundHolding ?
+                  <div>
+                    <span>${this.numberWithCommas(foundHolding.cost_basis, 2)}</span> <br />
+                    <span style={{color: 'gray'}}>Your cost basis</span>
+                  </div>
+                  :
+                  null
+                }
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
         </Modal.Description>
       </Modal.Content>
       <Modal.Actions>
         <div>
           <Button primary onClick={() => this.props.handleClick('research')}>
-            Back <Icon name='chevron right' />
+            <Icon name='chevron left' /> Back
           </Button>
-          <Button primary onClick={this.handleClick}>
-            Buy <Icon name='chevron right' />
-          </Button>
+          {this.state.action === 'buy' ?
+            <Button primary onClick={this.handleClick}>
+              Buy <Icon name='chevron right' />
+            </Button>
+          :
+            <Button primary onClick={this.handleClick}>
+              Sell <Icon name='chevron right' />
+            </Button>
+          }
         </div>
       </Modal.Actions>
       </div>

@@ -11,9 +11,9 @@ class FindGameComponent extends React.Component {
       return (
         <Table.Row key={game.id}>
           <Table.Cell>{game.name}</Table.Cell>
-          <Table.Cell>{game.starting_balance}</Table.Cell>
-          <Table.Cell>{game.start_date}</Table.Cell>
-          <Table.Cell>{game.end_date}</Table.Cell>
+          <Table.Cell>${this.numberWithCommas(game.starting_balance)}</Table.Cell>
+          <Table.Cell>{this.dateFormat(game.start_date)}</Table.Cell>
+          <Table.Cell>{this.dateFormat(game.end_date)}</Table.Cell>
           <Table.Cell>{game.game_players.length}</Table.Cell>
           {
             (this.props.currentUser.games && this.props.currentUser.games.find(userGame => userGame.id === game.id)) ?
@@ -65,9 +65,23 @@ class FindGameComponent extends React.Component {
     })
   }
 
+  numberWithCommas = (x) => {
+    const floatNum = parseFloat(x).toFixed(0)
+    const num = floatNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num
+  }
+
+  dateFormat = (date) => {
+    let newDate = date.split('-')
+    let showDate = `${newDate[1]}/${newDate[2]}/${newDate[0]}`
+    return showDate
+
+  }
+
   render() {
     return (
-      <Container>
+      <Container style={{padding: "30px"}}>
+        <h1>FIND GAMES</h1>
         <Table>
           <Table.Header>
             <Table.Row>
@@ -75,7 +89,7 @@ class FindGameComponent extends React.Component {
               <Table.HeaderCell>Starting Balance</Table.HeaderCell>
               <Table.HeaderCell>Start Date</Table.HeaderCell>
               <Table.HeaderCell>End Date</Table.HeaderCell>
-              <Table.HeaderCell>Number of Players</Table.HeaderCell>
+              <Table.HeaderCell>Players</Table.HeaderCell>
               <Table.HeaderCell>Join Game</Table.HeaderCell>
             </Table.Row>
           </Table.Header>

@@ -22,6 +22,19 @@ class YourGameComponent extends React.Component {
     }
   }
 
+  numberWithCommas = (x) => {
+    const floatNum = parseFloat(x).toFixed(0)
+    const num = floatNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num
+  }
+
+  dateFormat = (date) => {
+    let newDate = date.split('-')
+    let showDate = `${newDate[1]}/${newDate[2]}/${newDate[0]}`
+    return showDate
+
+  }
+
   getYourGameRows = () => {
     if (this.props.currentUser.games) {
       return this.props.currentUser.games.map(game => {
@@ -29,11 +42,10 @@ class YourGameComponent extends React.Component {
           // <Link className="item" to="/stage">
           <Table.Row key={v4()} onClick={() => this.handleGameClick(game)}>
             <Table.Cell>{game.name}</Table.Cell>
-            <Table.Cell>0.98%</Table.Cell>
-            <Table.Cell>$556.90</Table.Cell>
-            <Table.Cell>3</Table.Cell>
-            <Table.Cell>07/10/19</Table.Cell>
-            <Table.Cell>3</Table.Cell>
+            <Table.Cell>${this.numberWithCommas(game.starting_balance)}</Table.Cell>
+            <Table.Cell>{this.dateFormat(game.start_date)}</Table.Cell>
+            <Table.Cell>{this.dateFormat(game.end_date)}</Table.Cell>
+            <Table.Cell>{game.game_players.length}</Table.Cell>
             <Table.Cell>
               <Link to={`/stage/${game.id}/overview`}>
                 <button onClick={() => this.handleGameClick(game)}>
@@ -60,16 +72,16 @@ class YourGameComponent extends React.Component {
 
   render() {
     return (
-      <Container>
+      <Container style={{padding: "30px"}}>
+        <h1>YOUR GAMES</h1>
         <Table>
           <Table.Header>
             <Table.Row>
               <Table.HeaderCell>Name</Table.HeaderCell>
-              <Table.HeaderCell>Today's Returns</Table.HeaderCell>
-              <Table.HeaderCell>Total Returns</Table.HeaderCell>
-              <Table.HeaderCell>Rank</Table.HeaderCell>
-              <Table.HeaderCell>End</Table.HeaderCell>
-              <Table.HeaderCell>Number of Players</Table.HeaderCell>
+              <Table.HeaderCell>Starting Balance</Table.HeaderCell>
+              <Table.HeaderCell>Start Date</Table.HeaderCell>
+              <Table.HeaderCell>End Date</Table.HeaderCell>
+              <Table.HeaderCell>Players</Table.HeaderCell>
               <Table.HeaderCell>Enter Game</Table.HeaderCell>
             </Table.Row>
           </Table.Header>

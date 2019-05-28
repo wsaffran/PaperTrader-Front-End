@@ -231,6 +231,14 @@ class YourPortfolio extends React.Component {
       return portfolio.sort(function(a, b) {
         return (a.percent_gain < b.percent_gain) ? -1 : (a.percent_gain > b.percent_gain) ? 1 : 0
       })
+    } else if (order === 'daysBest') {
+      return portfolio.sort(function(a, b) {
+        return (b.day_change_percent < a.day_change_percent) ? -1 : (b.day_change_percent > a.day_change_percent) ? 1 : 0
+      })
+    } else if (order === 'daysWorst') {
+      return portfolio.sort(function(a, b) {
+        return (a.day_change_percent < b.day_change_percent) ? -1 : (a.day_change_percent > b.day_change_percent) ? 1 : 0
+      })
     } else {
       return portfolio.sort(function(a, b) {
         return (a.ticker.toUpperCase() < b.ticker.toUpperCase()) ? -1 : (a.ticker.toUpperCase() > b.ticker.toUpperCase()) ? 1 : 0
@@ -373,7 +381,7 @@ class YourPortfolio extends React.Component {
         </Table.Cell>
         <Table.Cell verticalAlign='top'>
           <span style={{color: 'black'}}>{this.numberWithCommas(cash / netWorth)}%</span> <br />
-          <span style={{color: 'gray', fontSize:'12px'}}>BUY</span>
+          <span style={{color: 'gray', fontSize:'12px'}}>CASH</span>
         </Table.Cell>
         <Table.Cell verticalAlign='top'>
           <span>$1.00</span> <br />
@@ -402,6 +410,8 @@ class YourPortfolio extends React.Component {
         {key: 'Least Value', text: 'Least Value', value: 'leastValue'},
         {key: 'Top Performers', text: 'Top Performers', value: 'topPerformers'},
         {key: 'Bottom Performers', text: 'Bottom Performers', value: 'bottomPerformers'},
+        {key: "Day's Best", text: "Day's Best", value: 'daysBest'},
+        {key: "Day's Worst", text: "Day's Worst", value: 'daysWorst'},
         {key: 'Ticker (A-Z)', text: 'Ticker (A-Z)', value: 'alphabetical'},
         {key: 'Ticker (Z-A)', text: 'Ticker (Z-A)', value: 'alphabeticalReverse'}
       ]
@@ -415,7 +425,7 @@ class YourPortfolio extends React.Component {
           <Dropdown onChange={(a, b) => this.handleClick(a, b)} placeholder='Sort By' search selection options={this.getOptions()} />
         </Grid.Column>
         <Grid.Column className='Left floated left aligned column'>
-          <Search history={this.props.history}/>
+          <Search history={this.props.history} portfolio={this.state.portfolio}/>
         </Grid.Column>
       </Grid>
     )
@@ -465,7 +475,7 @@ class YourPortfolio extends React.Component {
     return (
       <Container >
         {this.props.currentGamePlayer && this.props.rankings ?
-          <Card fluid>
+          <Card className="fluid">
             <Card.Content header='YOUR PORTFOLIO' style={{backgroundColor: 'lightgray'}}/>
             <Card.Content description={this.renderDrowdown()} />
             <Card.Content className="noBorder" description={this.renderTable()} />

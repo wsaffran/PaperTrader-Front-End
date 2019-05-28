@@ -35,16 +35,29 @@ class Rankings extends React.Component {
 
   renderRankings = () => {
     return this.state.rankings.map(ranking => {
-      return (
-        <Table.Row key={v4()} value={ranking.game_player_id} onClick={() => this.handleClick(ranking.game_player_id)}>
-          <Table.Cell>#{ranking.ranking}</Table.Cell>
-          <Table.Cell>{ranking.username}</Table.Cell>
-          <Table.Cell>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>
-          <Table.Cell>${this.numberWithCommas(ranking.current_value)}</Table.Cell>
-          <Table.Cell>${this.numberWithCommas(ranking.returns)}</Table.Cell>
-          <Table.Cell>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
-        </Table.Row>
-      )
+      if (ranking.game_player_id === this.props.currentGamePlayer.id) {
+        return (
+          <Table.Row style={{backgroundColor: "lightblue"}} key={v4()} value={ranking.game_player_id} onClick={() => this.handleClick(ranking.game_player_id)}>
+            <Table.Cell>#{ranking.ranking}</Table.Cell>
+            <Table.Cell>{ranking.username}</Table.Cell>
+            <Table.Cell>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>
+            <Table.Cell>${this.numberWithCommas(ranking.current_value)}</Table.Cell>
+            <Table.Cell>${this.numberWithCommas(ranking.returns)}</Table.Cell>
+            <Table.Cell>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
+          </Table.Row>
+        )
+      } else {
+        return (
+          <Table.Row key={v4()} value={ranking.game_player_id} onClick={() => this.handleClick(ranking.game_player_id)}>
+            <Table.Cell>#{ranking.ranking}</Table.Cell>
+            <Table.Cell>{ranking.username}</Table.Cell>
+            <Table.Cell>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>
+            <Table.Cell>${this.numberWithCommas(ranking.current_value)}</Table.Cell>
+            <Table.Cell>${this.numberWithCommas(ranking.returns)}</Table.Cell>
+            <Table.Cell>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
+          </Table.Row>
+        )
+      }
     })
   }
 
