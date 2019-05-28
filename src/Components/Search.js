@@ -45,7 +45,7 @@ class Search extends React.Component {
               this.state.status === 'research' ?
               <Research closeModal={this.closeModal} handleClick={this.handleClick} labels={this.state.labels} data={this.state.data} label={this.state.label}/>
               :
-              <Transact closeModal={this.closeModal} handleClick={this.handleClick} history={this.props.history}/>
+              <Transact closeModal={this.closeModal} handleClick={this.handleClick} history={this.props.history} portfolio={this.props.portfolio}/>
             }
           </Modal.Content>
         </Modal>

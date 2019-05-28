@@ -34,12 +34,12 @@ class YourProfile extends React.Component {
   }
 
   getRandomColor = () => {
-  let letters = '0123456789ABCDEF';
-  let color = '#';
-  for (var i = 0; i < 6; i++) {
-    color += letters[Math.floor(Math.random() * 16)];
-  }
-  return color;
+    let letters = '0123456789ABCDEF';
+    let color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
 }
 
 
@@ -143,7 +143,7 @@ class YourProfile extends React.Component {
                 <Item.Content>
                   <Item.Meta>CASH POSITION</Item.Meta>
                   <Item.Description>
-                    ${this.numberWithCommas(ranking.cash_value)}
+                    ${this.numberWithCommas(ranking.cash_value, 2)}
                   </Item.Description>
                 </Item.Content>
               </Item>
@@ -178,7 +178,7 @@ class YourProfile extends React.Component {
 
       <Container>
         {this.props.currentGamePlayer && this.state.portfolio ?
-          <Card fluid>
+          <Card className="fluid">
             <Card.Content header='Your Profile' style={{backgroundColor: 'lightgray'}}/>
             <Card.Content description={this.getRanking()} />
           </Card>

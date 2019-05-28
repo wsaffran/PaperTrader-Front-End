@@ -1,5 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Container } from 'semantic-ui-react'
+
 // import history from '../history';
 
 
@@ -57,7 +59,7 @@ class CreateGameForm extends React.Component {
           })                                          // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
         }
         this.props.updateActiveItem('yourGames')
-        this.props.history.push('/game/your')
+        this.props.history.push('/game')
 
       })
     }, () => {
@@ -73,19 +75,22 @@ class CreateGameForm extends React.Component {
 
   render () {
     return (
-      <form onSubmit={this.handleSubmit}>
-        <input onChange={this.handleChange} type="text" name="name" placeholder="name" value={this.state.name} />
-        <input onChange={this.handleChange} type="number" name="startingBalance" placeholder="player starting balance" value={this.state.startingBalance} />
-        <input onChange={this.handleChange} type="date" name="startDate" placeholder="start date"
-           value={this.state.startDate}
-           min="2018-01-01" max="2020-12-31"/>
-         <p>Start Date</p>
-         <input onChange={this.handleChange} type="date" name="endDate" placeholder="end date"
-           value={this.state.endDate}
-           min="2018-01-01" max="2020-12-31"/>
-         <p>End Date</p>
-        <button type="submit">Submit</button>
-      </form>
+      <Container style={{padding: "30px"}}>
+        <h1>Create A Game</h1>
+        <form onSubmit={this.handleSubmit}>
+          <input onChange={this.handleChange} type="text" name="name" placeholder="name" value={this.state.name} />
+          <input onChange={this.handleChange} type="number" name="startingBalance" placeholder="player starting balance" value={this.state.startingBalance} />
+          <input onChange={this.handleChange} type="date" name="startDate" placeholder="start date"
+            value={this.state.startDate}
+            min="2018-01-01" max="2020-12-31"/>
+          <p>Start Date</p>
+          <input onChange={this.handleChange} type="date" name="endDate" placeholder="end date"
+            value={this.state.endDate}
+            min="2018-01-01" max="2020-12-31"/>
+          <p>End Date</p>
+          <button type="submit">Submit</button>
+        </form>
+      </Container>
     )
   }
 

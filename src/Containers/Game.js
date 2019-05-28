@@ -45,21 +45,18 @@ class Game extends React.Component {
   render() {
     // const { activeItem } = this.props
     return (
-      <Container>
-        <Grid>
+      <Container fluid>
+        <Grid fluid>
           <Grid.Row columns={2}>
-            <Grid.Column width={10}>
+            <Grid.Column width={11}>
               <Grid.Row>
-                <h1>Your Games</h1>
                 <YourGameComponent history={this.props.history}/>
               </Grid.Row>
               <Grid.Row>
-                <h1>Find A Game</h1>
                 <FindGameComponent history={this.props.history}/>
               </Grid.Row>
             </Grid.Column>
-            <Grid.Column width={6}>
-              <h1>Create A Game</h1>
+            <Grid.Column width={5}>
               <CreateGameForm history={this.props.history}/>
             </Grid.Column>
           </Grid.Row>
