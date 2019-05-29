@@ -10,7 +10,12 @@ const defaultState = {
   currentGameId: null,
   isModalShowing: false,
   portfolio: null,
-  rankings: []
+  rankings: [],
+  timeFrame: '1d',
+  data: [],
+  labels: [],
+  label: '',
+  stock: null
 }
 
 function reducer(state = defaultState, action){
@@ -47,7 +52,16 @@ function reducer(state = defaultState, action){
       return {...state, rankings: [...state.rankings, action.payload]}
     case "SET_RANKINGS":
       return {...state, rankings: action.payload}
-
+    case "SET_TIME_FRAME":
+      return {...state, timeFrame: action.payload}
+    case "SET_DATA":
+      return {...state, data: action.payload}
+    case "SET_LABELS":
+      return {...state, labels: action.payload}
+    case "SET_LABEL":
+      return {...state, label: action.payload}
+    case "SET_STOCK":
+      return {...state, stock: action.payload}
 
     default:
       return state

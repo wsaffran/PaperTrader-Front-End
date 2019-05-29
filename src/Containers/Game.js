@@ -45,8 +45,8 @@ class Game extends React.Component {
   render() {
     // const { activeItem } = this.props
     return (
-      <Container fluid>
-        <Grid fluid>
+      <Container className='fluid'>
+        <Grid className='fluid'>
           <Grid.Row columns={2}>
             <Grid.Column width={11}>
               <Grid.Row>

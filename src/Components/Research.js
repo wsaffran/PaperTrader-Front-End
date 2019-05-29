@@ -19,12 +19,13 @@ class Research extends React.Component {
     this.props.closeModal()
   }
 
+
   render() {
     return (
       <div id="inResearch">
         <Modal.Content image scrolling>
           <Modal.Description>
-          <div style={{marginBottom: "70px"}}>
+          <div style={{marginBottom: "20px"}}>
             <Autocomplete
               suggestions={
                 symbols.map(symbol => {
@@ -35,8 +36,7 @@ class Research extends React.Component {
           </div>
           {this.props.selectedStockTicker ?
             <div>
-              <Header>{this.props.selectedStockTicker.symbol}</Header>
-              <p>{this.props.selectedStockTicker.name}</p>
+              <Header>{this.props.selectedStockTicker.name}</Header>
               <Graph />
             </div>
           :
@@ -50,9 +50,15 @@ class Research extends React.Component {
             <Button primary onClick={() => this.handleClick()}>
               Back <Icon name='chevron right' />
             </Button>
-            <Button primary onClick={() => this.props.handleClick('transact')}>
-              Transact <Icon name='chevron right' />
-          </Button>
+            {this.props.selectedStockTicker ?
+              <Button primary onClick={() => this.props.handleClick('transact')}>
+                Transact <Icon name='chevron right' />
+              </Button>
+              :
+              <Button disabled primary onClick={() => this.props.handleClick('transact')}>
+                Transact <Icon name='chevron right' />
+              </Button>
+            }
           </div>
         </Modal.Actions>
       </div>

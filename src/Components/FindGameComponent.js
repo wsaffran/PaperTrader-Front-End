@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { Table, Container } from 'semantic-ui-react'
+import { Table, Container, Button } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 // import v4 from 'uuid'
 
@@ -21,9 +21,9 @@ class FindGameComponent extends React.Component {
             :
             <Table.Cell>
               <Link to="/game/your">
-                <button onClick={() => this.handleClick(game)}>
+                <Button onClick={() => this.handleClick(game)}>
                   Join Game {game.name}
-                </button>
+                </Button>
               </Link>
             </Table.Cell>
           }

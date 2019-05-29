@@ -61,6 +61,10 @@ input {
   width: 300px;
 }
 
+.input-dropdown {
+  width: 315px;
+}
+
 .no-suggestions {
   color: #999;
   padding: 0.5rem;
@@ -68,14 +72,16 @@ input {
 
 .suggestions {
   border: 1px solid #999;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
   border-top-width: 0;
   list-style: none;
   margin-top: 0;
-  max-height: 68px;
+  max-height: 100px;
   overflow-y: auto;
   padding-left: 0;
   width: calc(300px + 1rem);
-  position: absolute;
+  position: relative;
 }
 
 .suggestions li {
@@ -84,10 +90,10 @@ input {
 
 .suggestion-active,
 .suggestions li:hover {
-  background-color: #008f68;
-  color: #fae042;
+  background-color: lightgray;
+  color: black;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 500;
 }
 
 .suggestions li:not(:last-of-type) {
