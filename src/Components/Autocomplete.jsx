@@ -2,8 +2,7 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from 'react-redux'
 import symbols from './symbols'
-import { Input, Form, Dropdown } from 'semantic-ui-react'
-import v4 from 'uuid'
+import { Input, Form } from 'semantic-ui-react'
 
 class Autocomplete extends Component {
   static propTypes = {
@@ -65,8 +64,6 @@ class Autocomplete extends Component {
     let currSymbol = symbols.find(symbol => {
       return symbol.symbol === e.currentTarget.innerText.split(' ')[0]
     })
-
-    console.log(currSymbol);
 
     fetch(`https://api.iextrading.com/1.0/stock/${currSymbol.symbol.toLowerCase()}/chart/1d`)
     .then(res => res.json())

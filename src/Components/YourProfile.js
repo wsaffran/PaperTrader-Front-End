@@ -1,13 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Container, Grid, Card, Item } from 'semantic-ui-react'
+import { Container, Grid, Card, Item, Loader } from 'semantic-ui-react'
 import { Pie } from 'react-chartjs-2'
 
 class YourProfile extends React.Component {
 
   state = {
     rankings: [],
-    portfolio: []
+    portfolio: [],
+    isLoading: true
   }
 
   numberWithCommas = (x, y) => {
@@ -24,7 +25,7 @@ class YourProfile extends React.Component {
     fetch(`http://localhost:3001/games/${this.props.currentGamePlayer.game.id}/rankings`)
     .then(res => res.json())
     .then(res => {
-      this.setState({rankings: res})
+      this.setState({rankings: res, isLoading: false})
     })
     fetch(`http://localhost:3001/portfolio/${this.props.currentGamePlayer.id}`)
     .then(res => res.json())
@@ -192,7 +193,13 @@ class YourProfile extends React.Component {
         {this.props.currentGamePlayer && this.state.portfolio ?
           <Card className="fluid">
             <Card.Content header='Your Profile' style={{backgroundColor: 'lightgray'}}/>
-            <Card.Content description={this.getRanking()} />
+            {this.state.isLoading ?
+              <Card.Content>
+                <Loader active inline='centered' />
+              </Card.Content>
+              :
+              <Card.Content description={this.getRanking()} />
+            }
           </Card>
         :
           null

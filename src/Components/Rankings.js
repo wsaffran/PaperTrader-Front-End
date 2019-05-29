@@ -1,13 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table, Container } from 'semantic-ui-react'
+import { Table, Container, Loader } from 'semantic-ui-react'
 import v4 from 'uuid'
 
 
 class Rankings extends React.Component {
 
   state = {
-    rankings: []
+    rankings: [],
+    isLoading: true
   }
 
   numberWithCommas = (x) => {
@@ -25,7 +26,7 @@ class Rankings extends React.Component {
     fetch(`http://localhost:3001/games/${this.props.match.params.currentGameId}/rankings`)
     .then(res => res.json())
     .then(res => {
-      this.setState({rankings: res})
+      this.setState({rankings: res, isLoading: false})
     })
   }
 
@@ -78,9 +79,19 @@ class Rankings extends React.Component {
               </Table.Row>
             </Table.Header>
 
-            <Table.Body>
-              {this.props.currentGamePlayer ? this.renderRankings() : null}
-            </Table.Body>
+            {this.state.isLoading ?
+              <Table.Body>
+                <Table.Row>
+                  <Table.HeaderCell colSpan={16} style={{padding: '10px'}} >
+                    <Loader active inline='centered' />
+                  </Table.HeaderCell>
+                </Table.Row>
+              </Table.Body>
+              :
+              <Table.Body>
+                {this.props.currentGamePlayer ? this.renderRankings() : null}
+              </Table.Body>
+            }
           </Table>
         </Container>
       </div>

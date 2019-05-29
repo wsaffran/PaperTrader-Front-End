@@ -83,7 +83,11 @@ class Stage extends React.Component {
               Rankings
             </Menu.Item>
 
-            <Menu.Item name='gameInfo' active={activeItem === 'gameInfo'} onClick={this.handleItemClick}>
+            <Menu.Item
+              name='gameInfo'
+              active={activeItem === 'gameInfo'}
+              onClick={this.handleItemClick}
+            >
               Game Info
             </Menu.Item>
           </Menu>
