@@ -15,7 +15,8 @@ class Transact extends React.Component {
     action: 'buy',
     shares: 1,
     price: null,
-    latestTime: ''
+    latestTime: '',
+    errors: false
   }
 
   componentDidMount() {
@@ -31,17 +32,41 @@ class Transact extends React.Component {
   }
 
   handleChange = (event, foundHolding) => {
-    if (event.target.name === 'shares' && event.target.value <= 0) {
-      this.setState({shares: 1})
-    } else if (event.target.name === 'shares' &&  (this.props.currentGamePlayer.cash_balance - (this.state.price * this.state.shares)) < this.state.price  && this.state.action === 'buy') {
-      this.setState({shares: Math.floor(this.props.currentGamePlayer.cash_balance / this.state.price) - 1})
-    } else if (event.target.name === 'shares' &&  this.state.shares >= foundHolding.total_shares  && this.state.action === 'sell') {
-      this.setState({shares: foundHolding.total_shares - 1})
-    } else {
-      this.setState({
-        [event.target.name]: event.target.value
-      })
+    let foundHoldingShares2 = this.props.portfolio.find(item => item.ticker === this.props.selectedStockTicker.symbol)
+    let errors
+    let nextShares = parseInt(event.target.value)
+    let maxSharesBuy = Math.floor(this.props.currentGamePlayer.cash_balance / (this.state.price))
+
+    if (event.target.value === 'sell') {
+      if (this.state.shares > foundHoldingShares2.total_shares) {
+        errors = true
+      } else if (this.state.shares <= 0) {
+        errors = true
+      }
+    } else if (event.target.value === 'buy') {
+      if (this.state.shares > maxSharesBuy) {
+        errors = true
+      } else if (this.state.shares <= 0) {
+        errors = true
+      }
+    } else if (this.state.action === 'buy') {
+      if (nextShares <= 0) {
+        errors = true
+      } else if (nextShares > maxSharesBuy) {
+        errors = true
+      }
+    } else if (this.state.action === 'sell') {
+      if (nextShares <= 0) {
+        errors = true
+      } else if (nextShares > foundHolding.total_shares) {
+        errors = true
+      }
     }
+
+    this.setState({
+      errors: errors,
+      [event.target.name]: event.target.value
+    })
   }
 
   handleSubmit = (event) => {
@@ -190,7 +215,11 @@ class Transact extends React.Component {
         <Modal.Description>
           <h1>{this.props.selectedStockTicker.name}</h1>
           <form onSubmit={this.handleSubmit}>
-            <Input focus onChange={(e) => this.handleChange(e, foundHolding)} type="number" name="shares" value={this.state.shares}/>
+            {this.state.errors ?
+              <Input error onChange={(e) => this.handleChange(e, foundHolding)} type="number" name="shares" value={this.state.shares}/>
+              :
+              <Input focus onChange={(e) => this.handleChange(e, foundHolding)} type="number" name="shares" value={this.state.shares}/>
+            }
             {foundHolding ?
               <Button.Group style={{padding: '15px'}}>
 
@@ -262,15 +291,31 @@ class Transact extends React.Component {
           <Button primary onClick={() => this.props.handleClick('research')}>
             <Icon name='chevron left' /> Back
           </Button>
-          {this.state.action === 'buy' ?
-            <Button primary onClick={this.handleClick}>
-              Buy <Icon name='chevron right' />
-            </Button>
-          :
-            <Button primary onClick={this.handleClick}>
-              Sell <Icon name='chevron right' />
+          {this.state.errors ?
+          <div style={{display: 'inline'}}>
+            {this.state.action === 'buy' ?
+              <Button disabled primary onClick={this.handleClick}>
+                Buy <Icon name='chevron right' />
+              </Button>
+              :
+              <Button disabled primary onClick={this.handleClick}>
+                Sell <Icon name='chevron right' />
             </Button>
           }
+          </div>
+          :
+          <div style={{display: 'inline'}}>
+            {this.state.action === 'buy' ?
+              <Button primary onClick={this.handleClick}>
+                Buy <Icon name='chevron right' />
+              </Button>
+              :
+              <Button primary onClick={this.handleClick}>
+                Sell <Icon name='chevron right' />
+            </Button>
+          }
+          </div>
+        }
         </div>
       </Modal.Actions>
       </div>

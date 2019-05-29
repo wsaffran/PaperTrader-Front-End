@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 // import { Link } from 'react-router'
-import { Table, Container, Grid, Card, Image, Dropdown } from 'semantic-ui-react'
+import { Table, Container, Grid, Card, Image, Dropdown, Loader } from 'semantic-ui-react'
 import v4 from 'uuid'
 import Search from './Search'
 import './Table.css'
@@ -77,7 +77,8 @@ class YourPortfolio extends React.Component {
   state = {
     order: 'alphabetical',
     value: 'value',
-    portfolio: []
+    portfolio: [],
+    isLoading: true
   }
 
   componentDidMount = () => {
@@ -89,7 +90,7 @@ class YourPortfolio extends React.Component {
     fetch(`http://localhost:3001/portfolio/${localStorage.getItem('currentGamePlayer')}`)
     .then(res => res.json())
     .then(res => {
-      this.setState({portfolio: res})
+      this.setState({portfolio: res, isLoading: false})
     })
   }
 
@@ -463,10 +464,22 @@ class YourPortfolio extends React.Component {
               <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>HOLDING</span>
             </Table.Cell>
           </Table.Row>
-          {this.renderPortfolioItems()}
-          {this.renderCashItems()}
-          {this.renderPortfolioTotals()}
         </Table.Body>
+        {this.state.isLoading ?
+          <Table.Body>
+            <Table.Row>
+              <Table.HeaderCell colSpan={16} style={{padding: '10px'}} >
+                <Loader active inline='centered' />
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Body>
+          :
+          <Table.Body>
+            {this.renderPortfolioItems()}
+            {this.renderCashItems()}
+            {this.renderPortfolioTotals()}
+          </Table.Body>
+        }
       </Table>
     )
   }

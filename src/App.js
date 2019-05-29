@@ -14,9 +14,10 @@ import Stage from './Containers/Stage';
 // import YourGameComponent from './Components/YourGameComponent'
 import OtherGamePlayerStage from './Containers/OtherGamePlayerStage'
 import Overview from './Components/Overview'
-import YourProfile from './Components/YourProfile'
+// import YourProfile from './Components/YourProfile'
 import Rankings from './Components/Rankings'
 import YourPortfolio from './Components/YourPortfolio'
+import GameInfo from './Components/GameInfo'
 
 import Loading from './Components/Loading'
 
@@ -87,7 +88,10 @@ class App extends React.Component {
             return <Rankings {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
           }
         }/>
-        <Route path="/stage/:currentGameId/game-info" component={ YourProfile } />
+      <Route path="/stage/:currentGameId/game-info" render={ (routeProps) => {
+          return <GameInfo {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
+        }
+      }/>
         {/*</Router>*/}
       </div>
     )
