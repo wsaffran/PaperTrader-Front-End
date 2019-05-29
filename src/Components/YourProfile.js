@@ -110,9 +110,9 @@ class YourProfile extends React.Component {
               <Item>
                 <Item.Content>
                   <Item.Meta>NET WORTH</Item.Meta>
-                  <Item.Description>
-                    ${this.numberWithCommas(ranking.current_value, 2)}
-                  </Item.Description>
+                    <Item.Description>
+                      ${this.numberWithCommas(ranking.current_value, 2)}
+                    </Item.Description>
                 </Item.Content>
               </Item>
             </Grid.Column>
@@ -120,9 +120,15 @@ class YourProfile extends React.Component {
               <Item>
                 <Item.Content>
                   <Item.Meta>OVERALL GAINS</Item.Meta>
-                  <Item.Description>
-                    ${this.numberWithCommas(ranking.returns, 2)}
-                  </Item.Description>
+                  {ranking.returns > 0 ?
+                    <Item.Description style={{color: 'green'}}>
+                      ${this.numberWithCommas(ranking.returns, 2)}
+                    </Item.Description>
+                    :
+                    <Item.Description>
+                      ${this.numberWithCommas(ranking.returns, 2)}
+                    </Item.Description>
+                  }
                 </Item.Content>
               </Item>
             </Grid.Column>
@@ -132,9 +138,15 @@ class YourProfile extends React.Component {
               <Item>
                 <Item.Content>
                   <Item.Meta>OVERALL RETURNS</Item.Meta>
-                  <Item.Description>
-                    {this.numberWithCommas(ranking.percent_gain, 2)}%
-                  </Item.Description>
+                  {ranking.percent_gain > 0 ?
+                    <Item.Description style={{color: 'green'}}>
+                      {this.numberWithCommas(ranking.percent_gain, 2)}%
+                    </Item.Description>
+                    :
+                    <Item.Description>
+                      {this.numberWithCommas(ranking.percent_gain, 2)}%
+                    </Item.Description>
+                  }
                 </Item.Content>
               </Item>
             </Grid.Column>

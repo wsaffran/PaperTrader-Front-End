@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Line } from 'react-chartjs-2'
-import { Table, Grid } from 'semantic-ui-react'
+import { Table, Grid, Button } from 'semantic-ui-react'
 
 class Graph extends React.Component {
 
@@ -22,6 +22,10 @@ class Graph extends React.Component {
     fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/chart/1d`)
     .then(res => res.json())
     .then(res => {
+      this.props.setData(res.map(chart => chart.close))
+      this.props.setLabels(res.map(chart => chart.label))
+      this.props.setLabel(this.props.selectedStockTicker.name)
+
       this.setState({
         data: res.map(chart => chart.close),
         labels: res.map(chart => chart.label),
@@ -31,6 +35,7 @@ class Graph extends React.Component {
     fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/quote`)
     .then(res => res.json())
     .then(res => {
+      this.props.setStock(res)
       this.setState({
         stock: res
       })
@@ -41,10 +46,21 @@ class Graph extends React.Component {
     fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/chart/${timeFrame}`)
     .then(res => res.json())
     .then(res => {
+      this.props.setData(res.map(chart => chart.close))
+      this.props.setLabels(res.map(chart => chart.label))
+      this.props.setLabel(this.props.selectedStockTicker.name)
       this.setState({
         data: res.map(chart => chart.close),
         labels: res.map(chart => chart.label),
         label: this.props.selectedStockTicker.name
+      })
+    })
+    fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/quote`)
+    .then(res => res.json())
+    .then(res => {
+      this.props.setStock(res)
+      this.setState({
+        stock: res
       })
     })
   }
@@ -70,8 +86,7 @@ class Graph extends React.Component {
   }
 
   renderStats = () => {
-    console.log(this.state.stock);
-    const { stock } = this.state
+    const { stock } = this.props
     return (
       <Grid>
         <Grid.Column width={8}>
@@ -142,20 +157,20 @@ class Graph extends React.Component {
   render() {
     return (
       <div style={{position: "relative"}}>
-        <button id="1d" onClick={this.handleClick}>1d</button>
-        <button id="1m" onClick={this.handleClick}>1m</button>
-        <button id="3m" onClick={this.handleClick}>3m</button>
-        <button id="6m" onClick={this.handleClick}>6m</button>
-        <button id="ytd" onClick={this.handleClick}>ytd</button>
-        <button id="1y" onClick={this.handleClick}>1y</button>
-        <button id="2y" onClick={this.handleClick}>2y</button>
-        <button id="5y" onClick={this.handleClick}>5y</button>
+        <Button id="1d" onClick={this.handleClick}>1d</Button>
+        <Button id="1m" onClick={this.handleClick}>1m</Button>
+        <Button id="3m" onClick={this.handleClick}>3m</Button>
+        <Button id="6m" onClick={this.handleClick}>6m</Button>
+        <Button id="ytd" onClick={this.handleClick}>ytd</Button>
+        <Button id="1y" onClick={this.handleClick}>1y</Button>
+        <Button id="2y" onClick={this.handleClick}>2y</Button>
+        <Button id="5y" onClick={this.handleClick}>5y</Button>
         <Line data={
-          {labels: this.state.labels,
+          {labels: this.props.labels,
             datasets: [{
-              label: this.state.label,
+              label: this.props.label,
               backgroundColor: "rgba(75,192,192,0.4)",
-              data: this.state.data,
+              data: this.props.data,
               lineTension: 0.0,
               fill: false,
               borderColor: "rgba(75,192,192,1)",
@@ -180,11 +195,36 @@ class Graph extends React.Component {
 
 function mapStateToProps(state) {
     return {
-      selectedStockTicker: state.selectedStockTicker
+      selectedStockTicker: state.selectedStockTicker,
+      data: state.data,
+      labels: state.labels,
+      label: state.label,
+      stock: state.stock
     }
   }
 
-export default connect(mapStateToProps)(Graph);
+function mapDispatchToProps(dispatch) {
+  return {
+    setSelectedStock: (stockTicker) => {
+      // dispatch is our new setState and it takes an object with a type and a payload
+      dispatch({type: "SELECTED_STOCK_TICKER", payload: stockTicker})
+    }, setTimeFrame: (timeFrame) => {
+      dispatch({type: "SET_TIME_FRAME", payload: timeFrame})
+    }, setData: (data) => {
+      dispatch({type: "SET_DATA", payload: data})
+    }, setLabels: (labels) => {
+      dispatch({type: "SET_LABELS", payload: labels})
+    }, setLabel: (label) => {
+      dispatch({type: "SET_LABEL", payload: label})
+    }, setStock: (stock) => {
+      dispatch({type: "SET_STOCK", payload: stock})
+    }
+
+  }
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Graph);
 
 // <Grid>
 //   <Grid.Column>

@@ -4,7 +4,12 @@ class UserProfile extends React.Component {
 
   render () {
     return (
-      <h1>{this.props.currentUser ? this.props.currentUser.username : "Hello"}</h1>
+      <div>
+        <h1>Games youre a part of</h1>
+        <h1>Games you Created</h1>
+        <h1>User info card</h1>
+        <p>can do CRUD</p>
+      </div>
     )
   }
 

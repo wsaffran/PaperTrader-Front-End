@@ -2,6 +2,8 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from 'react-redux'
 import symbols from './symbols'
+import { Input, Form, Dropdown } from 'semantic-ui-react'
+import v4 from 'uuid'
 
 class Autocomplete extends Component {
   static propTypes = {
@@ -60,6 +62,25 @@ class Autocomplete extends Component {
     this.props.setSelectedStock(symbols.find(symbol => {
       return symbol.symbol === e.currentTarget.innerText.split(' ')[0]
     }))
+    let currSymbol = symbols.find(symbol => {
+      return symbol.symbol === e.currentTarget.innerText.split(' ')[0]
+    })
+
+    console.log(currSymbol);
+
+    fetch(`https://api.iextrading.com/1.0/stock/${currSymbol.symbol.toLowerCase()}/chart/1d`)
+    .then(res => res.json())
+    .then(res => {
+      this.props.setData(res.map(chart => chart.close))
+      this.props.setLabels(res.map(chart => chart.label))
+      // this.props.setLabel(this.props.selectedStockTicker.name)
+    })
+    fetch(`https://api.iextrading.com/1.0/stock/${currSymbol.symbol}/quote`)
+    .then(res => res.json())
+    .then(res => {
+      this.props.setStock(res)
+    })
+
   };
 
   // Event fired when the user presses a key down
@@ -140,19 +161,18 @@ class Autocomplete extends Component {
       }
     }
 
-
-
     return (
       <Fragment>
-        <form>
-          <input
+        <Form>
+          <Input
+          className='input-dropdown'
           type="text"
           onChange={onChange}
           onKeyDown={onKeyDown}
           value={userInput}
           />
           {suggestionsListComponent}
-        </form>
+        </Form>
       </Fragment>
     );
   }
@@ -163,7 +183,18 @@ function mapDispatchToProps(dispatch) {
     setSelectedStock: (stockTicker) => {
       // dispatch is our new setState and it takes an object with a type and a payload
       dispatch({type: "SELECTED_STOCK_TICKER", payload: stockTicker})
+    }, setTimeFrame: (timeFrame) => {
+      dispatch({type: "SET_TIME_FRAME", payload: timeFrame})
+    }, setData: (data) => {
+      dispatch({type: "SET_DATA", payload: data})
+    }, setLabels: (labels) => {
+      dispatch({type: "SET_LABELS", payload: labels})
+    }, setLabel: (label) => {
+      dispatch({type: "SET_LABEL", payload: label})
+    }, setStock: (stock) => {
+      dispatch({type: "SET_STOCK", payload: stock})
     }
+
   }
 }
 

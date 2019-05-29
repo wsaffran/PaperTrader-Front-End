@@ -38,8 +38,12 @@ class Search extends React.Component {
   render() {
     return (
       <Container >
-        <Modal className='modal' onClose={this.closeModal} open={this.state.showModal} trigger={<Button onClick={() => this.setState({showModal: true})}>Search</Button>}>
-          <Modal.Header>Search</Modal.Header>
+        <Modal size='large' className='modal' onClose={this.closeModal} open={this.state.showModal} trigger={<Button onClick={() => this.setState({showModal: true})}>Search</Button>}>
+          {this.state.status === 'research' ?
+            <Modal.Header>Search</Modal.Header>
+            :
+            <Modal.Header>Transact</Modal.Header>
+          }
           <Modal.Content>
             {
               this.state.status === 'research' ?
