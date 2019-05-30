@@ -16,7 +16,8 @@ const defaultState = {
   labels: [],
   label: '',
   stock: null,
-  transactions: []
+  transactions: [],
+  old: 0
 }
 
 function reducer(state = defaultState, action){
@@ -65,6 +66,8 @@ function reducer(state = defaultState, action){
       return {...state, stock: action.payload}
     case "SET_TRANSACTIONS":
       return {...state, transactions: action.payload}
+    case "SET_OLD":
+      return {...state, old: action.payload}
 
     default:
       return state

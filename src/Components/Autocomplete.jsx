@@ -76,6 +76,8 @@ class Autocomplete extends Component {
     .then(res => res.json())
     .then(res => {
       this.props.setStock(res)
+      this.props.setOld(res.latestPrice - res.change)
+
     })
 
   };
@@ -191,6 +193,8 @@ function mapDispatchToProps(dispatch) {
       dispatch({type: "SET_LABEL", payload: label})
     }, setStock: (stock) => {
       dispatch({type: "SET_STOCK", payload: stock})
+    }, setOld: (old) => {
+      dispatch({type:"SET_OLD", payload: old})
     }
 
   }

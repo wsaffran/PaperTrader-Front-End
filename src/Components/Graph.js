@@ -9,7 +9,9 @@ class Graph extends React.Component {
     labels: [],
     data: [],
     label: '',
-    stock: null
+    stock: null,
+    color: 'green',
+    old: 0
   }
 
   numberWithCommas = (x, y) => {
@@ -25,20 +27,24 @@ class Graph extends React.Component {
       this.props.setData(res.map(chart => chart.close))
       this.props.setLabels(res.map(chart => chart.label))
       this.props.setLabel(this.props.selectedStockTicker.name)
+      this.props.setOld(res.slice(0, 1)[0].close)
 
       this.setState({
         data: res.map(chart => chart.close),
         labels: res.map(chart => chart.label),
-        label: this.props.selectedStockTicker.name
+        label: this.props.selectedStockTicker.name,
+
       })
     })
     fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/quote`)
     .then(res => res.json())
     .then(res => {
       this.props.setStock(res)
-      this.setState({
-        stock: res
-      })
+      this.props.setOld(res.latestPrice - res.change)
+        this.setState({
+          stock: res,
+          old: res.latestPrice + res.change
+        })
     })
   }
 
@@ -49,10 +55,13 @@ class Graph extends React.Component {
       this.props.setData(res.map(chart => chart.close))
       this.props.setLabels(res.map(chart => chart.label))
       this.props.setLabel(this.props.selectedStockTicker.name)
+      this.props.setOld(res.slice(0, 1)[0].close)
+
       this.setState({
         data: res.map(chart => chart.close),
         labels: res.map(chart => chart.label),
-        label: this.props.selectedStockTicker.name
+        label: this.props.selectedStockTicker.name,
+        old: res.slice(0, 1)[0].close
       })
     })
     fetch(`https://api.iextrading.com/1.0/stock/${this.props.selectedStockTicker.symbol}/quote`)
@@ -155,6 +164,12 @@ class Graph extends React.Component {
   }
 
   render() {
+    let color = 'green'
+    if (this.props.stock && this.props.old) {
+      if (this.props.old > this.props.stock.latestPrice) {
+        color = 'red'
+      }
+    }
     return (
       <div style={{position: "relative", paddingTop: '0px', paddingRight: '20px', paddingBottom: '10px', height: '815px', width: '1000px'}}>
         <Button style={{marginLeft: '70px'}} id="1d" onClick={this.handleClick}>1d</Button>
@@ -174,7 +189,7 @@ class Graph extends React.Component {
                   data: this.props.data,
                   lineTension: 0.0,
                   fill: false,
-                  borderColor: "rgba(75,192,192,1)",
+                  borderColor: color,  //rgba(75,192,192,1)
                   pointHoverRadius: 2,
                   pointHoverBackgroundColor: "rgba(75,192,192,1)",
                   pointHoverBorderColor: "rgba(220,220,220,1)",
@@ -254,7 +269,8 @@ function mapStateToProps(state) {
       data: state.data,
       labels: state.labels,
       label: state.label,
-      stock: state.stock
+      stock: state.stock,
+      old: state.old
     }
   }
 
@@ -273,6 +289,8 @@ function mapDispatchToProps(dispatch) {
       dispatch({type: "SET_LABEL", payload: label})
     }, setStock: (stock) => {
       dispatch({type: "SET_STOCK", payload: stock})
+    }, setOld: (old) => {
+      dispatch({type:"SET_OLD", payload: old})
     }
 
   }

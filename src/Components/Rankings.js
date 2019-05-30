@@ -62,8 +62,17 @@ class Rankings extends React.Component {
             <Table.Cell className='center aligned'>{ranking.username}</Table.Cell>
             <Table.Cell className='center aligned'>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>
             <Table.Cell className='center aligned'>${this.numberWithCommas(ranking.current_value)}</Table.Cell>
-            <Table.Cell className='center aligned'>${this.numberWithCommas(ranking.returns)}</Table.Cell>
-            <Table.Cell className='center aligned'>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
+            {ranking.returns >= 0 ?
+              <React.Fragment>
+                <Table.Cell style={{color: 'green'}} className='center aligned'>${this.numberWithCommas(ranking.returns)}</Table.Cell>
+                <Table.Cell style={{color: 'green'}} className='center aligned'>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
+              </React.Fragment>
+              :
+              <React.Fragment>
+                <Table.Cell style={{color: 'red'}} className='center aligned'>${this.numberWithCommas(ranking.returns)}</Table.Cell>
+                <Table.Cell style={{color: 'red'}} className='center aligned'>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
+              </React.Fragment>
+            }
           </Table.Row>
         )
       }
@@ -76,9 +85,9 @@ class Rankings extends React.Component {
 
   render () {
     return (
-        <Container>
+        <Container fluid>
           <Card fluid>
-            <Card.Content header='RANKINGS' style={{backgroundColor: 'lightgray'}}/>
+            <Card.Content header='Rankings' style={{backgroundColor: 'lightgray'}}/>
             <Card.Content>
               <Table className='singleline'>
                 <Table.Header>

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Table, Container, Grid, Image, Dropdown, Card, Loader } from 'semantic-ui-react'
 import green from '../Components/images/GREEN.png'
 import red from '../Components/images/RED.png'
-import Search from '../Components/Search'
+import OtherOverview from '../Components/OtherOverview'
 
 import v4 from 'uuid'
 
@@ -268,9 +268,6 @@ class OtherGamePlayerStage extends React.Component {
         <Grid.Column className='Left floated left aligned column' width={4}>
           <Dropdown onChange={(a, b) => this.handleClick(a, b)} placeholder='Sort By' search selection options={this.getOptions()} />
         </Grid.Column>
-        <Grid.Column className='Left floated left aligned column'>
-          <Search history={this.props.history} portfolio={this.state.portfolio}/>
-        </Grid.Column>
       </Grid>
     )
   }
@@ -354,46 +351,22 @@ class OtherGamePlayerStage extends React.Component {
     })
   }
 
-  // getTotals = () => {
-  //
-  //   let total_cost = 0.00
-  //   let total_gain = 0.00
-  //   let total_value = 0.00
-  //
-  //   this.state.portfolio.map(holding => {
-  //     total_cost += holding.total_cost
-  //     total_gain += holding.value_gain
-  //     total_value += holding.current_value
-  //     return null
-  //   })
-  //
-  //   return (
-  //     <Table.Row key={v4()}>
-  //       <Table.Cell>Total</Table.Cell>
-  //       <Table.Cell></Table.Cell>
-  //       <Table.Cell></Table.Cell>
-  //       <Table.Cell>TBD</Table.Cell>
-  //       <Table.Cell>${this.numberWithCommas(total_gain)}</Table.Cell>
-  //       <Table.Cell>{ this.numberWithCommas(( (total_value + this.printCurrentCashValue()) - (total_cost + this.printCurrentCashValue()) ) / (total_cost + this.printCurrentCashValue()) * 100) }%</Table.Cell>
-  //       <Table.Cell></Table.Cell>
-  //       <Table.Cell>${this.numberWithCommas(total_value + this.printCurrentCashValue())}</Table.Cell>
-  //       <Table.Cell>{/*${this.numberWithCommas(total_cost + this.printCurrentCashValue())}*/}</Table.Cell>
-  //       <Table.Cell>100%</Table.Cell>
-  //     </Table.Row>
-  //   )
-  // }
-
-
-
   render () {
     return (
       <Container >
         {this.state.gamePlayer && this.props.rankings ?
-          <Card className="fluid">
-            <Card.Content header='YOUR PORTFOLIO' style={{backgroundColor: 'lightgray'}}/>
-            <Card.Content description={this.renderDrowdown()} />
-            <Card.Content className="noBorder" description={this.renderTable()} />
-          </Card>
+          <Container>
+            <Card className='fluid'>
+
+                <OtherOverview match={this.props.match} game={this.state.gamePlayer.game.id}/>
+
+            </Card>
+            <Card className="fluid">
+              <Card.Content header='Portfolio' style={{backgroundColor: 'lightgray'}}/>
+              <Card.Content description={this.renderDrowdown()} />
+              <Card.Content className="noBorder" description={this.renderTable()} />
+            </Card>
+          </Container>
         :
           null
         }

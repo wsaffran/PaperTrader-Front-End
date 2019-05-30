@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'semantic-ui-react'
+import { Button, Container } from 'semantic-ui-react'
 
 class LandingPage extends React.Component {
 
@@ -15,14 +15,11 @@ class LandingPage extends React.Component {
   render () {
     return (
       <div>
-        <h1>Paper Trader</h1>
-        {this.props.currentUser ?
-          <p>put some detailed infor about the website</p>
-          :
-          <div>
-            <Button name='login' onClick={this.handleClick}>Login</Button>
-            <Button name='signup' onClick={this.handleClick}>Sign Up</Button>
-          </div>
+        <Container style={{flex: 'center', marginLeft: '45%', marginTop: '17%'}}>
+          <h1 style={{fontSize: '50px'}}>Paper Trader</h1>
+          <Button name='login' onClick={this.handleClick}>Login</Button>
+          <Button name='signup' onClick={this.handleClick}>Sign Up</Button>
+        </Container>
         }
       </div>
     )

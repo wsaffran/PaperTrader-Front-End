@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Button, Container, Input, Form } from 'semantic-ui-react'
 
 class SignupForm extends React.Component {
 
@@ -41,28 +42,16 @@ class SignupForm extends React.Component {
 
   render () {
     return (
-      <div>
+      <Container style={{flex: 'center', marginLeft: '45%', marginTop: '17%'}}>
         <h1>Sign Up</h1>
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            first name:
-            <input onChange={this.handleChange} type="text" name="firstName" value={this.state.firstName} />
-          </label>
-          <label>
-            last name:
-            <input onChange={this.handleChange} type="text" name="lastName" value={this.state.lastName} />
-          </label>
-          <label>
-            username:
-            <input onChange={this.handleChange} type="text" name="username" value={this.state.username} />
-          </label>
-          <label>
-            password:
-            <input onChange={this.handleChange} type="password" name="password" value={this.state.password} />
-          </label>
-          <button type="submit">Submit</button>
-        </form>
-      </div>
+        <Form onSubmit={this.handleSubmit}>
+            <Input style={{marginRight: '20px', marginBottom: '20px'}} onChange={this.handleChange} type="text" name="firstName" placeholder='First Name' value={this.state.firstName} />
+            <Input onChange={this.handleChange} type="text" name="lastName" placeholder='Last Name' value={this.state.lastName} /> <br/>
+            <Input style={{marginRight: '20px', marginBottom: '20px'}} onChange={this.handleChange} type="text" name="username" placeholder='Username' value={this.state.username} />
+            <Input onChange={this.handleChange} type="password" name="password" placeholder='Password' value={this.state.password} /> <br/>
+          <Button type="submit">Submit</Button>
+        </Form>
+      </Container>
     )
   }
 

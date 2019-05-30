@@ -8,13 +8,7 @@ class Nav extends React.Component {
     return (
       <div className="topnav">
         <Link className="home" to={this.props.currentUser ? "/game" : "/"}>Home</Link>
-        {this.props.currentUser ?
-          <div>
-            <Link className="logOut" onClick={this.props.logOut} to='/'>Log out </Link>
-          </div>
-          :
-          <Link className="user" to="/">Login</Link>
-        }
+        
       </div>
     )
   }
