@@ -56,7 +56,7 @@ class Stage extends React.Component {
   render() {
     const { activeItem } = this.state
     return (
-      <Container>
+      <Container style={{padding: '10px'}}>
         {(this.props.currentUser && this.props.currentGamePlayer) ?
           <Menu widths={4}>
             <Menu.Item

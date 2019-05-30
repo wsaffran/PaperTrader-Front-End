@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux'
 import { Line } from 'react-chartjs-2'
-import { Table, Grid, Button } from 'semantic-ui-react'
+import { Table, Grid, Button, Container } from 'semantic-ui-react'
 
 class Graph extends React.Component {
 
@@ -156,8 +156,8 @@ class Graph extends React.Component {
 
   render() {
     return (
-      <div style={{position: "relative"}}>
-        <Button id="1d" onClick={this.handleClick}>1d</Button>
+      <div style={{position: "relative", paddingTop: '0px', paddingRight: '20px', paddingBottom: '10px', height: '815px', width: '1000px'}}>
+        <Button style={{marginLeft: '70px'}} id="1d" onClick={this.handleClick}>1d</Button>
         <Button id="1m" onClick={this.handleClick}>1m</Button>
         <Button id="3m" onClick={this.handleClick}>3m</Button>
         <Button id="6m" onClick={this.handleClick}>6m</Button>
@@ -165,24 +165,79 @@ class Graph extends React.Component {
         <Button id="1y" onClick={this.handleClick}>1y</Button>
         <Button id="2y" onClick={this.handleClick}>2y</Button>
         <Button id="5y" onClick={this.handleClick}>5y</Button>
-        <Line data={
-          {labels: this.props.labels,
-            datasets: [{
-              label: this.props.label,
-              backgroundColor: "rgba(75,192,192,0.4)",
-              data: this.props.data,
-              lineTension: 0.0,
-              fill: false,
-              borderColor: "rgba(75,192,192,1)",
-              pointHoverRadius: 2,
-              pointHoverBackgroundColor: "rgba(75,192,192,1)",
-              pointHoverBorderColor: "rgba(220,220,220,1)",
-              pointHoverBorderWidth: 2,
-              pointRadius: 0,
-              pointHitRadius: 2
-            }]}
-          }
-        />
+        <Container style={{paddingTop: '10px'}}>
+          <Line data={
+              {labels: this.props.labels,
+                datasets: [{
+                  label: this.props.label,
+                  backgroundColor: "rgba(75,192,192,0.4)",
+                  data: this.props.data,
+                  lineTension: 0.0,
+                  fill: false,
+                  borderColor: "rgba(75,192,192,1)",
+                  pointHoverRadius: 2,
+                  pointHoverBackgroundColor: "rgba(75,192,192,1)",
+                  pointHoverBorderColor: "rgba(220,220,220,1)",
+                  pointHoverBorderWidth: 2,
+                  pointRadius: 0,
+                  pointHitRadius: 2
+                }]}
+              }
+              options={
+                {width:'200',
+                height: '200',
+                scales: {
+                  xAxes: [{
+                    gridLines: {
+                      color: "rgba(0, 0, 0, 0)"
+                    },
+                    ticks: {
+                      major: {
+                        fontStyle: 'bold',
+                        fontColor: '#FF0000'
+                      },
+                      autoskip: true,
+                      autoSkipPadding: 30,
+                      maxRotation: 0,
+                      minRotation: 0
+                      // display: false //this will remove only the label
+                    },
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'DATE'
+                    }
+
+                  }],
+                  yAxes: [{
+                    gridLines: {
+                      // color: "rgba(0, 0, 0, 0)",
+                      borderDash: [0, 4],
+                      color: "#348632"
+                    },
+                    ticks: {
+                      // display: false //this will remove only the label
+                      major: {
+                        fontStyle: 'bold',
+                        fontColor: '#FF0000'
+                      },
+                      autoskip: true,
+                      autoSkipPadding: 30
+                    },
+                    scaleLabel: {
+                      display: true,
+                      labelString: 'PRICE'
+                    }
+
+                  }]
+                },
+                legend: {
+                  display: false,
+                },
+                maintainAspectRatio: true,
+                responsive: true
+              }}
+              />
+        </Container>
       {this.state.stock ?
         this.renderStats()
         :

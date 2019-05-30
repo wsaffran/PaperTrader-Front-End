@@ -5,8 +5,8 @@ import { Table, Container, Grid, Card, Image, Dropdown, Loader } from 'semantic-
 import v4 from 'uuid'
 import Search from './Search'
 import './Table.css'
-import green from './images/GREEN.png'
-import red from './images/RED.png'
+import green from './images/GREEN4.png'
+import red from './images/RED2.png'
 
 
 class YourPortfolio extends React.Component {
@@ -292,17 +292,17 @@ class YourPortfolio extends React.Component {
         <Table.Cell verticalAlign='top'>
           <span>---</span> <br />
           {day_change >= 0 ?
-            <span style={{color: 'gray', fontSize:'12px', color: "green"}}>${this.numberWithCommas(day_change)} / {this.numberWithCommas(day_change_percent)}%</span>
+            <span style={{fontSize:'12px', color: "green"}}>${this.numberWithCommas(day_change)} / {this.numberWithCommas(day_change_percent)}%</span>
           :
-            <span style={{color: 'gray', fontSize:'12px', color: "red"}}>${this.numberWithCommas(day_change)} / {this.numberWithCommas(day_change_percent)}%</span>
+            <span style={{fontSize:'12px', color: "red"}}>${this.numberWithCommas(day_change)} / {this.numberWithCommas(day_change_percent)}%</span>
           }
         </Table.Cell>
         <Table.Cell verticalAlign='top'>
           <span>${this.numberWithCommas(netWorth)}</span> <br />
           {total_change >= 0 ?
-            <span style={{color: 'gray', fontSize:'12px', color: 'green'}}>${this.numberWithCommas(total_change)} / {this.numberWithCommas(total_change_percent)}%</span>
+            <span style={{fontSize:'12px', color: 'green'}}>${this.numberWithCommas(total_change)} / {this.numberWithCommas(total_change_percent)}%</span>
           :
-            <span style={{color: 'gray', fontSize:'12px', color: 'red'}}>${this.numberWithCommas(total_change)} / {this.numberWithCommas(total_change_percent)}%</span>
+            <span style={{fontSize:'12px', color: 'red'}}>${this.numberWithCommas(total_change)} / {this.numberWithCommas(total_change_percent)}%</span>
           }
         </Table.Cell>
         <Table.Cell>
@@ -332,25 +332,25 @@ class YourPortfolio extends React.Component {
           <Table.Cell verticalAlign='top'>
             <span>${this.numberWithCommas(holding.current_stock_price)}</span> <br />
             {holding.stock_day_change >= 0 ?
-              <span style={{color: 'gray', fontSize:'12px', color: "green"}}>${this.numberWithCommas(holding.stock_day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+              <span style={{fontSize:'12px', color: "green"}}>${this.numberWithCommas(holding.stock_day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
             :
-              <span style={{color: 'gray', fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.stock_day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+              <span style={{fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.stock_day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
             }
           </Table.Cell>
           <Table.Cell verticalAlign='top'>
             <span>${this.numberWithCommas(holding.current_stock_price)}</span> <br />
             {holding.day_change >= 0 ?
-              <span style={{color: 'gray', fontSize:'12px', color: 'green'}}>${this.numberWithCommas(holding.day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+              <span style={{fontSize:'12px', color: 'green'}}>${this.numberWithCommas(holding.day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
               :
-              <span style={{color: 'gray', fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+              <span style={{fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
             }
           </Table.Cell>
           <Table.Cell verticalAlign='top'>
             <span>${this.numberWithCommas(holding.current_value)}</span> <br />
             {holding.value_gain >= 0 ?
-              <span style={{color: 'gray', fontSize:'12px', color: "green"}}>${this.numberWithCommas(holding.value_gain)} / {this.numberWithCommas(holding.percent_gain)}%</span>
+              <span style={{fontSize:'12px', color: "green"}}>${this.numberWithCommas(holding.value_gain)} / {this.numberWithCommas(holding.percent_gain)}%</span>
               :
-              <span style={{color: 'gray', fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.value_gain)} / {this.numberWithCommas(holding.percent_gain)}%</span>
+              <span style={{fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.value_gain)} / {this.numberWithCommas(holding.percent_gain)}%</span>
             }
           </Table.Cell>
           <Table.Cell>
@@ -422,7 +422,7 @@ class YourPortfolio extends React.Component {
   renderDrowdown = () => {
     return (
       <Grid>
-        <Grid.Column className='Left floated left aligned column' width={4}>
+        <Grid.Column className='Left floated left aligned column' style={{paddingRight: '200px'}}>
           <Dropdown onChange={(a, b) => this.handleClick(a, b)} placeholder='Sort By' search selection options={this.getOptions()} />
         </Grid.Column>
         <Grid.Column className='Left floated left aligned column'>
@@ -486,7 +486,7 @@ class YourPortfolio extends React.Component {
 
   render () {
     return (
-      <Container >
+      <Container fluid style={{margin: '0px', paddingLeft: '300px', paddingRight: '300px'}}>
         {this.props.currentGamePlayer && this.props.rankings ?
           <Card className="fluid">
             <Card.Content header='YOUR PORTFOLIO' style={{backgroundColor: 'lightgray'}}/>
