@@ -2,7 +2,7 @@ import React from 'react'
 import { Container } from 'semantic-ui-react'
 import { connect } from 'react-redux'
 import YourProfile from '../Components/YourProfile'
-import Rankings from '../Components/Rankings'
+// import Rankings from '../Components/Rankings'
 
 // import { Link } from 'react-router-dom';
 // import CreateGameForm from '../Components/CreateGameForm'
@@ -30,7 +30,7 @@ class Overview extends React.Component {
         {this.props.currentUser && this.props.currentGamePlayer ?
           <Container>
             <YourProfile history={this.props.history}/>
-            <Rankings history={this.props.history} match={this.props.match}/>
+            {/*<Rankings history={this.props.history} match={this.props.match}/>*/}
           </Container>
         :
           null
