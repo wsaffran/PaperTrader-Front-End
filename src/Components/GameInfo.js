@@ -2,12 +2,22 @@ import React from 'react'
 import { connect } from 'react-redux'
 // import { Link } from 'react-router'
 import { Container, Card, List, Image } from 'semantic-ui-react'
-// import v4 from 'uuid'
+import v4 from 'uuid'
 
 class GameInfo extends React.Component {
 
+  numberWithCommas = (x, y) => {
+    const floatNum = parseFloat(x).toFixed(y)
+    const num = floatNum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return num
+  }
+
+  state = {
+    stats: []
+  }
+
+
   componentDidMount() {
-    console.log(this.props.match.params.currentGameId);
     fetch(`http://localhost:3001/game_players/${localStorage.getItem('currentGamePlayer')}`)
     .then(res => res.json())
     .then(res => {
@@ -18,17 +28,30 @@ class GameInfo extends React.Component {
     .then(response => {
       this.props.setGamePlayers(response)
     })
+    // fetch(`http://localhost:3001/stats/${this.props.match.params.currentGameId}`)
+    // .then(res => res.json())
+    // .then(console.log)
   }
 
   renderUsers = () => {
     return this.props.gamePlayers.map(player => {
       if (player.game.id === parseInt(this.props.match.params.currentGameId)) {
         return (
-          <List.Item>
-            Players
-            <Image avatar src='https://react.semantic-ui.com/images/avatar/small/daniel.jpg' />
+          <List.Item key={v4()}>
+            <Image style={{width: '50px', height: '50px'}} avatar src='https://react.semantic-ui.com/images/avatar/small/daniel.jpg' />
             <List.Content>
-              <List.Header as='a'>{player.user.username}</List.Header>
+              <List.Header>{player.user.username}</List.Header>
+              <List.Description>${this.numberWithCommas(player.cash_balance, 0)} buying power</List.Description>
+              {player.transactions.length > 1 ?
+                <List.Description>{player.transactions.length} transactions</List.Description>
+                :
+                <List.Description>{player.transactions.length} transaction</List.Description>
+              }
+              {player.user.games.length > 1 ?
+                <List.Description>{player.user.games.length} active games</List.Description>
+                :
+                <List.Description>{player.user.games.length} active game</List.Description>
+              }
             </List.Content>
           </List.Item>
         )
@@ -41,22 +64,45 @@ class GameInfo extends React.Component {
   renderGameInfo = () => {
     return (
       <Container>
-        <h2>{this.props.currentGamePlayer.game.name}</h2>
+        <h1>{this.props.currentGamePlayer.game.name}</h1>
         <List horizontal relaxed='very'>
+          <h2>Players</h2>
           {this.renderUsers()}
         </List>
       </Container>
     )
   }
 
+  renderStats = () => {
+    return (
+      <Container>
+        <h2>Stats</h2>
+        <List horizontal>
+          <List.Item>
+            <List.Header>Starting Cash</List.Header>
+            ${this.numberWithCommas(this.props.currentGamePlayer.game.starting_balance, 2)}
+          </List.Item>
+          <List.Item>
+            <List.Header>Starting Date</List.Header>
+            {this.props.currentGamePlayer.game.start_date}
+          </List.Item>
+          <List.Item>
+            <List.Header>End Date</List.Header>
+            {this.props.currentGamePlayer.game.end_date}
+          </List.Item>
+        </List>
+      </Container>
+    )
+  }
+
   render () {
-    console.log(this.props.gamePlayers);
     return (
       <Container >
       {this.props.currentGamePlayer && this.props.gamePlayers ?
         <Card className="fluid">
           <Card.Content header='GAME INFO' style={{backgroundColor: 'lightgray'}}/>
           <Card.Content description={this.renderGameInfo()} />
+          <Card.Content description={this.renderStats()} />
         </Card>
         :
         null

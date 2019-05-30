@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table, Container, Loader } from 'semantic-ui-react'
+import { Table, Container, Loader, Card } from 'semantic-ui-react'
 import v4 from 'uuid'
 
 
@@ -38,64 +38,77 @@ class Rankings extends React.Component {
     return this.state.rankings.map(ranking => {
       if (ranking.game_player_id === this.props.currentGamePlayer.id) {
         return (
-          <Table.Row style={{backgroundColor: "lightblue"}} key={v4()} value={ranking.game_player_id} onClick={() => this.handleClick(ranking.game_player_id)}>
-            <Table.Cell>#{ranking.ranking}</Table.Cell>
-            <Table.Cell>{ranking.username}</Table.Cell>
-            <Table.Cell>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>
-            <Table.Cell>${this.numberWithCommas(ranking.current_value)}</Table.Cell>
-            <Table.Cell>${this.numberWithCommas(ranking.returns)}</Table.Cell>
-            <Table.Cell>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
+          <Table.Row style={{backgroundColor: "lightorange"}} key={v4()} value={ranking.game_player_id} onClick={() => this.handleClick(ranking.game_player_id)}>
+            {ranking.ranking === 1 ?
+              <Table.Cell className='center aligned' style={{fontWeight: 'bold'}}><i class="fas fa-medal"></i></Table.Cell>
+              :
+              <Table.Cell className='center aligned' style={{fontWeight: 'bold'}}>{ranking.ranking}</Table.Cell>
+            }
+            <Table.Cell className='center aligned' style={{fontWeight: 'bold'}}>{ranking.username}</Table.Cell>
+            <Table.Cell className='center aligned' style={{fontWeight: 'bold'}}>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>
+            <Table.Cell className='center aligned' style={{fontWeight: 'bold'}}>${this.numberWithCommas(ranking.current_value)}</Table.Cell>
+            <Table.Cell className='center aligned' style={{fontWeight: 'bold'}}>${this.numberWithCommas(ranking.returns)}</Table.Cell>
+            <Table.Cell className='center aligned' style={{fontWeight: 'bold'}}>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
           </Table.Row>
         )
       } else {
         return (
           <Table.Row key={v4()} value={ranking.game_player_id} onClick={() => this.handleClick(ranking.game_player_id)}>
-            <Table.Cell>#{ranking.ranking}</Table.Cell>
-            <Table.Cell>{ranking.username}</Table.Cell>
-            <Table.Cell>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>
-            <Table.Cell>${this.numberWithCommas(ranking.current_value)}</Table.Cell>
-            <Table.Cell>${this.numberWithCommas(ranking.returns)}</Table.Cell>
-            <Table.Cell>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
+            {ranking.ranking === 1 ?
+              <Table.Cell className='center aligned'><i className="fas fa-medal"></i></Table.Cell>
+              :
+              <Table.Cell className='center aligned'>{ranking.ranking}</Table.Cell>
+            }
+            <Table.Cell className='center aligned'>{ranking.username}</Table.Cell>
+            <Table.Cell className='center aligned'>${this.numberWithCommas(ranking.starting_balance)}</Table.Cell>
+            <Table.Cell className='center aligned'>${this.numberWithCommas(ranking.current_value)}</Table.Cell>
+            <Table.Cell className='center aligned'>${this.numberWithCommas(ranking.returns)}</Table.Cell>
+            <Table.Cell className='center aligned'>{this.numberWithCommas(ranking.percent_gain)}%</Table.Cell>
           </Table.Row>
         )
       }
     })
   }
 
+  // componentWillUnmount() {
+  //   console.log("after");
+  // }
+
   render () {
     return (
-      <div>
-        <h1>Rankings</h1>
         <Container>
-          <Table>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell>Rank</Table.HeaderCell>
-                <Table.HeaderCell>Username</Table.HeaderCell>
-                <Table.HeaderCell>Starting Balance</Table.HeaderCell>
-                <Table.HeaderCell>Current Value</Table.HeaderCell>
-                <Table.HeaderCell>Total Return</Table.HeaderCell>
-                <Table.HeaderCell>Percent Gain</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
+          <Card fluid>
+            <Card.Content header='RANKINGS' style={{backgroundColor: 'lightgray'}}/>
+            <Card.Content>
+              <Table className='singleline'>
+                <Table.Header>
+                  <Table.Row>
+                    <Table.HeaderCell className='center aligned'>Rank</Table.HeaderCell>
+                    <Table.HeaderCell className='center aligned'>Username</Table.HeaderCell>
+                    <Table.HeaderCell className='center aligned'>Starting Balance</Table.HeaderCell>
+                    <Table.HeaderCell className='center aligned'>Current Value</Table.HeaderCell>
+                    <Table.HeaderCell className='center aligned'>Total Return</Table.HeaderCell>
+                    <Table.HeaderCell className='center aligned'>Percent Gain</Table.HeaderCell>
+                  </Table.Row>
+                </Table.Header>
 
-            {this.state.isLoading ?
-              <Table.Body>
-                <Table.Row>
-                  <Table.HeaderCell colSpan={16} style={{padding: '10px'}} >
-                    <Loader active inline='centered' />
-                  </Table.HeaderCell>
-                </Table.Row>
-              </Table.Body>
-              :
-              <Table.Body>
-                {this.props.currentGamePlayer ? this.renderRankings() : null}
-              </Table.Body>
-            }
-          </Table>
+                {this.state.isLoading ?
+                  <Table.Body>
+                    <Table.Row>
+                      <Table.HeaderCell colSpan={16} style={{padding: '10px'}} >
+                        <Loader active inline='centered' />
+                      </Table.HeaderCell>
+                    </Table.Row>
+                  </Table.Body>
+                  :
+                  <Table.Body>
+                    {this.props.currentGamePlayer ? this.renderRankings() : null}
+                  </Table.Body>
+                }
+              </Table>
+            </Card.Content>
+          </Card>
         </Container>
-      </div>
-
     )
   }
 }
@@ -103,20 +116,20 @@ class Rankings extends React.Component {
 function mapStateToProps(state) {
   return {
     currentGamePlayer: state.currentGamePlayer,
-    portfolio: state.portfolio,
-    currentUser: state.currentUser,
-    game: state.currentGame
+    // portfolio: state.portfolio,
+    // currentUser: state.currentUser,
+    // game: state.currentGame
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    setPortfolio: (portfolio) => {
-      dispatch({type: "SET_PORTFOLIO", payload: portfolio})
-    },
-    updatePortfolio: (portfolio) => {
-      dispatch({type: "UPDATE_PORTFOLIO", payload: portfolio})
-    },
+    // setPortfolio: (portfolio) => {
+    //   dispatch({type: "SET_PORTFOLIO", payload: portfolio})
+    // },
+    // updatePortfolio: (portfolio) => {
+    //   dispatch({type: "UPDATE_PORTFOLIO", payload: portfolio})
+    // },
     setCurrentGamePlayer: (game_player) => {
       dispatch({type: "SET_CURRENT_GAME_PLAYER", payload: game_player})
     }

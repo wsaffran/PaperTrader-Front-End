@@ -1,6 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { Table, Container } from 'semantic-ui-react'
+import { Table, Container, Grid, Image, Dropdown, Card, Loader } from 'semantic-ui-react'
+import green from '../Components/images/GREEN.png'
+import red from '../Components/images/RED.png'
+import Search from '../Components/Search'
+
 import v4 from 'uuid'
 
 class OtherGamePlayerStage extends React.Component {
@@ -13,8 +17,13 @@ class OtherGamePlayerStage extends React.Component {
 
   state = {
     currentGamePlayer: null,
-    portfolio: []
+    gamePlayer: null,
+    order: 'alphabetical',
+    value: 'value',
+    portfolio: [],
+    isLoading: true
   }
+
 
   componentDidMount = () => {
     fetch(`http://localhost:3001/game_players/${this.props.match.params.game_player_id}`)
@@ -26,65 +35,296 @@ class OtherGamePlayerStage extends React.Component {
       .then(res => {
         this.setState({
           gamePlayer: game_player,
-          portfolio: res
+          portfolio: res,
+          isLoading: false
         })
       })
     })
   }
 
-  getCurrentCashValue = () => {
-    const starting_cash = this.state.gamePlayer.cash_balance
-    const transactions = this.state.gamePlayer.transactions
+  handleClick = (a, b) => {
+    this.setState({
+      order: b.value,
+    })
+  }
 
-    let total_cost = 0
-    transactions.map(transaction => {
-      return total_cost += transaction.price * transaction.current_shares
+  filteredPortfolio = () => {
+    let order = this.state.order
+
+    let portfolio = this.state.portfolio
+    if (order === 'alphabetical') {
+      return portfolio.sort(function(a, b) {
+        return (a.ticker.toUpperCase() < b.ticker.toUpperCase()) ? -1 : (a.ticker.toUpperCase() > b.ticker.toUpperCase()) ? 1 : 0
+      })
+    } else if (order === 'alphabeticalReverse') {
+      return portfolio.sort(function(a, b) {
+        return (b.ticker.toUpperCase() < a.ticker.toUpperCase()) ? -1 : (b.ticker.toUpperCase() > a.ticker.toUpperCase()) ? 1 : 0
+      })
+    } else if (order === 'leastValue') {
+      return portfolio.sort(function(a, b) {
+        return (a.current_value < b.current_value) ? -1 : (a.current_value > b.current_value) ? 1 : 0
+      })
+    } else if (order === 'mostValue') {
+      return portfolio.sort(function(a, b) {
+        return (b.current_value < a.current_value) ? -1 : (b.current_value > a.current_value) ? 1 : 0
+      })
+    } else if (order === 'topPerformers') {
+      return portfolio.sort(function(a, b) {
+        return (b.percent_gain < a.percent_gain) ? -1 : (b.percent_gain > a.percent_gain) ? 1 : 0
+      })
+    } else if (order === 'bottomPerformers') {
+      return portfolio.sort(function(a, b) {
+        return (a.percent_gain < b.percent_gain) ? -1 : (a.percent_gain > b.percent_gain) ? 1 : 0
+      })
+    } else if (order === 'daysBest') {
+      return portfolio.sort(function(a, b) {
+        return (b.day_change_percent < a.day_change_percent) ? -1 : (b.day_change_percent > a.day_change_percent) ? 1 : 0
+      })
+    } else if (order === 'daysWorst') {
+      return portfolio.sort(function(a, b) {
+        return (a.day_change_percent < b.day_change_percent) ? -1 : (a.day_change_percent > b.day_change_percent) ? 1 : 0
+      })
+    } else {
+      return portfolio.sort(function(a, b) {
+        return (a.ticker.toUpperCase() < b.ticker.toUpperCase()) ? -1 : (a.ticker.toUpperCase() > b.ticker.toUpperCase()) ? 1 : 0
+      })
+    }
+  }
+
+  renderPortfolioTotals = () => {
+
+    let netWorth = this.state.gamePlayer.cash_balance
+    let day_change = 0
+    let day_change_before = this.state.gamePlayer.cash_balance
+    let day_change_after = this.state.gamePlayer.cash_balance
+    this.state.portfolio.forEach(holding => {
+      netWorth += holding.current_value
+      day_change += holding.day_change
+      day_change_before += holding.current_value - holding.day_change
+      day_change_after += holding.current_value
+    })
+    let day_change_percent = (day_change_after - day_change_before) / day_change_before * 100
+
+    let total_change = netWorth - this.state.gamePlayer.game.starting_balance
+    let total_change_percent = total_change / this.state.gamePlayer.game.starting_balance * 100
+
+    let foundRanking = null
+
+    this.props.rankings.forEach(ranking => {
+      if (ranking.game_player_id === this.state.gamePlayer.id) {
+        foundRanking = ranking.ranking
+      }
     })
 
-    let total_value = 0.00
-
-    this.state.portfolio.map(holding => {
-      total_value += holding.current_value
-      return null
-    })
-    // Issue here with calculating cash_balance... should I update cash balance every transaction instead???
-    // Wait! is this actually and issue???
-    const current_cash_value = starting_cash - total_cost
     return (
-      <Table.Row key={v4()}>
-        <Table.Cell>CASH</Table.Cell>
-        <Table.Cell>{this.numberWithCommas(current_cash_value)}</Table.Cell>
-        <Table.Cell>$1.00</Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell>$1.00</Table.Cell>
-        <Table.Cell>${this.numberWithCommas(current_cash_value)}</Table.Cell>
-        <Table.Cell>{/*${this.numberWithCommas(current_cash_value)}*/}</Table.Cell>
-        <Table.Cell>{this.numberWithCommas(current_cash_value / (total_value + current_cash_value) * 100)}%</Table.Cell>
+      <Table.Row textAlign='center'>
+        <Table.Cell className='noPaddingColor'>
+          {day_change >= 0 ? <Image src={green}/> : <Image src={red}/>}
+        </Table.Cell>
+        <Table.Cell className='noPaddingSymbol' verticalAlign='top'>
+          <span style={{color: 'black'}}>TOTAL</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span style={{color: 'black'}}>100%</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>BUY</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>---</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>---</span> <br />
+          {day_change >= 0 ?
+            <span style={{fontSize:'12px', color: "green"}}>${this.numberWithCommas(day_change)} / {this.numberWithCommas(day_change_percent)}%</span>
+          :
+            <span style={{fontSize:'12px', color: "red"}}>${this.numberWithCommas(day_change)} / {this.numberWithCommas(day_change_percent)}%</span>
+          }
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>${this.numberWithCommas(netWorth)}</span> <br />
+          {total_change >= 0 ?
+            <span style={{fontSize:'12px', color: 'green'}}>${this.numberWithCommas(total_change)} / {this.numberWithCommas(total_change_percent)}%</span>
+          :
+            <span style={{fontSize:'12px', color: 'red'}}>${this.numberWithCommas(total_change)} / {this.numberWithCommas(total_change_percent)}%</span>
+          }
+        </Table.Cell>
+        <Table.Cell>
+          <span>{foundRanking}</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>RANKING</span> <br />
+        </Table.Cell>
       </Table.Row>
     )
   }
 
-  printCurrentCashValue = () => {
-    const starting_cash = this.state.gamePlayer.cash_balance
-    const transactions = this.state.gamePlayer.transactions
-
-    let total_cost = 0
-    transactions.map(transaction => {
-      return total_cost += transaction.price * transaction.current_shares
+  renderPortfolioItems = () => {
+    return this.filteredPortfolio().map(holding => {
+      return (
+        <Table.Row textAlign='center' key={v4()}>
+          <Table.Cell className='noPaddingColor'>
+            {holding.day_change >= 0 ? <Image src={green}/> : <Image src={red}/>}
+          </Table.Cell>
+          <Table.Cell className='noPaddingSymbol' verticalAlign='top'>
+            <span style={{color: 'black'}}>{holding.ticker}</span> <br />
+            <span style={{color: 'gray', fontSize:'12px'}}>{holding.total_shares} SHARES</span>
+          </Table.Cell>
+          <Table.Cell verticalAlign='top'>
+            <span style={{color: 'black'}}>{this.numberWithCommas(holding.percent_of_portfolio * 100)}%</span> <br />
+            <span style={{color: 'gray', fontSize:'12px'}}>BUY</span>
+          </Table.Cell>
+          <Table.Cell verticalAlign='top'>
+            <span>${this.numberWithCommas(holding.current_stock_price)}</span> <br />
+            {holding.stock_day_change >= 0 ?
+              <span style={{fontSize:'12px', color: "green"}}>${this.numberWithCommas(holding.stock_day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+            :
+              <span style={{fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.stock_day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+            }
+          </Table.Cell>
+          <Table.Cell verticalAlign='top'>
+            <span>${this.numberWithCommas(holding.current_stock_price)}</span> <br />
+            {holding.day_change >= 0 ?
+              <span style={{fontSize:'12px', color: 'green'}}>${this.numberWithCommas(holding.day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+              :
+              <span style={{fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.day_change)} / {this.numberWithCommas(holding.day_change_percent)}%</span>
+            }
+          </Table.Cell>
+          <Table.Cell verticalAlign='top'>
+            <span>${this.numberWithCommas(holding.current_value)}</span> <br />
+            {holding.value_gain >= 0 ?
+              <span style={{fontSize:'12px', color: "green"}}>${this.numberWithCommas(holding.value_gain)} / {this.numberWithCommas(holding.percent_gain)}%</span>
+              :
+              <span style={{fontSize:'12px', color: "red"}}>${this.numberWithCommas(holding.value_gain)} / {this.numberWithCommas(holding.percent_gain)}%</span>
+            }
+          </Table.Cell>
+          <Table.Cell>
+            <span>{holding.players_holding}</span> <br />
+            <span style={{color: 'gray', fontSize:'12px'}}>PLAYERS</span>
+          </Table.Cell>
+        </Table.Row>
+      )
     })
-
-    const current_cash_value = starting_cash - total_cost
-    return current_cash_value
   }
 
-  orderedPortfolio = () => {
-    return this.state.portfolio.sort(function(a, b) {
-      let textA = a.ticker.toUpperCase();
-      let textB = b.ticker.toUpperCase();
-      return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
-    });
+  renderCashItems = () => {
+    let cash = this.state.gamePlayer.cash_balance
+    let netWorth = 0
+    this.props.rankings.forEach(ranking => {
+      if (ranking.game_player_id === this.state.gamePlayer.id) {
+        netWorth = ranking.current_value
+      }
+    })
+
+    return (
+      <Table.Row textAlign='center' key={v4()}>
+        <Table.Cell className='noPaddingColor'>
+          {cash >= 0 ? <Image src={green}/> : <Image src={red}/>}
+        </Table.Cell>
+        <Table.Cell className='noPaddingSymbol' verticalAlign='top'>
+          <span style={{color: 'black'}}>CASH</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>{this.numberWithCommas(cash)} SHARES</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span style={{color: 'black'}}>{this.numberWithCommas(cash / netWorth)}%</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>CASH</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>$1.00</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>$1.00</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell verticalAlign='top'>
+          <span>${this.numberWithCommas(cash)}</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>---</span>
+        </Table.Cell>
+        <Table.Cell>
+          <span>{this.props.rankings.length}</span> <br />
+          <span style={{color: 'gray', fontSize:'12px'}}>PLAYERS</span>
+        </Table.Cell>
+      </Table.Row>
+    )
+  }
+
+  getOptions = () => {
+    return (
+      [
+        {key: 'Most Value', text: 'Most Value', value: 'mostValue'},
+        {key: 'Least Value', text: 'Least Value', value: 'leastValue'},
+        {key: 'Top Performers', text: 'Top Performers', value: 'topPerformers'},
+        {key: 'Bottom Performers', text: 'Bottom Performers', value: 'bottomPerformers'},
+        {key: "Day's Best", text: "Day's Best", value: 'daysBest'},
+        {key: "Day's Worst", text: "Day's Worst", value: 'daysWorst'},
+        {key: 'Ticker (A-Z)', text: 'Ticker (A-Z)', value: 'alphabetical'},
+        {key: 'Ticker (Z-A)', text: 'Ticker (Z-A)', value: 'alphabeticalReverse'}
+      ]
+    )
+  }
+
+  renderDrowdown = () => {
+    return (
+      <Grid>
+        <Grid.Column className='Left floated left aligned column' width={4}>
+          <Dropdown onChange={(a, b) => this.handleClick(a, b)} placeholder='Sort By' search selection options={this.getOptions()} />
+        </Grid.Column>
+        <Grid.Column className='Left floated left aligned column'>
+          <Search history={this.props.history} portfolio={this.state.portfolio}/>
+        </Grid.Column>
+      </Grid>
+    )
+  }
+
+  renderTable = () => {
+
+    return (
+      <Table basic='very'>
+        <Table.Body className='noPadding'>
+          <Table.Row textAlign='center'>
+            <Table.Cell className='noPaddingColor'></Table.Cell>
+            <Table.Cell verticalAlign='top' className="noPaddingCell noPaddingSymbol">
+              <span style={{color: 'black', fontSize:'12px', letterSpacing: '.5px'}}>SYMBOL</span> <br />
+              <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>SHARES</span>
+            </Table.Cell>
+            <Table.Cell verticalAlign='top' className="noPaddingCell">
+              <span style={{color: 'black', fontSize:'12px', letterSpacing: '.5px'}}>% HOLDINGS</span> <br />
+              <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>TYPE</span>
+            </Table.Cell>
+            <Table.Cell verticalAlign='top' className="noPaddingCell">
+              <span style={{color: 'black', fontSize:'12px', letterSpacing: '.5px'}}>DAY</span> <br />
+              <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>CHG/CHG%</span>
+            </Table.Cell>
+            <Table.Cell verticalAlign='top' className="noPaddingCell">
+              <span style={{color: 'black', fontSize:'12px', letterSpacing: '.5px'}}>PRICE</span> <br />
+              <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>CHG/CHG%</span>
+            </Table.Cell>
+            <Table.Cell verticalAlign='top' className="noPaddingCell">
+              <span style={{color: 'black', fontSize:'12px', letterSpacing: '.5px'}}>VALUE</span> <br />
+              <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>GAIN/LOSS</span>
+            </Table.Cell>
+            <Table.Cell verticalAlign='top' className="noPaddingCell">
+              <span style={{color: 'black', fontSize:'12px', letterSpacing: '.5px'}}>PLAYERS</span> <br />
+              <span style={{color: 'gray', fontSize:'10px', letterSpacing: '.5px'}}>HOLDING</span>
+            </Table.Cell>
+          </Table.Row>
+        </Table.Body>
+        {this.state.isLoading ?
+          <Table.Body>
+            <Table.Row>
+              <Table.HeaderCell colSpan={16} style={{padding: '10px'}} >
+                <Loader active inline='centered' />
+              </Table.HeaderCell>
+            </Table.Row>
+          </Table.Body>
+          :
+          <Table.Body>
+            {this.renderPortfolioItems()}
+            {this.renderCashItems()}
+            {this.renderPortfolioTotals()}
+          </Table.Body>
+        }
+      </Table>
+    )
   }
 
   getPortfolio = () => {
@@ -114,81 +354,58 @@ class OtherGamePlayerStage extends React.Component {
     })
   }
 
-  getTotals = () => {
+  // getTotals = () => {
+  //
+  //   let total_cost = 0.00
+  //   let total_gain = 0.00
+  //   let total_value = 0.00
+  //
+  //   this.state.portfolio.map(holding => {
+  //     total_cost += holding.total_cost
+  //     total_gain += holding.value_gain
+  //     total_value += holding.current_value
+  //     return null
+  //   })
+  //
+  //   return (
+  //     <Table.Row key={v4()}>
+  //       <Table.Cell>Total</Table.Cell>
+  //       <Table.Cell></Table.Cell>
+  //       <Table.Cell></Table.Cell>
+  //       <Table.Cell>TBD</Table.Cell>
+  //       <Table.Cell>${this.numberWithCommas(total_gain)}</Table.Cell>
+  //       <Table.Cell>{ this.numberWithCommas(( (total_value + this.printCurrentCashValue()) - (total_cost + this.printCurrentCashValue()) ) / (total_cost + this.printCurrentCashValue()) * 100) }%</Table.Cell>
+  //       <Table.Cell></Table.Cell>
+  //       <Table.Cell>${this.numberWithCommas(total_value + this.printCurrentCashValue())}</Table.Cell>
+  //       <Table.Cell>{/*${this.numberWithCommas(total_cost + this.printCurrentCashValue())}*/}</Table.Cell>
+  //       <Table.Cell>100%</Table.Cell>
+  //     </Table.Row>
+  //   )
+  // }
 
-    let total_cost = 0.00
-    let total_gain = 0.00
-    let total_value = 0.00
 
-    this.state.portfolio.map(holding => {
-      total_cost += holding.total_cost
-      total_gain += holding.value_gain
-      total_value += holding.current_value
-      return null
-    })
-
-    return (
-      <Table.Row key={v4()}>
-        <Table.Cell>Total</Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell>TBD</Table.Cell>
-        <Table.Cell>${this.numberWithCommas(total_gain)}</Table.Cell>
-        <Table.Cell>{ this.numberWithCommas(( (total_value + this.printCurrentCashValue()) - (total_cost + this.printCurrentCashValue()) ) / (total_cost + this.printCurrentCashValue()) * 100) }%</Table.Cell>
-        <Table.Cell></Table.Cell>
-        <Table.Cell>${this.numberWithCommas(total_value + this.printCurrentCashValue())}</Table.Cell>
-        <Table.Cell>{/*${this.numberWithCommas(total_cost + this.printCurrentCashValue())}*/}</Table.Cell>
-        <Table.Cell>100%</Table.Cell>
-      </Table.Row>
-    )
-  }
-
-  handleClick
 
   render () {
     return (
-      <div>
-      {this.state.portfolio && this.state.gamePlayer ?
-          <div>
-            <h1>{this.state.gamePlayer.user.username.charAt(0).toUpperCase() + this.state.gamePlayer.user.username.slice(1)}'s Portfolio</h1>
-            <Container>
-              <Table>
-                <Table.Header>
-                  <Table.Row>
-                    <Table.HeaderCell value='symbol' onClick={this.handleClick}>Symbol</Table.HeaderCell>
-                    <Table.HeaderCell value='shares' onClick={this.handleClick}>Shares</Table.HeaderCell>
-                    <Table.HeaderCell value='currentPrice' onClick={this.handleClick}>Current Price</Table.HeaderCell>
-                    <Table.HeaderCell value='todayGainLoss' onClick={this.handleClick}>Today's Gain/Loss</Table.HeaderCell>
-                    <Table.HeaderCell value='totalGainLoss' onClick={this.handleClick}>Total Gain/Loss</Table.HeaderCell>
-                    <Table.HeaderCell value='percentGainLoss' onClick={this.handleClick}>Percent Gain/Loss</Table.HeaderCell>
-                    <Table.HeaderCell value='costBasis' onClick={this.handleClick}>Cost Basis</Table.HeaderCell>
-                    <Table.HeaderCell value='currentValue' onClick={this.handleClick}>Current Value</Table.HeaderCell>
-                    <Table.HeaderCell value='totalCost' onClick={this.handleClick}>Total Cost</Table.HeaderCell>
-                    <Table.HeaderCell value='allocation' onClick={this.handleClick}>Allocation</Table.HeaderCell>
-                  </Table.Row>
-                </Table.Header>
-
-                <Table.Body>
-                  {this.state.gamePlayer ? this.getPortfolio() : null}
-                  {this.state.gamePlayer ? this.getCurrentCashValue() : null}
-                  {this.state.gamePlayer ? this.getTotals() : null}
-                </Table.Body>
-              </Table>
-            </Container>
-          </div>
+      <Container >
+        {this.state.gamePlayer && this.props.rankings ?
+          <Card className="fluid">
+            <Card.Content header='YOUR PORTFOLIO' style={{backgroundColor: 'lightgray'}}/>
+            <Card.Content description={this.renderDrowdown()} />
+            <Card.Content className="noBorder" description={this.renderTable()} />
+          </Card>
         :
           null
         }
-
-      </div>
+      </Container >
     )
-  }
-}
+  }}
 
 function mapStateToProps(state) {
   return {
     currentGamePlayer: state.currentGamePlayer,
-    portfolio: state.portfolio
+    portfolio: state.portfolio,
+    rankings: state.rankings
   }
 }
 

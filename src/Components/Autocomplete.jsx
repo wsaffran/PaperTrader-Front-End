@@ -160,8 +160,9 @@ class Autocomplete extends Component {
 
     return (
       <Fragment>
-        <Form>
+        <Form style={{marginLeft: '75px'}}>
           <Input
+
           className='input-dropdown'
           type="text"
           onChange={onChange}

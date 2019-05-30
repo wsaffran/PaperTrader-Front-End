@@ -42,11 +42,15 @@ class Transact extends React.Component {
         errors = true
       } else if (this.state.shares <= 0) {
         errors = true
+      } else if (isNaN(this.state.shares)) {
+        errors = true
       }
     } else if (event.target.value === 'buy') {
       if (this.state.shares > maxSharesBuy) {
         errors = true
       } else if (this.state.shares <= 0) {
+        errors = true
+      } else if (isNaN(this.state.shares)) {
         errors = true
       }
     } else if (this.state.action === 'buy') {
@@ -54,11 +58,15 @@ class Transact extends React.Component {
         errors = true
       } else if (nextShares > maxSharesBuy) {
         errors = true
+      } else if (isNaN(nextShares)) {
+        errors = true
       }
     } else if (this.state.action === 'sell') {
       if (nextShares <= 0) {
         errors = true
       } else if (nextShares > foundHolding.total_shares) {
+        errors = true
+      } else if (isNaN(nextShares)) {
         errors = true
       }
     }
