@@ -49,6 +49,8 @@ class Stage extends React.Component {
         this.props.history.push(`/stage/${this.props.currentGameId}/rankings`)
       } else if (activeItem === 'gameInfo') {
         this.props.history.push(`/stage/${this.props.currentGameId}/game-info`)
+      } else if (activeItem === 'transactionHistory') {
+        this.props.history.push(`/stage/${this.props.currentGameId}/transactions`)
       }
     })
   }
@@ -58,7 +60,7 @@ class Stage extends React.Component {
     return (
       <Container style={{padding: '10px'}}>
         {(this.props.currentUser && this.props.currentGamePlayer) ?
-          <Menu widths={4}>
+          <Menu widths={5}>
             <Menu.Item
               name='overview'
               active={activeItem === 'overview'}
@@ -81,6 +83,14 @@ class Stage extends React.Component {
               onClick={this.handleItemClick}
             >
               Rankings
+            </Menu.Item>
+
+            <Menu.Item
+              name='transactionHistory'
+              active={activeItem === 'transactionHistory'}
+              onClick={this.handleItemClick}
+            >
+              Transactions
             </Menu.Item>
 
             <Menu.Item

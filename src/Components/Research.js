@@ -20,7 +20,6 @@ class Research extends React.Component {
   }
 
   render() {
-    console.log(this.props.stock);
     return (
       <div id="inResearch">
         <Container style={{padding: '10px'}}>
@@ -41,9 +40,9 @@ class Research extends React.Component {
                     <h1 style={{marginLeft: '75px'}}>{this.props.stock.companyName}
                       <span style={{fontSize: '25px', fontWeight: '300px'}}>&nbsp;&nbsp;&nbsp;${this.props.stock.latestPrice}</span>
                       {this.props.stock.change >= 0 ?
-                        <span style={{fontSize: '20px', fontWeight: '300px', color: 'green'}}>&nbsp;&nbsp;&nbsp;{this.props.stock.change} ({this.props.stock.changePercent})</span>
+                        <span style={{fontSize: '20px', fontWeight: '300px', color: 'green'}}>&nbsp;&nbsp;&nbsp;${this.props.stock.change} ({this.props.stock.changePercent}%)</span>
                         :
-                        <span style={{fontSize: '20px', fontWeight: '300px', color: 'red'}}>&nbsp;&nbsp;&nbsp;{this.props.stock.change} ({this.props.stock.changePercent})</span>
+                        <span style={{fontSize: '20px', fontWeight: '300px', color: 'red'}}>&nbsp;&nbsp;&nbsp;${this.props.stock.change} ({this.props.stock.changePercent}%)</span>
                       }
                     </h1>
                     :

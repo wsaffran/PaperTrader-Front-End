@@ -17,6 +17,8 @@ import Overview from './Components/Overview'
 import Rankings from './Components/Rankings'
 import YourPortfolio from './Components/YourPortfolio'
 import GameInfo from './Components/GameInfo'
+import Transactions from './Components/Transactions'
+
 
 import Loading from './Components/Loading'
 
@@ -84,10 +86,14 @@ class App extends React.Component {
             return <Rankings {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
           }
         }/>
-      <Route path="/stage/:currentGameId/game-info" render={ (routeProps) => {
-          return <GameInfo {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
-        }
-      }/>
+      <Route path="/stage/:currentGameId/transactions" render={ (routeProps) => {
+            return <Transactions {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
+          }
+        }/>
+        <Route path="/stage/:currentGameId/game-info" render={ (routeProps) => {
+            return <GameInfo {...routeProps} activeItem={routeProps.match.params.currentGameId}/>
+          }
+        }/>
         {/*</Router>*/}
       </div>
     )
