@@ -82,22 +82,26 @@ class FindGameComponent extends React.Component {
     return (
       <Container style={{padding: "30px"}}>
         <h1>FIND GAMES</h1>
-        <Table>
-          <Table.Header>
-            <Table.Row>
-              <Table.HeaderCell>Name</Table.HeaderCell>
-              <Table.HeaderCell>Starting Balance</Table.HeaderCell>
-              <Table.HeaderCell>Start Date</Table.HeaderCell>
-              <Table.HeaderCell>End Date</Table.HeaderCell>
-              <Table.HeaderCell>Players</Table.HeaderCell>
-              <Table.HeaderCell>Join Game</Table.HeaderCell>
-            </Table.Row>
-          </Table.Header>
+        {this.props.games && this.props.game && this.props.currentUser ?
+          <Table>
+            <Table.Header>
+              <Table.Row>
+                <Table.HeaderCell>Name</Table.HeaderCell>
+                <Table.HeaderCell>Starting Balance</Table.HeaderCell>
+                <Table.HeaderCell>Start Date</Table.HeaderCell>
+                <Table.HeaderCell>End Date</Table.HeaderCell>
+                <Table.HeaderCell>Players</Table.HeaderCell>
+                <Table.HeaderCell>Join Game</Table.HeaderCell>
+              </Table.Row>
+            </Table.Header>
 
-          <Table.Body>
-            {this.props.currentUser ? this.getRows() : null}
-          </Table.Body>
-        </Table>
+            <Table.Body>
+              {this.props.currentUser ? this.getRows() : null}
+            </Table.Body>
+          </Table>
+          :
+          null
+        }
       </Container>
     )
   }

@@ -59,7 +59,7 @@ class CreateGameForm extends React.Component {
           })                                          // INSTEAD OF THIS, DO JUST UPDATE THE USER'S GAMES
         }
         this.props.updateActiveItem('yourGames')
-        this.props.history.push('/game')
+        this.props.history.push('/loading1')
 
       })
     }, () => {

@@ -21,6 +21,7 @@ import Transactions from './Components/Transactions'
 
 
 import Loading from './Components/Loading'
+import Loading1 from './Components/Loading1'
 
 import './App.css';
 // import history from './history';
@@ -65,6 +66,7 @@ class App extends React.Component {
             } />
 
           <Route path ='/loading' component={ Loading } />
+          <Route path ='/loading1' component={ Loading1 } />
           <Route exact path="/game" component={ Game }/>
 
 

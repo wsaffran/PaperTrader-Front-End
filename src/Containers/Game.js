@@ -43,6 +43,7 @@ class Game extends React.Component {
   }
 
   render() {
+    console.log(this.props.games);
     // const { activeItem } = this.props
     return (
       <Container className='fluid'>
@@ -52,9 +53,13 @@ class Game extends React.Component {
               <Grid.Row>
                 <YourGameComponent history={this.props.history}/>
               </Grid.Row>
-              <Grid.Row>
-                <FindGameComponent history={this.props.history}/>
-              </Grid.Row>
+              {this.props.games.length > 0 ?
+                <Grid.Row>
+                  <FindGameComponent game={this.props.games} history={this.props.history}/>
+                </Grid.Row>
+                :
+                null
+              }
             </Grid.Column>
             <Grid.Column width={5}>
               <CreateGameForm history={this.props.history}/>
@@ -72,7 +77,7 @@ function mapStateToProps(state) {
   return {
     currentUser: state.currentUser,
     // currentGame: state.currentGame,
-    // games: state.games,
+    games: state.games,
     // users: state.users,
     // gamePlayers: state.gamePlayers,
     activeItem: state.activeItem
